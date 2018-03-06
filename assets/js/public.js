@@ -4,9 +4,15 @@
 Object.defineProperty(exports, "__esModule", {
     value: true
 });
+
+// Get fields based on name from a form.
+function getFields(form, fieldName) {
+    return form.querySelectorAll('input[name="' + fieldName + '"], select[name="' + fieldName + '"], textarea[name="' + fieldName + '"]');
+}
+
 function getFieldValues(form, fieldName) {
     var values = [];
-    var inputs = form.querySelectorAll('input[name="' + fieldName + '"], select[name="' + fieldName + '"], textarea[name="' + fieldName + '"]');
+    var inputs = getFields(form, fieldName);
 
     for (var i = 0; i < inputs.length; i++) {
         var input = inputs[i];
@@ -79,10 +85,40 @@ function toggleElement(el) {
     });
 }
 
+function selectOption(el) {
+    var conditions = el.getAttribute('data-select-if').split(':');
+    var conditionKey = conditions[0];
+    var expectedValues = (conditions.length > 1 ? conditions[1] : "*").split('|');
+    var form = findForm(el);
+    var values = getFields(form, conditionKey).length ? getFieldValues(form, conditionKey) : [conditionKey];
+
+    // determine whether condition is met
+    var conditionMet = false;
+    for (var i = 0; i < values.length; i++) {
+        var value = values[i];
+
+        // condition is met when value is in array of expected values OR expected values contains a wildcard and value is not empty
+        conditionMet = expectedValues.indexOf(value) > -1 || expectedValues.indexOf('*') > -1 && value.length > 0;
+        if (conditionMet) {
+            break;
+        }
+    }
+
+    // Select/check option(s)
+    if (conditionMet) {
+        el.parentElement.value = el.value;
+    }
+
+}
+
 // evaluate conditional elements globally
 function evaluate() {
     var elements = document.querySelectorAll('.hf-form [data-show-if], .hf-form [data-hide-if]');
     [].forEach.call(elements, toggleElement);
+
+    // auto-select/check
+    var selectIfElements = document.querySelectorAll('.hf-form [data-select-if]');
+    [].forEach.call(selectIfElements, selectOption);
 }
 
 // re-evaluate conditional elements for change events on forms
@@ -90,10 +126,13 @@ function handleInputEvent(evt) {
     if (!evt.target || !evt.target.form || evt.target.form.className.indexOf('hf-form') < 0) {
         return;
     }
-
     var form = evt.target.form;
     var elements = form.querySelectorAll('[data-show-if], [data-hide-if]');
     [].forEach.call(elements, toggleElement);
+
+    // auto-select/check
+    var selectIfElements = form.querySelectorAll('.hf-form [data-select-if]');
+    [].forEach.call(selectIfElements, selectOption);
 }
 
 exports.default = {
