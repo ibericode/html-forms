@@ -1,8 +1,13 @@
 'use strict';
 
+// Get fields based on name from a form.
+function getFields(form, fieldName) {
+    return form.querySelectorAll('input[name="' + fieldName + '"], select[name="' + fieldName + '"], textarea[name="' + fieldName + '"]');
+}
+
 function getFieldValues(form, fieldName) {
     let values = [];
-    let inputs = form.querySelectorAll('input[name="'+fieldName+'"], select[name="'+fieldName+'"], textarea[name="'+fieldName+'"]');
+    let inputs = getFields(form, fieldName);
 
     for(let i=0; i<inputs.length; i++) {
         const input = inputs[i];
@@ -48,7 +53,7 @@ function toggleElement(el) {
         // condition is met when value is in array of expected values OR expected values contains a wildcard and value is not empty
         conditionMet = expectedValues.indexOf(value) > -1 || ( expectedValues.indexOf('*') > -1 && value.length > 0 );
 
-        if(conditionMet) { 
+        if(conditionMet) {
             break;
         }
     }
@@ -58,7 +63,7 @@ function toggleElement(el) {
         el.style.display = ( conditionMet ) ? '' : 'none';
     } else {
         el.style.display = ( conditionMet ) ? 'none' : '';
-    }  
+    }
 
     // find all inputs inside this element and toggle [required] attr (to prevent HTML5 validation on hidden elements)
     let inputs = el.querySelectorAll('input, select, textarea');
@@ -75,10 +80,71 @@ function toggleElement(el) {
     });
 }
 
+function selectOption(el) {
+    var conditions = el.getAttribute('data-select-if').split(':');
+    var conditionKey = conditions[0];
+    var expectedValues = (conditions.length > 1 ? conditions[1] : "*").split('|');
+    var form = findForm(el);
+    var values = getFields(form, conditionKey).length ? getFieldValues(form, conditionKey) : [conditionKey];
+
+    // determine whether condition is met
+    var conditionMet = false;
+    for (var i = 0; i < values.length; i++) {
+        var value = values[i];
+
+        // condition is met when value is in array of expected values OR expected values contains a wildcard and value is not empty
+        conditionMet = expectedValues.indexOf(value) > -1 || expectedValues.indexOf('*') > -1 && value.length > 0;
+        if (conditionMet) {
+            break;
+        }
+    }
+
+    // Select/check option(s)
+    if (conditionMet) {
+        el.parentElement.value = el.value;
+    }
+
+}
+
+function checkOptions(el) {
+    var conditions = el.getAttribute('data-check-if').split(':');
+    var conditionKey = conditions[0];
+    var expectedValues = (conditions.length > 1 ? conditions[1] : "*").split('|');
+    var form = findForm(el);
+    var values = getFields(form, conditionKey).length ? getFieldValues(form, conditionKey) : [conditionKey];
+
+    // determine whether condition is met
+    var conditionMet = false;
+    for (var i = 0; i < values.length; i++) {
+        var value = values[i];
+
+        // condition is met when value is in array of expected values OR expected values contains a wildcard and value is not empty
+        conditionMet = expectedValues.indexOf(value) > -1 || expectedValues.indexOf('*') > -1 && value.length > 0;
+        if (conditionMet) {
+            break;
+        }
+    }
+
+    // Select/check option(s)
+    if (conditionMet) {
+        console.log( el );
+        el.checked = true;
+    }
+
+}
+
 // evaluate conditional elements globally
 function evaluate() {
     const elements = document.querySelectorAll('.hf-form [data-show-if], .hf-form [data-hide-if]');
     [].forEach.call(elements, toggleElement);
+
+    // auto-select
+    var selectIfElements = document.querySelectorAll('.hf-form [data-select-if]');
+    [].forEach.call(selectIfElements, selectOption);
+
+    // auto-check
+    var checkIfElements = document.querySelectorAll('.hf-form [data-check-if]');
+    [].forEach.call(checkIfElements, checkOptions);
 }
 
 // re-evaluate conditional elements for change events on forms
@@ -90,6 +156,14 @@ function handleInputEvent(evt) {
     const form = evt.target.form;
     const elements = form.querySelectorAll('[data-show-if], [data-hide-if]');
     [].forEach.call(elements, toggleElement);
+
+    // auto-select
+    const selectIfElements = form.querySelectorAll('.hf-form [data-select-if]');
+    [].forEach.call(selectIfElements, selectOption);
+
+    // auto-check
+    var checkIfElements = form.querySelectorAll('.hf-form [data-check-if]');
+    [].forEach.call(checkIfElements, checkOptions);
 }
 
 export default {
