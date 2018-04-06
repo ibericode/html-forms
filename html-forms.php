@@ -72,6 +72,7 @@ function _install() {
 }
 
 define( 'HTML_FORMS_VERSION', '1.1.4' );
+define( 'HTML_FORMS_FILE', __FILE__ );
 
 if( ! function_exists( 'hf_get_form' ) ) {
     require __DIR__ . '/vendor/autoload.php';

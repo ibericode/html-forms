@@ -29,8 +29,13 @@ class SaveSubmission extends Action {
    public function page_settings( $settings, $index ) {
        $settings = array_merge( $this->get_default_settings(), $settings );
 
-       // None (yet)
-   }
+       ?><input type="hidden" name="form[settings][actions][<?php echo $index; ?>][type]" value="<?php echo $this->type; ?>" />
+       <table class="form-table">
+           <tr>
+               <td colspan="2"><p class="description"><?php _e( 'This action has no settings', 'html-forms' ); ?></p></td>
+            </tr>
+       </table><?php
+}
 
     /**
      * Processes this action
