@@ -45,6 +45,6 @@ class SaveSubmission extends Action {
      * @param Form $form
      */
     public function process( array $settings, Submission $submission, Form $form ) {
-       $submission->save();
+       return $submission->save();
     }
 }

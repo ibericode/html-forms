@@ -36,6 +36,8 @@ class Submission {
         if( $num_rows > 0 ) {
             $this->id = $wpdb->insert_id;
         }
+
+        return $this->id;
     }
 
     /**
