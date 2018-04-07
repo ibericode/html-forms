@@ -7,7 +7,8 @@ $tabs = array(
     'actions'       => __( 'Actions', 'html-forms' ),
 );
 
-if( $settings['save_submissions'] ) {
+$action_types = wp_list_pluck( $form->settings['actions'], 'type' );
+if( in_array( 'save', $action_types ) ) {
     $tabs['submissions'] = __( 'Submissions', 'html-forms' );
 }
 

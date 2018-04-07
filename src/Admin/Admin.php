@@ -221,6 +221,12 @@ class Admin {
             )
         );
 
+        update_post_meta( $form_id, '_hf_settings', array(
+            'actions' => array(
+                array( 'type' => 'save' ),
+            )
+        ) );
+
         wp_safe_redirect( admin_url( 'admin.php?page=html-forms&view=edit&form_id=' . $form_id ));
         exit;
     }

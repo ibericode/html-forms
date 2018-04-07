@@ -178,7 +178,7 @@ class Forms
 
     /**
     * @return array
-    */ 
+    */
     public function get_request_data() {
         $data = $_POST;
 
@@ -243,10 +243,6 @@ class Forms
             * General purpose hook before the submission is saved, so we can still modify data that is (maybe) stored.
             */
             do_action( 'hf_process_form', $form, $submission );
-
-            if( $this->settings['save_submissions'] ) {
-                 $submission->save();
-            }
 
             // process form actions
             if ( isset( $form->settings['actions'] ) ) {

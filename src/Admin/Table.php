@@ -181,7 +181,9 @@ if( class_exists( 'WP_List_Table' ) ) {
                 'actions'       => __( 'Actions', 'html-forms' ),
             );
 
-            if( $this->settings['save_submissions'] ) {
+            $form = hf_get_form( $post->ID );
+            $action_types = wp_list_pluck( $form->settings['actions'], 'type' );
+            if( in_array( 'save', $action_types ) ) {
                 $tabs['submissions'] = __( 'Submissions', 'html-forms' );
             }
 

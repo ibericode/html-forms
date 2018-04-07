@@ -42,6 +42,9 @@ function _bootstrap() {
     $email_action = new Actions\Email();
     $email_action->hook();
 
+    $save_action = new Actions\SaveSubmission();
+    $save_action->hook();
+
     if( is_admin() ) {
         if( ! defined( 'DOING_AJAX' ) || ! DOING_AJAX ) {
             $admin = new Admin\Admin( __FILE__ );
@@ -69,6 +72,7 @@ function _install() {
 }
 
 define( 'HTML_FORMS_VERSION', '1.1.4' );
+define( 'HTML_FORMS_FILE', __FILE__ );
 
 if( ! function_exists( 'hf_get_form' ) ) {
     require __DIR__ . '/vendor/autoload.php';
