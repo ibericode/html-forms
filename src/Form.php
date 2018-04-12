@@ -169,7 +169,12 @@ class Form {
     public function get_message( $code ) 
     {
         $form = $this;
-        $message = isset( $this->messages[ $code ] ) ? $this->messages[ $code ] : '';
+
+        if ( $code instanceof \Exception ) {
+            $message = $code->getMessage();
+        } else {
+            $message = isset( $this->messages[ $code ] ) ? $this->messages[ $code ] : '';
+        }
 
         /**
         * @param string $message
