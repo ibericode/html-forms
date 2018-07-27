@@ -1,3 +1,5 @@
+'use strict';
+
 import { h } from 'preact';
 
 function AddToForm(props){
@@ -87,6 +89,16 @@ function Choices(props) {
     )
 }
 
+function Accept(props){
+    return (
+        <div class="hf-small-margin">
+            <label>Accepted file types</label>
+            <input type="text" value={props.value} onChange={props.onChange} />
+            <p class="help">Use a comma-separated list of accepted file extensions, eg <code>.pdf</code>. <br />Leave empty to accept any file type.</p>
+        </div>
+    )
+}
+
 export {
-    AddToForm, Label, Placeholder, DefaultValue, Wrap, Required, Choices, ButtonText
+    AddToForm, Label, Placeholder, DefaultValue, Wrap, Required, Choices, ButtonText, Accept
 }

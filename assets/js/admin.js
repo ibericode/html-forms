@@ -1,4 +1,4 @@
-(function () { var require = undefined; var module = undefined; var exports = undefined; var define = undefined;(function(){function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s}return e})()({1:[function(require,module,exports){
+(function () { var require = undefined; var module = undefined; var exports = undefined; var define = undefined;(function(){function r(e,n,t){function o(i,f){if(!n[i]){if(!e[i]){var c="function"==typeof require&&require;if(!f&&c)return c(i,!0);if(u)return u(i,!0);var a=new Error("Cannot find module '"+i+"'");throw a.code="MODULE_NOT_FOUND",a}var p=n[i]={exports:{}};e[i][0].call(p.exports,function(r){var n=e[i][1][r];return o(n||r)},p,p.exports,r,e,n,t)}return n[i].exports}for(var u="function"==typeof require&&require,i=0;i<t.length;i++)o(t[i]);return o}return r})()({1:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -23,7 +23,7 @@ function handleClickEvent(e) {
 }
 
 exports.default = {
-    'init': init
+    init: init
 };
 
 },{}],2:[function(require,module,exports){
@@ -55,6 +55,8 @@ var _tlite2 = _interopRequireDefault(_tlite);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
+window.html_forms = {};
+
 // init the various components
 _tabs2.default.init();
 _actionConfirmations2.default.init();
@@ -69,36 +71,31 @@ if (document.getElementById('hf-form-editor')) {
     return el.className.indexOf('hf-tooltip') > -1;
 });
 
-// expose variables
-window.html_forms = {
-    'FieldBuilder': _fieldBuilder2.default,
-    'Editor': _formEditor2.default
-};
+window.html_forms.FieldBuilder = _fieldBuilder2.default;
+window.html_forms.Editor = _formEditor2.default;
 
-},{"./action-confirmations.js":1,"./field-builder.js":3,"./form-actions.js":6,"./form-editor.js":7,"./tabs.js":8,"tlite":22}],3:[function(require,module,exports){
+// tell WP common.js to override the method used for determining hidden columns (screen options)
+if (hf_options.view === 'edit') {
+    window.columns.useCheckboxesForHidden();
+}
+
+},{"./action-confirmations.js":1,"./field-builder.js":6,"./form-actions.js":8,"./form-editor.js":9,"./tabs.js":10,"tlite":23}],3:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
     value: true
 });
+exports.FieldBuilder = undefined;
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _desc, _value, _class, _desc2, _value2, _class2;
+var _desc, _value, _class;
 
 var _preact = require('preact');
 
-var _linkstate = require('linkstate');
-
-var _linkstate2 = _interopRequireDefault(_linkstate);
-
-var _configFields = require('./field-builder/config-fields.js');
-
-var _html = require('./field-builder/html.js');
-
 var _decko = require('decko');
 
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+var _fieldConfigurator = require('./field-configurator.js');
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
@@ -135,32 +132,16 @@ function _applyDecoratedDescriptor(target, property, decorators, descriptor, con
     return desc;
 }
 
-var Editor = void 0;
-
-
-var fields = {
-    "text": "Text",
-    "email": "Email",
-    "url": "URL",
-    "number": "Number",
-    "date": "Date",
-    "textarea": "Textarea",
-    "dropdown": "Dropdown",
-    "checkboxes": "Checkboxes",
-    "radio-buttons": "Radio buttons",
-    "submit": "Submit button"
-};
-
 var FieldBuilder = (_class = function (_Component) {
     _inherits(FieldBuilder, _Component);
 
-    function FieldBuilder() {
+    function FieldBuilder(props) {
         _classCallCheck(this, FieldBuilder);
 
-        var _this = _possibleConstructorReturn(this, (FieldBuilder.__proto__ || Object.getPrototypeOf(FieldBuilder)).call(this));
+        var _this = _possibleConstructorReturn(this, (FieldBuilder.__proto__ || Object.getPrototypeOf(FieldBuilder)).call(this, props));
 
         _this.state = {
-            fieldType: ""
+            activeField: null
         };
         return _this;
     }
@@ -169,18 +150,18 @@ var FieldBuilder = (_class = function (_Component) {
         key: 'handleCancel',
         value: function handleCancel() {
             this.setState({
-                fieldType: ""
+                activeField: null
             });
         }
     }, {
         key: 'openFieldConfig',
         value: function openFieldConfig(e) {
-            var newFieldType = e.target.value;
+            var field = this.props.fields[e.target.value];
 
-            if (this.state.fieldType === newFieldType) {
-                this.setState({ fieldType: "" });
+            if (this.state.activeField === field) {
+                this.setState({ activeField: null });
             } else {
-                this.setState({ fieldType: newFieldType });
+                this.setState({ activeField: field });
             }
         }
     }, {
@@ -188,14 +169,15 @@ var FieldBuilder = (_class = function (_Component) {
         value: function render(props, state) {
             var _this2 = this;
 
-            var fieldButtons = Object.keys(fields).map(function (key) {
-                var label = fields[key];
+            var fieldButtons = props.fields.map(function (f, i) {
                 return (0, _preact.h)(
                     'button',
-                    { type: 'button', value: key, className: "button " + (state.fieldType === key ? "active" : ""), onClick: _this2.openFieldConfig },
-                    label
+                    { type: 'button', value: i, className: "button " + (state.activeField === f ? "active" : ""), onClick: _this2.openFieldConfig },
+                    f.label
                 );
             });
+            var fieldType = state.activeField ? state.activeField.key : "";
+            var rows = state.activeField ? state.activeField.configRows : [];
 
             return (0, _preact.h)(
                 'div',
@@ -213,9 +195,9 @@ var FieldBuilder = (_class = function (_Component) {
                 (0, _preact.h)(
                     'div',
                     { style: 'max-width: 480px;' },
-                    (0, _preact.h)(FieldConfigurator, { fieldType: state.fieldType, onCancel: this.handleCancel })
+                    (0, _preact.h)(_fieldConfigurator.FieldConfigurator, { fieldType: fieldType, rows: rows, onCancel: this.handleCancel })
                 ),
-                state.fieldType === "" ? (0, _preact.h)(
+                state.activeField === null ? (0, _preact.h)(
                     'p',
                     { 'class': 'help', style: 'margin-bottom: 0;' },
                     'Use the buttons above to generate your field HTML, or manually modify your form below.'
@@ -226,29 +208,98 @@ var FieldBuilder = (_class = function (_Component) {
 
     return FieldBuilder;
 }(_preact.Component), (_applyDecoratedDescriptor(_class.prototype, 'handleCancel', [_decko.bind], Object.getOwnPropertyDescriptor(_class.prototype, 'handleCancel'), _class.prototype), _applyDecoratedDescriptor(_class.prototype, 'openFieldConfig', [_decko.bind], Object.getOwnPropertyDescriptor(_class.prototype, 'openFieldConfig'), _class.prototype)), _class);
-var FieldConfigurator = (_class2 = function (_Component2) {
-    _inherits(FieldConfigurator, _Component2);
+exports.FieldBuilder = FieldBuilder;
+
+},{"./field-configurator.js":4,"decko":19,"preact":22}],4:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+exports.FieldConfigurator = undefined;
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+var _desc, _value, _class;
+
+var _preact = require('preact');
+
+var _decko = require('decko');
+
+var _html = require('../field-builder/html.js');
+
+var _fieldSettings = require('./field-settings.js');
+
+var FS = _interopRequireWildcard(_fieldSettings);
+
+var _linkstate = require('linkstate');
+
+var _linkstate2 = _interopRequireDefault(_linkstate);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+function _applyDecoratedDescriptor(target, property, decorators, descriptor, context) {
+    var desc = {};
+    Object['ke' + 'ys'](descriptor).forEach(function (key) {
+        desc[key] = descriptor[key];
+    });
+    desc.enumerable = !!desc.enumerable;
+    desc.configurable = !!desc.configurable;
+
+    if ('value' in desc || desc.initializer) {
+        desc.writable = true;
+    }
+
+    desc = decorators.slice().reverse().reduce(function (desc, decorator) {
+        return decorator(target, property, desc) || desc;
+    }, desc);
+
+    if (context && desc.initializer !== void 0) {
+        desc.value = desc.initializer ? desc.initializer.call(context) : void 0;
+        desc.initializer = undefined;
+    }
+
+    if (desc.initializer === void 0) {
+        Object['define' + 'Property'](target, property, desc);
+        desc = null;
+    }
+
+    return desc;
+}
+
+var FieldConfigurator = (_class = function (_Component) {
+    _inherits(FieldConfigurator, _Component);
 
     function FieldConfigurator(props) {
         _classCallCheck(this, FieldConfigurator);
 
-        var _this3 = _possibleConstructorReturn(this, (FieldConfigurator.__proto__ || Object.getPrototypeOf(FieldConfigurator)).call(this, props));
+        var _this = _possibleConstructorReturn(this, (FieldConfigurator.__proto__ || Object.getPrototypeOf(FieldConfigurator)).call(this, props));
 
-        _this3.state = _this3.getInitialState();
-        _this3.choiceHandlers = {
-            "add": _this3.addChoice,
-            "delete": _this3.deleteChoice,
-            "changeLabel": _this3.changeChoiceLabel,
-            "toggleChecked": _this3.toggleChoiceChecked
+        _this.state = _this.getInitialState();
+        _this.choiceHandlers = {
+            "add": _this.addChoice,
+            "delete": _this.deleteChoice,
+            "changeLabel": _this.changeChoiceLabel,
+            "toggleChecked": _this.toggleChoiceChecked
         };
-        return _this3;
+        return _this;
     }
 
     _createClass(FieldConfigurator, [{
         key: 'getInitialState',
         value: function getInitialState() {
             return {
-                fieldType: this.props.fieldType,
+                formId: document.querySelector('input[name="form_id"]').value,
+                formSlug: document.querySelector('input[name="form[slug]"]').value,
+                fieldType: "",
                 fieldLabel: "",
                 placeholder: "",
                 value: "",
@@ -260,21 +311,29 @@ var FieldConfigurator = (_class2 = function (_Component2) {
                 }, {
                     checked: false,
                     label: "Two"
-                }]
+                }],
+                accept: ''
             };
         }
     }, {
         key: 'componentWillReceiveProps',
         value: function componentWillReceiveProps(props) {
-            this.setState({
-                fieldType: props.fieldType
-            });
+            var newState = { fieldType: props.fieldType };
+
+            // when changing from field that accepts multiple values to single-value field, reset all pre-selections 
+            if (this.state.fieldType === 'checkbox' && props.fieldType !== 'checkbox') {
+                newState.choices = this.state.choices.map(function (c, i) {
+                    c.checked = false;
+                    return c;
+                });
+            }
+            this.setState(newState);
         }
     }, {
         key: 'addToForm',
         value: function addToForm() {
             var html = (0, _html.htmlgenerate)(this.state);
-            Editor.replaceSelection(html);
+            html_forms.Editor.replaceSelection(html);
         }
     }, {
         key: 'addChoice',
@@ -317,73 +376,51 @@ var FieldConfigurator = (_class2 = function (_Component2) {
     }, {
         key: 'render',
         value: function render(props, state) {
-            if (state.fieldType === "") {
+            if (props.rows.length == 0) {
                 return "";
             }
 
-            var formFields = void 0;
+            var formFields = [];
 
-            switch (state.fieldType) {
-                case "text":
-                case "email":
-                case "url":
-                case "number":
-                case "textarea":
-                    formFields = (0, _preact.h)(
-                        'div',
-                        null,
-                        (0, _preact.h)(_configFields.Label, { value: state.fieldLabel, onChange: (0, _linkstate2.default)(this, 'fieldLabel') }),
-                        (0, _preact.h)(_configFields.Placeholder, { value: state.placeholder, onChange: (0, _linkstate2.default)(this, 'placeholder') }),
-                        (0, _preact.h)(_configFields.DefaultValue, { value: state.value, onChange: (0, _linkstate2.default)(this, 'value') }),
-                        (0, _preact.h)(_configFields.Required, { checked: state.required, onChange: (0, _linkstate2.default)(this, 'required') }),
-                        (0, _preact.h)(_configFields.Wrap, { checked: state.wrap, onChange: (0, _linkstate2.default)(this, 'wrap') }),
-                        (0, _preact.h)(_configFields.AddToForm, { onSubmit: this.addToForm, onCancel: this.handleCancel })
-                    );
-                    break;
-                case "submit":
-                    formFields = (0, _preact.h)(
-                        'div',
-                        null,
-                        (0, _preact.h)(_configFields.ButtonText, { value: state.value, onChange: (0, _linkstate2.default)(this, 'value') }),
-                        (0, _preact.h)(_configFields.Wrap, { checked: state.wrap, onChange: (0, _linkstate2.default)(this, 'wrap') }),
-                        (0, _preact.h)(_configFields.AddToForm, { onSubmit: this.addToForm, onCancel: this.handleCancel })
-                    );
-                    break;
+            for (var i = 0; i < props.rows.length; i++) {
+                switch (props.rows[i]) {
+                    case "label":
+                        formFields.push((0, _preact.h)(FS.Label, { value: state.fieldLabel, onChange: (0, _linkstate2.default)(this, 'fieldLabel') }));
+                        break;
 
-                case "date":
-                    formFields = (0, _preact.h)(
-                        'div',
-                        null,
-                        (0, _preact.h)(_configFields.Label, { value: state.fieldLabel, onChange: (0, _linkstate2.default)(this, 'fieldLabel') }),
-                        (0, _preact.h)(_configFields.DefaultValue, { value: state.value, onChange: (0, _linkstate2.default)(this, 'value') }),
-                        (0, _preact.h)(_configFields.Required, { checked: state.required, onChange: (0, _linkstate2.default)(this, 'required') }),
-                        (0, _preact.h)(_configFields.Wrap, { checked: state.wrap, onChange: (0, _linkstate2.default)(this, 'wrap') }),
-                        (0, _preact.h)(_configFields.AddToForm, { onSubmit: this.addToForm, onCancel: this.handleCancel })
-                    );
-                    break;
-                case "dropdown":
-                    formFields = (0, _preact.h)(
-                        'div',
-                        null,
-                        (0, _preact.h)(_configFields.Label, { value: state.fieldLabel, onChange: (0, _linkstate2.default)(this, 'fieldLabel') }),
-                        (0, _preact.h)(_configFields.Choices, { multiple: false, choices: state.choices, handlers: this.choiceHandlers }),
-                        (0, _preact.h)(_configFields.Required, { checked: state.required, onChange: (0, _linkstate2.default)(this, 'required') }),
-                        (0, _preact.h)(_configFields.Wrap, { checked: state.wrap, onChange: (0, _linkstate2.default)(this, 'wrap') }),
-                        (0, _preact.h)(_configFields.AddToForm, { onSubmit: this.addToForm, onCancel: this.handleCancel })
-                    );
-                    break;
+                    case "placeholder":
+                        formFields.push((0, _preact.h)(FS.Placeholder, { value: state.placeholder, onChange: (0, _linkstate2.default)(this, 'placeholder') }));
+                        break;
 
-                case "radio-buttons":
-                case "checkboxes":
-                    formFields = (0, _preact.h)(
-                        'div',
-                        null,
-                        (0, _preact.h)(_configFields.Label, { value: state.fieldLabel, onChange: (0, _linkstate2.default)(this, 'fieldLabel') }),
-                        (0, _preact.h)(_configFields.Choices, { multiple: state.fieldType === "checkboxes", choices: state.choices, handlers: this.choiceHandlers }),
-                        (0, _preact.h)(_configFields.Wrap, { checked: state.wrap, onChange: (0, _linkstate2.default)(this, 'wrap') }),
-                        (0, _preact.h)(_configFields.AddToForm, { onSubmit: this.addToForm, onCancel: this.handleCancel })
-                    );
-                    break;
+                    case "default-value":
+                        formFields.push((0, _preact.h)(FS.DefaultValue, { value: state.value, onChange: (0, _linkstate2.default)(this, 'value') }));
+                        break;
+
+                    case "required":
+                        formFields.push((0, _preact.h)(FS.Required, { checked: state.required, onChange: (0, _linkstate2.default)(this, 'required') }));
+                        break;
+
+                    case "wrap":
+                        formFields.push((0, _preact.h)(FS.Wrap, { checked: state.wrap, onChange: (0, _linkstate2.default)(this, 'wrap') }));
+                        break;
+
+                    case "add-to-form":
+                        formFields.push((0, _preact.h)(FS.AddToForm, { onSubmit: this.addToForm, onCancel: this.handleCancel }));
+                        break;
+
+                    case "choices":
+                        formFields.push((0, _preact.h)(FS.Choices, { multiple: state.fieldType === 'checkbox', choices: state.choices, handlers: this.choiceHandlers }));
+                        break;
+
+                    case "button-text":
+                        formFields.push((0, _preact.h)(FS.ButtonText, { value: state.value, onChange: (0, _linkstate2.default)(this, 'value') }));
+                        break;
+
+                    case "accept":
+                        formFields.push((0, _preact.h)(FS.Accept, { value: state.accept, onChange: (0, _linkstate2.default)(this, 'accept') }));
+                        break;
+
+                }
             }
 
             return (0, _preact.h)(
@@ -403,152 +440,146 @@ var FieldConfigurator = (_class2 = function (_Component2) {
     }]);
 
     return FieldConfigurator;
-}(_preact.Component), (_applyDecoratedDescriptor(_class2.prototype, 'addToForm', [_decko.bind], Object.getOwnPropertyDescriptor(_class2.prototype, 'addToForm'), _class2.prototype), _applyDecoratedDescriptor(_class2.prototype, 'addChoice', [_decko.bind], Object.getOwnPropertyDescriptor(_class2.prototype, 'addChoice'), _class2.prototype), _applyDecoratedDescriptor(_class2.prototype, 'deleteChoice', [_decko.bind], Object.getOwnPropertyDescriptor(_class2.prototype, 'deleteChoice'), _class2.prototype), _applyDecoratedDescriptor(_class2.prototype, 'changeChoiceLabel', [_decko.bind], Object.getOwnPropertyDescriptor(_class2.prototype, 'changeChoiceLabel'), _class2.prototype), _applyDecoratedDescriptor(_class2.prototype, 'toggleChoiceChecked', [_decko.bind], Object.getOwnPropertyDescriptor(_class2.prototype, 'toggleChoiceChecked'), _class2.prototype), _applyDecoratedDescriptor(_class2, 'handleKeyPress', [_decko.bind], Object.getOwnPropertyDescriptor(_class2, 'handleKeyPress'), _class2), _applyDecoratedDescriptor(_class2.prototype, 'handleCancel', [_decko.bind], Object.getOwnPropertyDescriptor(_class2.prototype, 'handleCancel'), _class2.prototype)), _class2);
-exports.default = {
-    init: function init(editor) {
-        Editor = editor;
+}(_preact.Component), (_applyDecoratedDescriptor(_class.prototype, 'addToForm', [_decko.bind], Object.getOwnPropertyDescriptor(_class.prototype, 'addToForm'), _class.prototype), _applyDecoratedDescriptor(_class.prototype, 'addChoice', [_decko.bind], Object.getOwnPropertyDescriptor(_class.prototype, 'addChoice'), _class.prototype), _applyDecoratedDescriptor(_class.prototype, 'deleteChoice', [_decko.bind], Object.getOwnPropertyDescriptor(_class.prototype, 'deleteChoice'), _class.prototype), _applyDecoratedDescriptor(_class.prototype, 'changeChoiceLabel', [_decko.bind], Object.getOwnPropertyDescriptor(_class.prototype, 'changeChoiceLabel'), _class.prototype), _applyDecoratedDescriptor(_class.prototype, 'toggleChoiceChecked', [_decko.bind], Object.getOwnPropertyDescriptor(_class.prototype, 'toggleChoiceChecked'), _class.prototype), _applyDecoratedDescriptor(_class, 'handleKeyPress', [_decko.bind], Object.getOwnPropertyDescriptor(_class, 'handleKeyPress'), _class), _applyDecoratedDescriptor(_class.prototype, 'handleCancel', [_decko.bind], Object.getOwnPropertyDescriptor(_class.prototype, 'handleCancel'), _class.prototype)), _class);
+exports.FieldConfigurator = FieldConfigurator;
 
-        (0, _preact.render)((0, _preact.h)(FieldBuilder, null), document.getElementById('hf-field-builder'));
-    }
-};
-
-},{"./field-builder/config-fields.js":4,"./field-builder/html.js":5,"decko":17,"linkstate":19,"preact":21}],4:[function(require,module,exports){
-"use strict";
+},{"../field-builder/html.js":7,"./field-settings.js":5,"decko":19,"linkstate":20,"preact":22}],5:[function(require,module,exports){
+'use strict';
 
 Object.defineProperty(exports, "__esModule", {
     value: true
 });
-exports.ButtonText = exports.Choices = exports.Required = exports.Wrap = exports.DefaultValue = exports.Placeholder = exports.Label = exports.AddToForm = undefined;
+exports.Accept = exports.ButtonText = exports.Choices = exports.Required = exports.Wrap = exports.DefaultValue = exports.Placeholder = exports.Label = exports.AddToForm = undefined;
 
-var _preact = require("preact");
+var _preact = require('preact');
 
 function AddToForm(props) {
     return (0, _preact.h)(
-        "div",
-        { "class": "hf-small-margin" },
+        'div',
+        { 'class': 'hf-small-margin' },
         (0, _preact.h)(
-            "button",
-            { "class": "button", type: "button", onClick: props.onSubmit },
-            "Add field to form"
+            'button',
+            { 'class': 'button', type: 'button', onClick: props.onSubmit },
+            'Add field to form'
         ),
-        " \xA0 ",
+        ' \xA0 ',
         (0, _preact.h)(
-            "a",
-            { href: "javascript:void(0);", "class": "hf-small", style: "vertical-align: middle;", onClick: props.onCancel },
-            "or close field helper"
+            'a',
+            { href: 'javascript:void(0);', 'class': 'hf-small', style: 'vertical-align: middle;', onClick: props.onCancel },
+            'or close field helper'
         )
     );
 }
 
 function Label(props) {
     return (0, _preact.h)(
-        "div",
-        { "class": "hf-small-margin" },
+        'div',
+        { 'class': 'hf-small-margin' },
         (0, _preact.h)(
-            "label",
-            { "for": "hf-fg-field-label" },
-            "Field label ",
+            'label',
+            { 'for': 'hf-fg-field-label' },
+            'Field label ',
             (0, _preact.h)(
-                "span",
-                { "class": "hf-required" },
-                "*"
+                'span',
+                { 'class': 'hf-required' },
+                '*'
             )
         ),
-        (0, _preact.h)("input", { id: "hf-fg-field-label", type: "text", value: props.value, onChange: props.onChange })
+        (0, _preact.h)('input', { id: 'hf-fg-field-label', type: 'text', value: props.value, onChange: props.onChange })
     );
 }
 
 function Placeholder(props) {
     return (0, _preact.h)(
-        "div",
-        { "class": "hf-small-margin" },
+        'div',
+        { 'class': 'hf-small-margin' },
         (0, _preact.h)(
-            "label",
-            { "for": "hf-fg-placeholder" },
-            "Placeholder ",
+            'label',
+            { 'for': 'hf-fg-placeholder' },
+            'Placeholder ',
             (0, _preact.h)(
-                "span",
-                { "class": "hf-italic hf-pull-right" },
-                "Optional"
+                'span',
+                { 'class': 'hf-italic hf-pull-right' },
+                'Optional'
             )
         ),
-        (0, _preact.h)("input", { id: "hf-fg-placeholder", type: "text", value: props.value, onChange: props.onChange }),
+        (0, _preact.h)('input', { id: 'hf-fg-placeholder', type: 'text', value: props.value, onChange: props.onChange }),
         (0, _preact.h)(
-            "p",
-            { "class": "help" },
-            "Text to show when field has no value."
+            'p',
+            { 'class': 'help' },
+            'Text to show when field has no value.'
         )
     );
 }
 
 function ButtonText(props) {
     return (0, _preact.h)(
-        "div",
-        { "class": "hf-small-margin" },
+        'div',
+        { 'class': 'hf-small-margin' },
         (0, _preact.h)(
-            "label",
-            { "for": "hf-fg-default-value" },
-            "Button text ",
+            'label',
+            { 'for': 'hf-fg-default-value' },
+            'Button text ',
             (0, _preact.h)(
-                "span",
-                { "class": "hf-required" },
-                "*"
+                'span',
+                { 'class': 'hf-required' },
+                '*'
             )
         ),
-        (0, _preact.h)("input", { id: "hf-fg-default-value", type: "text", value: props.value, onChange: props.onChange }),
+        (0, _preact.h)('input', { id: 'hf-fg-default-value', type: 'text', value: props.value, onChange: props.onChange }),
         (0, _preact.h)(
-            "p",
-            { "class": "help" },
-            "Text to show on the button."
+            'p',
+            { 'class': 'help' },
+            'Text to show on the button.'
         )
     );
 }
 
 function DefaultValue(props) {
     return (0, _preact.h)(
-        "div",
-        { "class": "hf-small-margin" },
+        'div',
+        { 'class': 'hf-small-margin' },
         (0, _preact.h)(
-            "label",
-            { "for": "hf-fg-default-value" },
-            "Default value ",
+            'label',
+            { 'for': 'hf-fg-default-value' },
+            'Default value ',
             (0, _preact.h)(
-                "span",
-                { "class": "hf-italic hf-pull-right" },
-                "Optional"
+                'span',
+                { 'class': 'hf-italic hf-pull-right' },
+                'Optional'
             )
         ),
-        (0, _preact.h)("input", { id: "hf-fg-default-value", type: "text", value: props.value, onChange: props.onChange }),
+        (0, _preact.h)('input', { id: 'hf-fg-default-value', type: 'text', value: props.value, onChange: props.onChange }),
         (0, _preact.h)(
-            "p",
-            { "class": "help" },
-            "Text to pre-fill this field with."
+            'p',
+            { 'class': 'help' },
+            'Text to pre-fill this field with.'
         )
     );
 }
 
 function Wrap(props) {
     return (0, _preact.h)(
-        "div",
-        { "class": "hf-small-margin" },
+        'div',
+        { 'class': 'hf-small-margin' },
         (0, _preact.h)(
-            "label",
-            { "class": "inline" },
-            (0, _preact.h)("input", { type: "checkbox", value: "1", defaultChecked: props.checked, onChange: props.onChange }),
-            "Wrap this field in paragraph tags."
+            'label',
+            { 'class': 'inline' },
+            (0, _preact.h)('input', { type: 'checkbox', value: '1', defaultChecked: props.checked, onChange: props.onChange }),
+            'Wrap this field in paragraph tags.'
         )
     );
 }
 
 function Required(props) {
     return (0, _preact.h)(
-        "div",
-        { "class": "hf-small-margin" },
+        'div',
+        { 'class': 'hf-small-margin' },
         (0, _preact.h)(
-            "label",
-            { "class": "inline" },
-            (0, _preact.h)("input", { type: "checkbox", value: "1", defaultChecked: props.checked, onChange: props.onChange }),
-            "This field is required."
+            'label',
+            { 'class': 'inline' },
+            (0, _preact.h)('input', { type: 'checkbox', value: '1', defaultChecked: props.checked, onChange: props.onChange }),
+            'This field is required.'
         )
     );
 }
@@ -556,32 +587,58 @@ function Required(props) {
 function Choices(props) {
     var choiceFields = props.choices.map(function (choice, k) {
         return (0, _preact.h)(
-            "div",
-            { "data-key": k },
-            (0, _preact.h)("input", { type: props.multiple ? "checkbox" : "radio", name: "selected", defaultChecked: choice.checked, onChange: props.handlers.toggleChecked, title: "Pre-select this choice?" }),
-            (0, _preact.h)("input", { type: "text", value: choice.label, placeholder: "Choice label", style: "width: 80%;", onChange: props.handlers.changeLabel }),
+            'div',
+            { 'data-key': k },
+            (0, _preact.h)('input', { type: props.multiple ? "checkbox" : "radio", name: 'selected', defaultChecked: choice.checked, onChange: props.handlers.toggleChecked, title: 'Pre-select this choice?' }),
+            (0, _preact.h)('input', { type: 'text', value: choice.label, placeholder: 'Choice label', style: 'width: 80%;', onChange: props.handlers.changeLabel }),
             (0, _preact.h)(
-                "a",
-                { href: "javascript:void(0);", onClick: props.handlers.delete, style: "text-decoration: none;", title: "Delete choice" },
-                "\u2715"
+                'a',
+                { href: 'javascript:void(0);', onClick: props.handlers.delete, style: 'text-decoration: none;', title: 'Delete choice' },
+                '\u2715'
             )
         );
     });
 
     return (0, _preact.h)(
-        "div",
-        { "class": "hf-small-margin" },
+        'div',
+        { 'class': 'hf-small-margin' },
         (0, _preact.h)(
-            "label",
+            'label',
             null,
-            "Choices"
+            'Choices'
         ),
         choiceFields,
-        (0, _preact.h)("input", { type: props.multiple ? "checkbox" : "radio", style: "visibility: hidden;" }),
+        (0, _preact.h)('input', { type: props.multiple ? "checkbox" : "radio", style: 'visibility: hidden;' }),
         (0, _preact.h)(
-            "a",
-            { href: "javascript:void(0);", onClick: props.handlers.add },
-            "Add choice"
+            'a',
+            { href: 'javascript:void(0);', onClick: props.handlers.add },
+            'Add choice'
+        )
+    );
+}
+
+function Accept(props) {
+    return (0, _preact.h)(
+        'div',
+        { 'class': 'hf-small-margin' },
+        (0, _preact.h)(
+            'label',
+            null,
+            'Accepted file types'
+        ),
+        (0, _preact.h)('input', { type: 'text', value: props.value, onChange: props.onChange }),
+        (0, _preact.h)(
+            'p',
+            { 'class': 'help' },
+            'Use a comma-separated list of accepted file extensions, eg ',
+            (0, _preact.h)(
+                'code',
+                null,
+                '.pdf'
+            ),
+            '. ',
+            (0, _preact.h)('br', null),
+            'Leave empty to accept any file type.'
         )
     );
 }
@@ -594,18 +651,58 @@ exports.Wrap = Wrap;
 exports.Required = Required;
 exports.Choices = Choices;
 exports.ButtonText = ButtonText;
+exports.Accept = Accept;
 
-},{"preact":21}],5:[function(require,module,exports){
+},{"preact":22}],6:[function(require,module,exports){
+'use strict';
+
+// imports
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
+var _preact = require('preact');
+
+var _fieldBuilder = require('./components/field-builder.js');
+
+// vars
+var rootElement = void 0;
+var Editor = void 0;
+var fields = void 0;
+
+// functions
+function Field(key, label, configRows) {
+    this.key = key;
+    this.label = label;
+    this.configRows = configRows || [];
+}
+
+function mount() {
+    rootElement = (0, _preact.render)((0, _preact.h)(_fieldBuilder.FieldBuilder, { fields: fields }), document.getElementById('hf-field-builder'), rootElement);
+}
+
+// bootstrap
+fields = [new Field("text", "Text", ["label", "placeholder", "default-value", "required", "wrap", "add-to-form"]), new Field("email", "Email", ["label", "placeholder", "default-value", "required", "wrap", "add-to-form"]), new Field("url", "URL", ["label", "placeholder", "default-value", "required", "wrap", "add-to-form"]), new Field("number", "Number", ["label", "placeholder", "default-value", "required", "wrap", "add-to-form"]), new Field("date", "Date", ["label", "default-value", "required", "wrap", "add-to-form"]), new Field("textarea", "Textarea", ["label", "placeholder", "default-value", "required", "wrap", "add-to-form"]), new Field("dropdown", "Dropdown", ["label", "choices", "required", "wrap", "add-to-form"]), new Field("checkbox", "Checkboxes", ["label", "choices", "wrap", "add-to-form"]), new Field("radio", "Radio buttons", ["label", "choices", "wrap", "add-to-form"]), new Field("submit", "Submit button", ["button-text", "wrap", "add-to-form"])];
+
+exports.default = {
+    init: function init() {
+        mount();
+    },
+
+    registerField: function registerField(key, label, configRows) {
+        fields.push(new Field(key, label, configRows));
+        mount();
+    }
+};
+
+},{"./components/field-builder.js":3,"preact":22}],7:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
     value: true
 });
 exports.htmlgenerate = undefined;
-
-var _html = require('html');
-
-var _html2 = _interopRequireDefault(_html);
 
 var _preactRenderToString = require('preact-render-to-string');
 
@@ -616,7 +713,11 @@ var _preact = require('preact');
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function htmlgenerate(conf) {
-    var label = conf.fieldLabel.length && conf.fieldType !== 'submit' ? (0, _preact.h)("label", {}, conf.fieldLabel) : "";
+    var fieldName = namify(conf.fieldLabel);
+    var fieldId = conf.formSlug + '-' + fieldName;
+    var label = conf.fieldLabel.length && conf.fieldType !== 'submit' ? (0, _preact.h)("label", {
+        "for": fieldId
+    }, conf.fieldLabel) : "";
     var fieldAttr = void 0,
         field = void 0;
 
@@ -625,53 +726,71 @@ function htmlgenerate(conf) {
         default:
             fieldAttr = {
                 type: conf.fieldType,
-                name: namify(conf.fieldLabel),
+                name: fieldName,
                 value: conf.value,
                 placeholder: conf.placeholder,
-                required: conf.required
+                required: conf.required,
+                id: fieldId
             };
             field = html("input", fieldAttr);
             break;
         case "textarea":
             fieldAttr = {
-                name: namify(conf.fieldLabel),
+                name: fieldName,
                 placeholder: conf.placeholder,
-                required: conf.required
+                required: conf.required,
+                id: fieldId
             };
             field = html("textarea", fieldAttr, conf.value);
             break;
 
         case "dropdown":
             fieldAttr = {
-                name: namify(conf.fieldLabel),
-                required: conf.required
+                name: fieldName,
+                required: conf.required,
+                id: fieldId
             };
             var opts = conf.choices.map(function (choice) {
-                return html("option", { defaultChecked: choice.checked }, choice.label);
+                return html("option", { selected: choice.checked }, choice.label);
             });
             field = html("select", fieldAttr, opts);
             break;
 
-        case "radio-buttons":
+        case "radio":
             field = conf.choices.map(function (choice) {
                 return html("label", {}, [html("input", {
                     type: "radio",
-                    name: namify(conf.fieldLabel),
+                    name: fieldName,
                     value: choice.label,
                     selected: choice.checked
                 }), " ", html("span", {}, choice.label)]);
             });
             break;
 
-        case "checkboxes":
+        case "checkbox":
             field = conf.choices.map(function (choice) {
                 return html("label", {}, [html("input", {
                     type: "checkbox",
-                    name: namify(conf.fieldLabel) + "[]",
+                    name: fieldName + "[]",
                     value: choice.label,
                     checked: choice.checked
                 }), " ", html("span", {}, choice.label)]);
             });
+            break;
+
+        case "file":
+            fieldAttr = {
+                type: "file",
+                name: fieldName,
+                required: conf.required,
+                id: fieldId
+            };
+
+            if (conf['accept']) {
+                fieldAttr['accept'] = conf['accept'];
+            }
+
+            field = html("input", fieldAttr);
             break;
 
         case "submit":
@@ -687,13 +806,12 @@ function htmlgenerate(conf) {
     var str = "";
     if (conf.wrap) {
         var tmpl = (0, _preact.h)("p", {}, [label, field]);
-        str = (0, _preactRenderToString2.default)(tmpl);
+        str = (0, _preactRenderToString2.default)(tmpl, null, { pretty: true });
     } else {
-        str += (0, _preactRenderToString2.default)(label);
-        str += (0, _preactRenderToString2.default)(field);
+        str += (0, _preactRenderToString2.default)(label, null, { pretty: true });
+        str += "\n";
+        str += (0, _preactRenderToString2.default)(field, null, { pretty: true });
     }
-
-    str = _html2.default.prettyPrint(str);
 
     return str;
 }
@@ -718,7 +836,7 @@ function filterEmptyObjectValues(obj) {
 
 exports.htmlgenerate = htmlgenerate;
 
-},{"html":18,"preact":21,"preact-render-to-string":20}],6:[function(require,module,exports){
+},{"preact":22,"preact-render-to-string":21}],8:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -816,11 +934,9 @@ function createToggleActionHandler(wrap, content) {
     };
 }
 
-exports.default = {
-    'init': init
-};
+exports.default = { init: init };
 
-},{}],7:[function(require,module,exports){
+},{}],9:[function(require,module,exports){
 'use strict';
 
 // load CodeMirror & plugins
@@ -992,11 +1108,11 @@ function uniq(a) {
 }
 
 exports.default = {
-    'init': init,
-    'replaceSelection': replaceSelection
+    init: init,
+    replaceSelection: replaceSelection
 };
 
-},{"codemirror":12,"codemirror/addon/edit/closetag.js":9,"codemirror/addon/edit/matchtags":10,"codemirror/addon/fold/xml-fold":11,"codemirror/mode/css/css":13,"codemirror/mode/htmlmixed/htmlmixed":14,"codemirror/mode/javascript/javascript":15,"codemirror/mode/xml/xml":16}],8:[function(require,module,exports){
+},{"codemirror":14,"codemirror/addon/edit/closetag.js":11,"codemirror/addon/edit/matchtags":12,"codemirror/addon/fold/xml-fold":13,"codemirror/mode/css/css":15,"codemirror/mode/htmlmixed/htmlmixed":16,"codemirror/mode/javascript/javascript":17,"codemirror/mode/xml/xml":18}],10:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -1004,17 +1120,16 @@ Object.defineProperty(exports, "__esModule", {
 });
 var tabs = void 0,
     tabNavs = void 0;
-var Tabs = {};
 
-Tabs.init = function () {
+function init() {
     tabs = document.querySelectorAll('.hf-tab');
     tabNavs = document.querySelectorAll('#hf-tabs-nav a');
     for (var i = 0; i < tabNavs.length; i++) {
-        tabNavs[i].addEventListener('click', Tabs.open);
+        tabNavs[i].addEventListener('click', open);
     }
 };
 
-Tabs.open = function (e) {
+function open(e) {
     var tabTarget = this.getAttribute('data-tab-target');
     for (var i = 0; i < tabNavs.length; i++) {
         tabNavs[i].classList.toggle('nav-tab-active', tabNavs[i] === this);
@@ -1039,9 +1154,12 @@ Tabs.open = function (e) {
     e.preventDefault();
 };
 
-exports.default = Tabs;
+exports.default = {
+    init: init,
+    open: open
+};
 
-},{}],9:[function(require,module,exports){
+},{}],11:[function(require,module,exports){
 // CodeMirror, copyright (c) by Marijn Haverbeke and others
 // Distributed under an MIT license: http://codemirror.net/LICENSE
 
@@ -1218,7 +1336,7 @@ exports.default = Tabs;
   }
 });
 
-},{"../../lib/codemirror":12,"../fold/xml-fold":11}],10:[function(require,module,exports){
+},{"../../lib/codemirror":14,"../fold/xml-fold":13}],12:[function(require,module,exports){
 // CodeMirror, copyright (c) by Marijn Haverbeke and others
 // Distributed under an MIT license: http://codemirror.net/LICENSE
 
@@ -1286,7 +1404,7 @@ exports.default = Tabs;
   };
 });
 
-},{"../../lib/codemirror":12,"../fold/xml-fold":11}],11:[function(require,module,exports){
+},{"../../lib/codemirror":14,"../fold/xml-fold":13}],13:[function(require,module,exports){
 // CodeMirror, copyright (c) by Marijn Haverbeke and others
 // Distributed under an MIT license: http://codemirror.net/LICENSE
 
@@ -1426,12 +1544,14 @@ exports.default = Tabs;
   CodeMirror.registerHelper("fold", "xml", function(cm, start) {
     var iter = new Iter(cm, start.line, 0);
     for (;;) {
-      var openTag = toNextTag(iter), end;
-      if (!openTag || !(end = toTagEnd(iter)) || iter.line != start.line) return;
+      var openTag = toNextTag(iter)
+      if (!openTag || iter.line != start.line) return
+      var end = toTagEnd(iter)
+      if (!end) return
       if (!openTag[1] && end != "selfClose") {
         var startPos = Pos(iter.line, iter.ch);
         var endPos = findMatchingClose(iter, openTag[2]);
-        return endPos && {from: startPos, to: endPos.from};
+        return endPos && cmp(endPos.from, startPos) > 0 ? {from: startPos, to: endPos.from} : null
       }
     }
   });
@@ -1470,7 +1590,7 @@ exports.default = Tabs;
   };
 });
 
-},{"../../lib/codemirror":12}],12:[function(require,module,exports){
+},{"../../lib/codemirror":14}],14:[function(require,module,exports){
 // CodeMirror, copyright (c) by Marijn Haverbeke and others
 // Distributed under an MIT license: http://codemirror.net/LICENSE
 
@@ -2218,6 +2338,16 @@ function collapsedSpanAtSide(line, start) {
 }
 function collapsedSpanAtStart(line) { return collapsedSpanAtSide(line, true) }
 function collapsedSpanAtEnd(line) { return collapsedSpanAtSide(line, false) }
+
+function collapsedSpanAround(line, ch) {
+  var sps = sawCollapsedSpans && line.markedSpans, found;
+  if (sps) { for (var i = 0; i < sps.length; ++i) {
+    var sp = sps[i];
+    if (sp.marker.collapsed && (sp.from == null || sp.from < ch) && (sp.to == null || sp.to > ch) &&
+        (!found || compareCollapsedMarkers(found, sp.marker) < 0)) { found = sp.marker; }
+  } }
+  return found
+}
 
 // Test whether there exists a collapsed span that partially
 // overlaps (covers the start or end, but not both) of a new span.
@@ -4253,12 +4383,11 @@ function coordsChar(cm, x, y) {
   var lineObj = getLine(doc, lineN);
   for (;;) {
     var found = coordsCharInner(cm, lineObj, lineN, x, y);
-    var merged = collapsedSpanAtEnd(lineObj);
-    var mergedPos = merged && merged.find(0, true);
-    if (merged && (found.ch > mergedPos.from.ch || found.ch == mergedPos.from.ch && found.xRel > 0))
-      { lineN = lineNo(lineObj = mergedPos.to.line); }
-    else
-      { return found }
+    var collapsed = collapsedSpanAround(lineObj, found.ch + (found.xRel > 0 ? 1 : 0));
+    if (!collapsed) { return found }
+    var rangeEnd = collapsed.find(1);
+    if (rangeEnd.line == lineN) { return rangeEnd }
+    lineObj = getLine(doc, lineN = rangeEnd.line);
   }
 }
 
@@ -5018,6 +5147,7 @@ var NativeScrollbars = function(place, scroll, cm) {
   this.cm = cm;
   var vert = this.vert = elt("div", [elt("div", null, null, "min-width: 1px")], "CodeMirror-vscrollbar");
   var horiz = this.horiz = elt("div", [elt("div", null, null, "height: 100%; min-height: 1px")], "CodeMirror-hscrollbar");
+  vert.tabIndex = horiz.tabIndex = -1;
   place(vert); place(horiz);
 
   on(vert, "scroll", function () {
@@ -6269,7 +6399,7 @@ function addChangeToHistory(doc, change, selAfter, opId) {
 
   if ((hist.lastOp == opId ||
        hist.lastOrigin == change.origin && change.origin &&
-       ((change.origin.charAt(0) == "+" && doc.cm && hist.lastModTime > time - doc.cm.options.historyEventDelay) ||
+       ((change.origin.charAt(0) == "+" && hist.lastModTime > time - (doc.cm ? doc.cm.options.historyEventDelay : 500)) ||
         change.origin.charAt(0) == "*")) &&
       (cur = lastChangeEvent(hist, hist.lastOp == opId))) {
     // Merge this change into the last event
@@ -6883,7 +7013,7 @@ function makeChangeSingleDocInEditor(cm, change, spans) {
 function replaceRange(doc, code, from, to, origin) {
   if (!to) { to = from; }
   if (cmp(to, from) < 0) { var assign;
-    (assign = [to, from], from = assign[0], to = assign[1], assign); }
+    (assign = [to, from], from = assign[0], to = assign[1]); }
   if (typeof code == "string") { code = doc.splitLines(code); }
   makeChange(doc, {from: from, to: to, text: code, origin: origin});
 }
@@ -6979,10 +7109,10 @@ function LeafChunk(lines) {
 }
 
 LeafChunk.prototype = {
-  chunkSize: function chunkSize() { return this.lines.length },
+  chunkSize: function() { return this.lines.length },
 
   // Remove the n lines at offset 'at'.
-  removeInner: function removeInner(at, n) {
+  removeInner: function(at, n) {
     var this$1 = this;
 
     for (var i = at, e = at + n; i < e; ++i) {
@@ -6995,13 +7125,13 @@ LeafChunk.prototype = {
   },
 
   // Helper used to collapse a small branch into a single leaf.
-  collapse: function collapse(lines) {
+  collapse: function(lines) {
     lines.push.apply(lines, this.lines);
   },
 
   // Insert the given array of lines at offset 'at', count them as
   // having the given height.
-  insertInner: function insertInner(at, lines, height) {
+  insertInner: function(at, lines, height) {
     var this$1 = this;
 
     this.height += height;
@@ -7010,7 +7140,7 @@ LeafChunk.prototype = {
   },
 
   // Used to iterate over a part of the tree.
-  iterN: function iterN(at, n, op) {
+  iterN: function(at, n, op) {
     var this$1 = this;
 
     for (var e = at + n; at < e; ++at)
@@ -7034,9 +7164,9 @@ function BranchChunk(children) {
 }
 
 BranchChunk.prototype = {
-  chunkSize: function chunkSize() { return this.size },
+  chunkSize: function() { return this.size },
 
-  removeInner: function removeInner(at, n) {
+  removeInner: function(at, n) {
     var this$1 = this;
 
     this.size -= n;
@@ -7062,13 +7192,13 @@ BranchChunk.prototype = {
     }
   },
 
-  collapse: function collapse(lines) {
+  collapse: function(lines) {
     var this$1 = this;
 
     for (var i = 0; i < this.children.length; ++i) { this$1.children[i].collapse(lines); }
   },
 
-  insertInner: function insertInner(at, lines, height) {
+  insertInner: function(at, lines, height) {
     var this$1 = this;
 
     this.size += lines.length;
@@ -7097,7 +7227,7 @@ BranchChunk.prototype = {
   },
 
   // When a node has grown, check whether it should be split.
-  maybeSpill: function maybeSpill() {
+  maybeSpill: function() {
     if (this.children.length <= 10) { return }
     var me = this;
     do {
@@ -7119,7 +7249,7 @@ BranchChunk.prototype = {
     me.parent.maybeSpill();
   },
 
-  iterN: function iterN(at, n, op) {
+  iterN: function(at, n, op) {
     var this$1 = this;
 
     for (var i = 0; i < this.children.length; ++i) {
@@ -7170,7 +7300,7 @@ LineWidget.prototype.changed = function () {
   this.height = null;
   var diff = widgetHeight(this) - oldH;
   if (!diff) { return }
-  updateLineHeight(line, line.height + diff);
+  if (!lineIsHidden(this.doc, line)) { updateLineHeight(line, line.height + diff); }
   if (cm) {
     runInOp(cm, function () {
       cm.curOp.forceUpdate = true;
@@ -8052,8 +8182,6 @@ function registerGlobalHandlers() {
 // Called when the window resizes
 function onResize(cm) {
   var d = cm.display;
-  if (d.lastWrapHeight == d.wrapper.clientHeight && d.lastWrapWidth == d.wrapper.clientWidth)
-    { return }
   // Might be a text scaling operation, clear size caches.
   d.cachedCharWidth = d.cachedTextHeight = d.cachedPaddingH = null;
   d.scrollbarsClipped = false;
@@ -8099,7 +8227,7 @@ keyMap.pcDefault = {
   "Ctrl-G": "findNext", "Shift-Ctrl-G": "findPrev", "Shift-Ctrl-F": "replace", "Shift-Ctrl-R": "replaceAll",
   "Ctrl-[": "indentLess", "Ctrl-]": "indentMore",
   "Ctrl-U": "undoSelection", "Shift-Ctrl-U": "redoSelection", "Alt-U": "redoSelection",
-  fallthrough: "basic"
+  "fallthrough": "basic"
 };
 // Very basic readline/emacs-style bindings, which are standard on Mac.
 keyMap.emacsy = {
@@ -8117,7 +8245,7 @@ keyMap.macDefault = {
   "Cmd-G": "findNext", "Shift-Cmd-G": "findPrev", "Cmd-Alt-F": "replace", "Shift-Cmd-Alt-F": "replaceAll",
   "Cmd-[": "indentLess", "Cmd-]": "indentMore", "Cmd-Backspace": "delWrappedLineLeft", "Cmd-Delete": "delWrappedLineRight",
   "Cmd-U": "undoSelection", "Shift-Cmd-U": "redoSelection", "Ctrl-Up": "goDocStart", "Ctrl-Down": "goDocEnd",
-  fallthrough: ["basic", "emacsy"]
+  "fallthrough": ["basic", "emacsy"]
 };
 keyMap["default"] = mac ? keyMap.macDefault : keyMap.pcDefault;
 
@@ -8797,8 +8925,8 @@ function leftButtonStartDrag(cm, event, pos, behavior) {
   var dragEnd = operation(cm, function (e) {
     if (webkit) { display.scroller.draggable = false; }
     cm.state.draggingText = false;
-    off(document, "mouseup", dragEnd);
-    off(document, "mousemove", mouseMove);
+    off(display.wrapper.ownerDocument, "mouseup", dragEnd);
+    off(display.wrapper.ownerDocument, "mousemove", mouseMove);
     off(display.scroller, "dragstart", dragStart);
     off(display.scroller, "drop", dragEnd);
     if (!moved) {
@@ -8807,7 +8935,7 @@ function leftButtonStartDrag(cm, event, pos, behavior) {
         { extendSelection(cm.doc, pos, null, null, behavior.extend); }
       // Work around unexplainable focus problem in IE9 (#2127) and Chrome (#3081)
       if (webkit || ie && ie_version == 9)
-        { setTimeout(function () {document.body.focus(); display.input.focus();}, 20); }
+        { setTimeout(function () {display.wrapper.ownerDocument.body.focus(); display.input.focus();}, 20); }
       else
         { display.input.focus(); }
     }
@@ -8822,8 +8950,8 @@ function leftButtonStartDrag(cm, event, pos, behavior) {
   dragEnd.copy = !behavior.moveOnDrag;
   // IE's approach to draggable
   if (display.scroller.dragDrop) { display.scroller.dragDrop(); }
-  on(document, "mouseup", dragEnd);
-  on(document, "mousemove", mouseMove);
+  on(display.wrapper.ownerDocument, "mouseup", dragEnd);
+  on(display.wrapper.ownerDocument, "mousemove", mouseMove);
   on(display.scroller, "dragstart", dragStart);
   on(display.scroller, "drop", dragEnd);
 
@@ -8955,19 +9083,19 @@ function leftButtonSelect(cm, event, start, behavior) {
     counter = Infinity;
     e_preventDefault(e);
     display.input.focus();
-    off(document, "mousemove", move);
-    off(document, "mouseup", up);
+    off(display.wrapper.ownerDocument, "mousemove", move);
+    off(display.wrapper.ownerDocument, "mouseup", up);
     doc.history.lastSelOrigin = null;
   }
 
   var move = operation(cm, function (e) {
-    if (!e_button(e)) { done(e); }
+    if (e.buttons === 0 || !e_button(e)) { done(e); }
     else { extend(e); }
   });
   var up = operation(cm, done);
   cm.state.selectingText = up;
-  on(document, "mousemove", move);
-  on(document, "mouseup", up);
+  on(display.wrapper.ownerDocument, "mousemove", move);
+  on(display.wrapper.ownerDocument, "mouseup", up);
 }
 
 // Used when mouse-selecting to adjust the anchor to the proper side
@@ -9250,6 +9378,7 @@ function CodeMirror$1(place, options) {
 
   var doc = options.value;
   if (typeof doc == "string") { doc = new Doc(doc, options.mode, null, options.lineSeparator, options.direction); }
+  else if (options.mode) { doc.modeOption = options.mode; }
   this.doc = doc;
 
   var input = new CodeMirror$1.inputStyles[options.inputStyle](this);
@@ -10240,8 +10369,12 @@ ContentEditableInput.prototype.showSelection = function (info, takeFocus) {
   this.showMultipleSelections(info);
 };
 
+ContentEditableInput.prototype.getSelection = function () {
+  return this.cm.display.wrapper.ownerDocument.getSelection()
+};
+
 ContentEditableInput.prototype.showPrimarySelection = function () {
-  var sel = window.getSelection(), cm = this.cm, prim = cm.doc.sel.primary();
+  var sel = this.getSelection(), cm = this.cm, prim = cm.doc.sel.primary();
   var from = prim.from(), to = prim.to();
 
   if (cm.display.viewTo == cm.display.viewFrom || from.line >= cm.display.viewTo || to.line < cm.display.viewFrom) {
@@ -10308,13 +10441,13 @@ ContentEditableInput.prototype.showMultipleSelections = function (info) {
 };
 
 ContentEditableInput.prototype.rememberSelection = function () {
-  var sel = window.getSelection();
+  var sel = this.getSelection();
   this.lastAnchorNode = sel.anchorNode; this.lastAnchorOffset = sel.anchorOffset;
   this.lastFocusNode = sel.focusNode; this.lastFocusOffset = sel.focusOffset;
 };
 
 ContentEditableInput.prototype.selectionInEditor = function () {
-  var sel = window.getSelection();
+  var sel = this.getSelection();
   if (!sel.rangeCount) { return false }
   var node = sel.getRangeAt(0).commonAncestorContainer;
   return contains(this.div, node)
@@ -10349,14 +10482,14 @@ ContentEditableInput.prototype.receivedFocus = function () {
 };
 
 ContentEditableInput.prototype.selectionChanged = function () {
-  var sel = window.getSelection();
+  var sel = this.getSelection();
   return sel.anchorNode != this.lastAnchorNode || sel.anchorOffset != this.lastAnchorOffset ||
     sel.focusNode != this.lastFocusNode || sel.focusOffset != this.lastFocusOffset
 };
 
 ContentEditableInput.prototype.pollSelection = function () {
   if (this.readDOMTimeout != null || this.gracePeriod || !this.selectionChanged()) { return }
-  var sel = window.getSelection(), cm = this.cm;
+  var sel = this.getSelection(), cm = this.cm;
   // On Android Chrome (version 56, at least), backspacing into an
   // uneditable block element will put the cursor in that element,
   // and then, because it's not editable, hide the virtual keyboard.
@@ -10490,7 +10623,7 @@ ContentEditableInput.prototype.setUneditable = function (node) {
 };
 
 ContentEditableInput.prototype.onKeyPress = function (e) {
-  if (e.charCode == 0) { return }
+  if (e.charCode == 0 || this.composing) { return }
   e.preventDefault();
   if (!this.cm.isReadOnly())
     { operation(this.cm, applyTextInput)(this.cm, String.fromCharCode(e.charCode == null ? e.keyCode : e.charCode), 0); }
@@ -10530,12 +10663,13 @@ function isInGutter(node) {
 function badPos(pos, bad) { if (bad) { pos.bad = true; } return pos }
 
 function domTextBetween(cm, from, to, fromLine, toLine) {
-  var text = "", closing = false, lineSep = cm.doc.lineSeparator();
+  var text = "", closing = false, lineSep = cm.doc.lineSeparator(), extraLinebreak = false;
   function recognizeMarker(id) { return function (marker) { return marker.id == id; } }
   function close() {
     if (closing) {
       text += lineSep;
-      closing = false;
+      if (extraLinebreak) { text += lineSep; }
+      closing = extraLinebreak = false;
     }
   }
   function addText(str) {
@@ -10547,8 +10681,8 @@ function domTextBetween(cm, from, to, fromLine, toLine) {
   function walk(node) {
     if (node.nodeType == 1) {
       var cmText = node.getAttribute("cm-text");
-      if (cmText != null) {
-        addText(cmText || node.textContent.replace(/\u200b/g, ""));
+      if (cmText) {
+        addText(cmText);
         return
       }
       var markerID = node.getAttribute("cm-marker"), range$$1;
@@ -10559,19 +10693,24 @@ function domTextBetween(cm, from, to, fromLine, toLine) {
         return
       }
       if (node.getAttribute("contenteditable") == "false") { return }
-      var isBlock = /^(pre|div|p)$/i.test(node.nodeName);
+      var isBlock = /^(pre|div|p|li|table|br)$/i.test(node.nodeName);
+      if (!/^br$/i.test(node.nodeName) && node.textContent.length == 0) { return }
+
       if (isBlock) { close(); }
       for (var i = 0; i < node.childNodes.length; i++)
         { walk(node.childNodes[i]); }
+
+      if (/^(pre|p)$/i.test(node.nodeName)) { extraLinebreak = true; }
       if (isBlock) { closing = true; }
     } else if (node.nodeType == 3) {
-      addText(node.nodeValue);
+      addText(node.nodeValue.replace(/\u200b/g, "").replace(/\u00a0/g, " "));
     }
   }
   for (;;) {
     walk(from);
     if (from == to) { break }
     from = from.nextSibling;
+    extraLinebreak = false;
   }
   return text
 }
@@ -10672,13 +10811,10 @@ TextareaInput.prototype.init = function (display) {
     var this$1 = this;
 
   var input = this, cm = this.cm;
+  this.createField(display);
+  var te = this.textarea;
 
-  // Wraps and hides input textarea
-  var div = this.wrapper = hiddenTextarea();
-  // The semihidden textarea that is focused when the editor is
-  // focused, and receives input.
-  var te = this.textarea = div.firstChild;
-  display.wrapper.insertBefore(div, display.wrapper.firstChild);
+  display.wrapper.insertBefore(this.wrapper, display.wrapper.firstChild);
 
   // Needed to hide big blue blinking cursor on Mobile Safari (doesn't seem to work in iOS 8 anymore)
   if (ios) { te.style.width = "0px"; }
@@ -10743,6 +10879,14 @@ TextareaInput.prototype.init = function (display) {
       input.composing = null;
     }
   });
+};
+
+TextareaInput.prototype.createField = function (_display) {
+  // Wraps and hides input textarea
+  this.wrapper = hiddenTextarea();
+  // The semihidden textarea that is focused when the editor is
+  // focused, and receives input.
+  this.textarea = this.wrapper.firstChild;
 };
 
 TextareaInput.prototype.prepareSelection = function () {
@@ -11138,13 +11282,13 @@ CodeMirror$1.fromTextArea = fromTextArea;
 
 addLegacyProps(CodeMirror$1);
 
-CodeMirror$1.version = "5.35.0";
+CodeMirror$1.version = "5.39.2";
 
 return CodeMirror$1;
 
 })));
 
-},{}],13:[function(require,module,exports){
+},{}],15:[function(require,module,exports){
 // CodeMirror, copyright (c) by Marijn Haverbeke and others
 // Distributed under an MIT license: http://codemirror.net/LICENSE
 
@@ -11978,7 +12122,7 @@ CodeMirror.defineMode("css", function(config, parserConfig) {
 
 });
 
-},{"../../lib/codemirror":12}],14:[function(require,module,exports){
+},{"../../lib/codemirror":14}],16:[function(require,module,exports){
 // CodeMirror, copyright (c) by Marijn Haverbeke and others
 // Distributed under an MIT license: http://codemirror.net/LICENSE
 
@@ -12132,7 +12276,7 @@ CodeMirror.defineMode("css", function(config, parserConfig) {
   CodeMirror.defineMIME("text/html", "htmlmixed");
 });
 
-},{"../../lib/codemirror":12,"../css/css":13,"../javascript/javascript":15,"../xml/xml":16}],15:[function(require,module,exports){
+},{"../../lib/codemirror":14,"../css/css":15,"../javascript/javascript":17,"../xml/xml":18}],17:[function(require,module,exports){
 // CodeMirror, copyright (c) by Marijn Haverbeke and others
 // Distributed under an MIT license: http://codemirror.net/LICENSE
 
@@ -12210,17 +12354,10 @@ CodeMirror.defineMode("javascript", function(config, parserConfig) {
       return ret(ch);
     } else if (ch == "=" && stream.eat(">")) {
       return ret("=>", "operator");
-    } else if (ch == "0" && stream.eat(/x/i)) {
-      stream.eatWhile(/[\da-f]/i);
-      return ret("number", "number");
-    } else if (ch == "0" && stream.eat(/o/i)) {
-      stream.eatWhile(/[0-7]/i);
-      return ret("number", "number");
-    } else if (ch == "0" && stream.eat(/b/i)) {
-      stream.eatWhile(/[01]/i);
+    } else if (ch == "0" && stream.match(/^(?:x[\da-f]+|o[0-7]+|b[01]+)n?/i)) {
       return ret("number", "number");
     } else if (/\d/.test(ch)) {
-      stream.match(/^\d*(?:\.\d*)?(?:[eE][+\-]?\d+)?/);
+      stream.match(/^\d*(?:n|(?:\.\d*)?(?:[eE][+\-]?\d+)?)?/);
       return ret("number", "number");
     } else if (ch == "/") {
       if (stream.eat("*")) {
@@ -12231,7 +12368,7 @@ CodeMirror.defineMode("javascript", function(config, parserConfig) {
         return ret("comment", "comment");
       } else if (expressionAllowed(stream, state, 1)) {
         readRegexp(stream);
-        stream.match(/^\b(([gimyu])(?![gimyu]*\2))+\b/);
+        stream.match(/^\b(([gimyus])(?![gimyus]*\2))+\b/);
         return ret("regexp", "string-2");
       } else {
         stream.eat("=");
@@ -12261,7 +12398,7 @@ CodeMirror.defineMode("javascript", function(config, parserConfig) {
           var kw = keywords[word]
           return ret(kw.type, kw.style, word)
         }
-        if (word == "async" && stream.match(/^(\s|\/\*.*?\*\/)*[\(\w]/, false))
+        if (word == "async" && stream.match(/^(\s|\/\*.*?\*\/)*[\[\(\w]/, false))
           return ret("async", "keyword", word)
       }
       return ret("variable", "variable", word)
@@ -12400,21 +12537,42 @@ CodeMirror.defineMode("javascript", function(config, parserConfig) {
     pass.apply(null, arguments);
     return true;
   }
+  function inList(name, list) {
+    for (var v = list; v; v = v.next) if (v.name == name) return true
+    return false;
+  }
   function register(varname) {
-    function inList(list) {
-      for (var v = list; v; v = v.next)
-        if (v.name == varname) return true;
-      return false;
-    }
     var state = cx.state;
     cx.marked = "def";
     if (state.context) {
-      if (inList(state.localVars)) return;
-      state.localVars = {name: varname, next: state.localVars};
+      if (state.lexical.info == "var" && state.context && state.context.block) {
+        // FIXME function decls are also not block scoped
+        var newContext = registerVarScoped(varname, state.context)
+        if (newContext != null) {
+          state.context = newContext
+          return
+        }
+      } else if (!inList(varname, state.localVars)) {
+        state.localVars = new Var(varname, state.localVars)
+        return
+      }
+    }
+    // Fall through means this is global
+    if (parserConfig.globalVars && !inList(varname, state.globalVars))
+      state.globalVars = new Var(varname, state.globalVars)
+  }
+  function registerVarScoped(varname, context) {
+    if (!context) {
+      return null
+    } else if (context.block) {
+      var inner = registerVarScoped(varname, context.prev)
+      if (!inner) return null
+      if (inner == context.prev) return context
+      return new Context(inner, context.vars, true)
+    } else if (inList(varname, context.vars)) {
+      return context
     } else {
-      if (inList(state.globalVars)) return;
-      if (parserConfig.globalVars)
-        state.globalVars = {name: varname, next: state.globalVars};
+      return new Context(context.prev, new Var(varname, context.vars), false)
     }
   }
 
@@ -12424,15 +12582,23 @@ CodeMirror.defineMode("javascript", function(config, parserConfig) {
 
   // Combinators
 
-  var defaultVars = {name: "this", next: {name: "arguments"}};
+  function Context(prev, vars, block) { this.prev = prev; this.vars = vars; this.block = block }
+  function Var(name, next) { this.name = name; this.next = next }
+
+  var defaultVars = new Var("this", new Var("arguments", null))
   function pushcontext() {
-    cx.state.context = {prev: cx.state.context, vars: cx.state.localVars};
-    cx.state.localVars = defaultVars;
+    cx.state.context = new Context(cx.state.context, cx.state.localVars, false)
+    cx.state.localVars = defaultVars
+  }
+  function pushblockcontext() {
+    cx.state.context = new Context(cx.state.context, cx.state.localVars, true)
+    cx.state.localVars = null
   }
   function popcontext() {
-    cx.state.localVars = cx.state.context.vars;
-    cx.state.context = cx.state.context.prev;
+    cx.state.localVars = cx.state.context.vars
+    cx.state.context = cx.state.context.prev
   }
+  popcontext.lex = true
   function pushlex(type, info) {
     var result = function() {
       var state = cx.state, indent = state.indented;
@@ -12457,19 +12623,19 @@ CodeMirror.defineMode("javascript", function(config, parserConfig) {
   function expect(wanted) {
     function exp(type) {
       if (type == wanted) return cont();
-      else if (wanted == ";") return pass();
+      else if (wanted == ";" || type == "}" || type == ")" || type == "]") return pass();
       else return cont(exp);
     };
     return exp;
   }
 
   function statement(type, value) {
-    if (type == "var") return cont(pushlex("vardef", value.length), vardef, expect(";"), poplex);
+    if (type == "var") return cont(pushlex("vardef", value), vardef, expect(";"), poplex);
     if (type == "keyword a") return cont(pushlex("form"), parenExpr, statement, poplex);
     if (type == "keyword b") return cont(pushlex("form"), statement, poplex);
     if (type == "keyword d") return cx.stream.match(/^\s*$/, false) ? cont() : cont(pushlex("stat"), maybeexpression, expect(";"), poplex);
     if (type == "debugger") return cont(expect(";"));
-    if (type == "{") return cont(pushlex("}"), block, poplex);
+    if (type == "{") return cont(pushlex("}"), pushblockcontext, block, poplex, popcontext);
     if (type == ";") return cont();
     if (type == "if") {
       if (cx.state.lexical.info == "else" && cx.state.cc[cx.state.cc.length - 1] == poplex)
@@ -12491,21 +12657,26 @@ CodeMirror.defineMode("javascript", function(config, parserConfig) {
       } else if (isTS && value == "namespace") {
         cx.marked = "keyword"
         return cont(pushlex("form"), expression, block, poplex)
+      } else if (isTS && value == "abstract") {
+        cx.marked = "keyword"
+        return cont(statement)
       } else {
         return cont(pushlex("stat"), maybelabel);
       }
     }
-    if (type == "switch") return cont(pushlex("form"), parenExpr, expect("{"), pushlex("}", "switch"),
-                                      block, poplex, poplex);
+    if (type == "switch") return cont(pushlex("form"), parenExpr, expect("{"), pushlex("}", "switch"), pushblockcontext,
+                                      block, poplex, poplex, popcontext);
     if (type == "case") return cont(expression, expect(":"));
     if (type == "default") return cont(expect(":"));
-    if (type == "catch") return cont(pushlex("form"), pushcontext, expect("("), funarg, expect(")"),
-                                     statement, poplex, popcontext);
+    if (type == "catch") return cont(pushlex("form"), pushcontext, maybeCatchBinding, statement, poplex, popcontext);
     if (type == "export") return cont(pushlex("stat"), afterExport, poplex);
     if (type == "import") return cont(pushlex("stat"), afterImport, poplex);
     if (type == "async") return cont(statement)
     if (value == "@") return cont(expression, statement)
     return pass(pushlex("stat"), expression, expect(";"), poplex);
+  }
+  function maybeCatchBinding(type) {
+    if (type == "(") return cont(funarg, expect(")"))
   }
   function expression(type, value) {
     return expressionInner(type, value, false);
@@ -12695,19 +12866,19 @@ CodeMirror.defineMode("javascript", function(config, parserConfig) {
     }
   }
   function typeexpr(type, value) {
+    if (value == "keyof" || value == "typeof") {
+      cx.marked = "keyword"
+      return cont(value == "keyof" ? typeexpr : expressionNoComma)
+    }
     if (type == "variable" || value == "void") {
-      if (value == "keyof") {
-        cx.marked = "keyword"
-        return cont(typeexpr)
-      } else {
-        cx.marked = "type"
-        return cont(afterType)
-      }
+      cx.marked = "type"
+      return cont(afterType)
     }
     if (type == "string" || type == "number" || type == "atom") return cont(afterType);
     if (type == "[") return cont(pushlex("]"), commasep(typeexpr, "]", ","), poplex, afterType)
     if (type == "{") return cont(pushlex("}"), commasep(typeprop, "}", ",;"), poplex, afterType)
     if (type == "(") return cont(commasep(typearg, ")"), maybeReturnType)
+    if (type == "<") return cont(commasep(typeexpr, ">"), typeexpr)
   }
   function maybeReturnType(type) {
     if (type == "=>") return cont(typeexpr)
@@ -12724,9 +12895,10 @@ CodeMirror.defineMode("javascript", function(config, parserConfig) {
       return cont(expression, maybetype, expect("]"), typeprop)
     }
   }
-  function typearg(type) {
-    if (type == "variable") return cont(typearg)
-    else if (type == ":") return cont(typeexpr)
+  function typearg(type, value) {
+    if (type == "variable" && cx.stream.match(/^\s*[?:]/, false) || value == "?") return cont(typearg)
+    if (type == ":") return cont(typeexpr)
+    return pass(typeexpr)
   }
   function afterType(type, value) {
     if (value == "<") return cont(pushlex(">"), commasep(typeexpr, ">"), poplex, afterType)
@@ -12914,7 +13086,7 @@ CodeMirror.defineMode("javascript", function(config, parserConfig) {
         cc: [],
         lexical: new JSLexical((basecolumn || 0) - indentUnit, 0, "block", false),
         localVars: parserConfig.localVars,
-        context: parserConfig.localVars && {vars: parserConfig.localVars},
+        context: parserConfig.localVars && new Context(null, null, false),
         indented: basecolumn || 0
       };
       if (parserConfig.globalVars && typeof parserConfig.globalVars == "object")
@@ -12955,7 +13127,7 @@ CodeMirror.defineMode("javascript", function(config, parserConfig) {
         lexical = lexical.prev;
       var type = lexical.type, closing = firstChar == type;
 
-      if (type == "vardef") return lexical.indented + (state.lastType == "operator" || state.lastType == "," ? lexical.info + 1 : 0);
+      if (type == "vardef") return lexical.indented + (state.lastType == "operator" || state.lastType == "," ? lexical.info.length + 1 : 0);
       else if (type == "form" && firstChar == "{") return lexical.indented;
       else if (type == "form") return lexical.indented + indentUnit;
       else if (type == "stat")
@@ -13002,7 +13174,7 @@ CodeMirror.defineMIME("application/typescript", { name: "javascript", typescript
 
 });
 
-},{"../../lib/codemirror":12}],16:[function(require,module,exports){
+},{"../../lib/codemirror":14}],18:[function(require,module,exports){
 // CodeMirror, copyright (c) by Marijn Haverbeke and others
 // Distributed under an MIT license: http://codemirror.net/LICENSE
 
@@ -13168,8 +13340,9 @@ CodeMirror.defineMode("xml", function(editorConf, config_) {
         stream.next();
       }
       return style;
-    };
+    }
   }
+
   function doctype(depth) {
     return function(stream, state) {
       var ch;
@@ -13405,552 +13578,15 @@ if (!CodeMirror.mimeModes.hasOwnProperty("text/html"))
 
 });
 
-},{"../../lib/codemirror":12}],17:[function(require,module,exports){
+},{"../../lib/codemirror":14}],19:[function(require,module,exports){
 (function(global,factory){if(typeof define === 'function' && define.amd){define(['exports'],factory);}else if(typeof exports !== 'undefined'){factory(exports);}else {var mod={exports:{}};factory(mod.exports);global.decko = mod.exports;}})(this,function(exports){'use strict';exports.__esModule = true;var EMPTY={};var HOP=Object.prototype.hasOwnProperty;var fns={memoize:function memoize(fn){var opt=arguments.length <= 1 || arguments[1] === undefined?EMPTY:arguments[1];var cache=opt.cache || {};return function(){for(var _len=arguments.length,a=Array(_len),_key=0;_key < _len;_key++) {a[_key] = arguments[_key];}var k=String(a[0]);if(opt.caseSensitive === false)k = k.toLowerCase();return HOP.call(cache,k)?cache[k]:cache[k] = fn.apply(this,a);};},debounce:function debounce(fn,opts){if(typeof opts === 'function'){var p=fn;fn = opts;opts = p;}var delay=opts && opts.delay || opts || 0,args=undefined,context=undefined,timer=undefined;return function(){for(var _len2=arguments.length,a=Array(_len2),_key2=0;_key2 < _len2;_key2++) {a[_key2] = arguments[_key2];}args = a;context = this;if(!timer)timer = setTimeout(function(){fn.apply(context,args);args = context = timer = null;},delay);};},bind:function bind(target,key,_ref){var fn=_ref.value;return {configurable:true,get:function get(){var value=fn.bind(this);Object.defineProperty(this,key,{value:value,configurable:true,writable:true});return value;}};}};var memoize=multiMethod(fns.memoize),debounce=multiMethod(fns.debounce),bind=multiMethod(function(f,c){return f.bind(c);},function(){return fns.bind;});exports.memoize = memoize;exports.debounce = debounce;exports.bind = bind;exports['default'] = {memoize:memoize,debounce:debounce,bind:bind};function multiMethod(inner,deco){deco = deco || inner.decorate || decorator(inner);var d=deco();return function(){for(var _len3=arguments.length,args=Array(_len3),_key3=0;_key3 < _len3;_key3++) {args[_key3] = arguments[_key3];}var l=args.length;return (l < 2?deco:l > 2?d:inner).apply(undefined,args);};}function decorator(fn){return function(opt){return typeof opt === 'function'?fn(opt):function(target,key,desc){desc.value = fn(desc.value,opt,target,key,desc);};};}});
 
 
-},{}],18:[function(require,module,exports){
-/*
-
- Style HTML
----------------
-
-  Written by Nochum Sossonko, (nsossonko@hotmail.com)
-
-  Based on code initially developed by: Einar Lielmanis, <elfz@laacz.lv>
-    http://jsbeautifier.org/
-
-
-  You are free to use this in any way you want, in case you find this useful or working for you.
-
-  Usage:
-    style_html(html_source);
-
-    style_html(html_source, options);
-
-  The options are:
-    indent_size (default 4)          — indentation size,
-    indent_char (default space)      — character to indent with,
-    max_char (default 70)            -  maximum amount of characters per line,
-    brace_style (default "collapse") - "collapse" | "expand" | "end-expand"
-            put braces on the same line as control statements (default), or put braces on own line (Allman / ANSI style), or just put end braces on own line.
-    unformatted (defaults to inline tags) - list of tags, that shouldn't be reformatted
-    indent_scripts (default normal)  - "keep"|"separate"|"normal"
-
-    e.g.
-
-    style_html(html_source, {
-      'indent_size': 2,
-      'indent_char': ' ',
-      'max_char': 78,
-      'brace_style': 'expand',
-      'unformatted': ['a', 'sub', 'sup', 'b', 'i', 'u']
-    });
-*/
-
-function style_html(html_source, options) {
-//Wrapper function to invoke all the necessary constructors and deal with the output.
-
-  var multi_parser,
-      indent_size,
-      indent_character,
-      max_char,
-      brace_style,
-      unformatted;
-
-  options = options || {};
-  indent_size = options.indent_size || 4;
-  indent_character = options.indent_char || ' ';
-  brace_style = options.brace_style || 'collapse';
-  max_char = options.max_char == 0 ? Infinity : options.max_char || 70;
-  unformatted = options.unformatted || ['a', 'span', 'bdo', 'em', 'strong', 'dfn', 'code', 'samp', 'kbd', 'var', 'cite', 'abbr', 'acronym', 'q', 'sub', 'sup', 'tt', 'i', 'b', 'big', 'small', 'u', 's', 'strike', 'font', 'ins', 'del', 'pre', 'address', 'dt', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6'];
-
-  function Parser() {
-
-    this.pos = 0; //Parser position
-    this.token = '';
-    this.current_mode = 'CONTENT'; //reflects the current Parser mode: TAG/CONTENT
-    this.tags = { //An object to hold tags, their position, and their parent-tags, initiated with default values
-      parent: 'parent1',
-      parentcount: 1,
-      parent1: ''
-    };
-    this.tag_type = '';
-    this.token_text = this.last_token = this.last_text = this.token_type = '';
-
-    this.Utils = { //Uilities made available to the various functions
-      whitespace: "\n\r\t ".split(''),
-      single_token: 'br,input,link,meta,!doctype,basefont,base,area,hr,wbr,param,img,isindex,?xml,embed,?php,?,?='.split(','), //all the single tags for HTML
-      extra_liners: 'head,body,/html'.split(','), //for tags that need a line of whitespace before them
-      in_array: function (what, arr) {
-        for (var i=0; i<arr.length; i++) {
-          if (what === arr[i]) {
-            return true;
-          }
-        }
-        return false;
-      }
-    }
-
-    this.get_content = function () { //function to capture regular content between tags
-
-      var input_char = '',
-          content = [],
-          space = false; //if a space is needed
-
-      while (this.input.charAt(this.pos) !== '<') {
-        if (this.pos >= this.input.length) {
-          return content.length?content.join(''):['', 'TK_EOF'];
-        }
-
-        input_char = this.input.charAt(this.pos);
-        this.pos++;
-        this.line_char_count++;
-
-        if (this.Utils.in_array(input_char, this.Utils.whitespace)) {
-          if (content.length) {
-            space = true;
-          }
-          this.line_char_count--;
-          continue; //don't want to insert unnecessary space
-        }
-        else if (space) {
-          if (this.line_char_count >= this.max_char) { //insert a line when the max_char is reached
-            content.push('\n');
-            for (var i=0; i<this.indent_level; i++) {
-              content.push(this.indent_string);
-            }
-            this.line_char_count = 0;
-          }
-          else{
-            content.push(' ');
-            this.line_char_count++;
-          }
-          space = false;
-        }
-        content.push(input_char); //letter at-a-time (or string) inserted to an array
-      }
-      return content.length?content.join(''):'';
-    }
-
-    this.get_contents_to = function (name) { //get the full content of a script or style to pass to js_beautify
-      if (this.pos == this.input.length) {
-        return ['', 'TK_EOF'];
-      }
-      var input_char = '';
-      var content = '';
-      var reg_match = new RegExp('\<\/' + name + '\\s*\>', 'igm');
-      reg_match.lastIndex = this.pos;
-      var reg_array = reg_match.exec(this.input);
-      var end_script = reg_array?reg_array.index:this.input.length; //absolute end of script
-      if(this.pos < end_script) { //get everything in between the script tags
-        content = this.input.substring(this.pos, end_script);
-        this.pos = end_script;
-      }
-      return content;
-    }
-
-    this.record_tag = function (tag){ //function to record a tag and its parent in this.tags Object
-      if (this.tags[tag + 'count']) { //check for the existence of this tag type
-        this.tags[tag + 'count']++;
-        this.tags[tag + this.tags[tag + 'count']] = this.indent_level; //and record the present indent level
-      }
-      else { //otherwise initialize this tag type
-        this.tags[tag + 'count'] = 1;
-        this.tags[tag + this.tags[tag + 'count']] = this.indent_level; //and record the present indent level
-      }
-      this.tags[tag + this.tags[tag + 'count'] + 'parent'] = this.tags.parent; //set the parent (i.e. in the case of a div this.tags.div1parent)
-      this.tags.parent = tag + this.tags[tag + 'count']; //and make this the current parent (i.e. in the case of a div 'div1')
-    }
-
-    this.retrieve_tag = function (tag) { //function to retrieve the opening tag to the corresponding closer
-      if (this.tags[tag + 'count']) { //if the openener is not in the Object we ignore it
-        var temp_parent = this.tags.parent; //check to see if it's a closable tag.
-        while (temp_parent) { //till we reach '' (the initial value);
-          if (tag + this.tags[tag + 'count'] === temp_parent) { //if this is it use it
-            break;
-          }
-          temp_parent = this.tags[temp_parent + 'parent']; //otherwise keep on climbing up the DOM Tree
-        }
-        if (temp_parent) { //if we caught something
-          this.indent_level = this.tags[tag + this.tags[tag + 'count']]; //set the indent_level accordingly
-          this.tags.parent = this.tags[temp_parent + 'parent']; //and set the current parent
-        }
-        delete this.tags[tag + this.tags[tag + 'count'] + 'parent']; //delete the closed tags parent reference...
-        delete this.tags[tag + this.tags[tag + 'count']]; //...and the tag itself
-        if (this.tags[tag + 'count'] == 1) {
-          delete this.tags[tag + 'count'];
-        }
-        else {
-          this.tags[tag + 'count']--;
-        }
-      }
-    }
-
-    this.get_tag = function () { //function to get a full tag and parse its type
-      var input_char = '',
-          content = [],
-          space = false,
-          tag_start, tag_end;
-
-      do {
-        if (this.pos >= this.input.length) {
-          return content.length?content.join(''):['', 'TK_EOF'];
-        }
-
-        input_char = this.input.charAt(this.pos);
-        this.pos++;
-        this.line_char_count++;
-
-        if (this.Utils.in_array(input_char, this.Utils.whitespace)) { //don't want to insert unnecessary space
-          space = true;
-          this.line_char_count--;
-          continue;
-        }
-
-        if (input_char === "'" || input_char === '"') {
-          if (!content[1] || content[1] !== '!') { //if we're in a comment strings don't get treated specially
-            input_char += this.get_unformatted(input_char);
-            space = true;
-          }
-        }
-
-        if (input_char === '=') { //no space before =
-          space = false;
-        }
-
-        if (content.length && content[content.length-1] !== '=' && input_char !== '>'
-            && space) { //no space after = or before >
-          if (this.line_char_count >= this.max_char) {
-            this.print_newline(false, content);
-            this.line_char_count = 0;
-          }
-          else {
-            content.push(' ');
-            this.line_char_count++;
-          }
-          space = false;
-        }
-        if (input_char === '<') {
-            tag_start = this.pos - 1;
-        }
-        content.push(input_char); //inserts character at-a-time (or string)
-      } while (input_char !== '>');
-
-      var tag_complete = content.join('');
-      var tag_index;
-      if (tag_complete.indexOf(' ') != -1) { //if there's whitespace, thats where the tag name ends
-        tag_index = tag_complete.indexOf(' ');
-      }
-      else { //otherwise go with the tag ending
-        tag_index = tag_complete.indexOf('>');
-      }
-      var tag_check = tag_complete.substring(1, tag_index).toLowerCase();
-      if (tag_complete.charAt(tag_complete.length-2) === '/' ||
-          this.Utils.in_array(tag_check, this.Utils.single_token)) { //if this tag name is a single tag type (either in the list or has a closing /)
-        this.tag_type = 'SINGLE';
-      }
-      else if (tag_check === 'script') { //for later script handling
-        this.record_tag(tag_check);
-        this.tag_type = 'SCRIPT';
-      }
-      else if (tag_check === 'style') { //for future style handling (for now it justs uses get_content)
-        this.record_tag(tag_check);
-        this.tag_type = 'STYLE';
-      }
-      else if (this.Utils.in_array(tag_check, unformatted)) { // do not reformat the "unformatted" tags
-        var comment = this.get_unformatted('</'+tag_check+'>', tag_complete); //...delegate to get_unformatted function
-        content.push(comment);
-        // Preserve collapsed whitespace either before or after this tag.
-        if (tag_start > 0 && this.Utils.in_array(this.input.charAt(tag_start - 1), this.Utils.whitespace)){
-            content.splice(0, 0, this.input.charAt(tag_start - 1));
-        }
-        tag_end = this.pos - 1;
-        if (this.Utils.in_array(this.input.charAt(tag_end + 1), this.Utils.whitespace)){
-            content.push(this.input.charAt(tag_end + 1));
-        }
-        this.tag_type = 'SINGLE';
-      }
-      else if (tag_check.charAt(0) === '!') { //peek for <!-- comment
-        if (tag_check.indexOf('[if') != -1) { //peek for <!--[if conditional comment
-          if (tag_complete.indexOf('!IE') != -1) { //this type needs a closing --> so...
-            var comment = this.get_unformatted('-->', tag_complete); //...delegate to get_unformatted
-            content.push(comment);
-          }
-          this.tag_type = 'START';
-        }
-        else if (tag_check.indexOf('[endif') != -1) {//peek for <!--[endif end conditional comment
-          this.tag_type = 'END';
-          this.unindent();
-        }
-        else if (tag_check.indexOf('[cdata[') != -1) { //if it's a <[cdata[ comment...
-          var comment = this.get_unformatted(']]>', tag_complete); //...delegate to get_unformatted function
-          content.push(comment);
-          this.tag_type = 'SINGLE'; //<![CDATA[ comments are treated like single tags
-        }
-        else {
-          var comment = this.get_unformatted('-->', tag_complete);
-          content.push(comment);
-          this.tag_type = 'SINGLE';
-        }
-      }
-      else {
-        if (tag_check.charAt(0) === '/') { //this tag is a double tag so check for tag-ending
-          this.retrieve_tag(tag_check.substring(1)); //remove it and all ancestors
-          this.tag_type = 'END';
-        }
-        else { //otherwise it's a start-tag
-          this.record_tag(tag_check); //push it on the tag stack
-          this.tag_type = 'START';
-        }
-        if (this.Utils.in_array(tag_check, this.Utils.extra_liners)) { //check if this double needs an extra line
-          this.print_newline(true, this.output);
-        }
-      }
-      return content.join(''); //returns fully formatted tag
-    }
-
-    this.get_unformatted = function (delimiter, orig_tag) { //function to return unformatted content in its entirety
-
-      if (orig_tag && orig_tag.toLowerCase().indexOf(delimiter) != -1) {
-        return '';
-      }
-      var input_char = '';
-      var content = '';
-      var space = true;
-      do {
-
-        if (this.pos >= this.input.length) {
-          return content;
-        }
-
-        input_char = this.input.charAt(this.pos);
-        this.pos++
-
-        if (this.Utils.in_array(input_char, this.Utils.whitespace)) {
-          if (!space) {
-            this.line_char_count--;
-            continue;
-          }
-          if (input_char === '\n' || input_char === '\r') {
-            content += '\n';
-            /*  Don't change tab indention for unformatted blocks.  If using code for html editing, this will greatly affect <pre> tags if they are specified in the 'unformatted array'
-            for (var i=0; i<this.indent_level; i++) {
-              content += this.indent_string;
-            }
-            space = false; //...and make sure other indentation is erased
-            */
-            this.line_char_count = 0;
-            continue;
-          }
-        }
-        content += input_char;
-        this.line_char_count++;
-        space = true;
-
-
-      } while (content.toLowerCase().indexOf(delimiter) == -1);
-      return content;
-    }
-
-    this.get_token = function () { //initial handler for token-retrieval
-      var token;
-
-      if (this.last_token === 'TK_TAG_SCRIPT' || this.last_token === 'TK_TAG_STYLE') { //check if we need to format javascript
-       var type = this.last_token.substr(7)
-       token = this.get_contents_to(type);
-        if (typeof token !== 'string') {
-          return token;
-        }
-        return [token, 'TK_' + type];
-      }
-      if (this.current_mode === 'CONTENT') {
-        token = this.get_content();
-        if (typeof token !== 'string') {
-          return token;
-        }
-        else {
-          return [token, 'TK_CONTENT'];
-        }
-      }
-
-      if (this.current_mode === 'TAG') {
-        token = this.get_tag();
-        if (typeof token !== 'string') {
-          return token;
-        }
-        else {
-          var tag_name_type = 'TK_TAG_' + this.tag_type;
-          return [token, tag_name_type];
-        }
-      }
-    }
-
-    this.get_full_indent = function (level) {
-      level = this.indent_level + level || 0;
-      if (level < 1)
-        return '';
-
-      return Array(level + 1).join(this.indent_string);
-    }
-
-
-    this.printer = function (js_source, indent_character, indent_size, max_char, brace_style) { //handles input/output and some other printing functions
-
-      this.input = js_source || ''; //gets the input for the Parser
-      this.output = [];
-      this.indent_character = indent_character;
-      this.indent_string = '';
-      this.indent_size = indent_size;
-      this.brace_style = brace_style;
-      this.indent_level = 0;
-      this.max_char = max_char;
-      this.line_char_count = 0; //count to see if max_char was exceeded
-
-      for (var i=0; i<this.indent_size; i++) {
-        this.indent_string += this.indent_character;
-      }
-
-      this.print_newline = function (ignore, arr) {
-        this.line_char_count = 0;
-        if (!arr || !arr.length) {
-          return;
-        }
-        if (!ignore) { //we might want the extra line
-          while (this.Utils.in_array(arr[arr.length-1], this.Utils.whitespace)) {
-            arr.pop();
-          }
-        }
-        arr.push('\n');
-        for (var i=0; i<this.indent_level; i++) {
-          arr.push(this.indent_string);
-        }
-      }
-
-      this.print_token = function (text) {
-        this.output.push(text);
-      }
-
-      this.indent = function () {
-        this.indent_level++;
-      }
-
-      this.unindent = function () {
-        if (this.indent_level > 0) {
-          this.indent_level--;
-        }
-      }
-    }
-    return this;
-  }
-
-  /*_____________________--------------------_____________________*/
-
-  multi_parser = new Parser(); //wrapping functions Parser
-  multi_parser.printer(html_source, indent_character, indent_size, max_char, brace_style); //initialize starting values
-
-  while (true) {
-      var t = multi_parser.get_token();
-      multi_parser.token_text = t[0];
-      multi_parser.token_type = t[1];
-
-    if (multi_parser.token_type === 'TK_EOF') {
-      break;
-    }
-
-    switch (multi_parser.token_type) {
-      case 'TK_TAG_START':
-        multi_parser.print_newline(false, multi_parser.output);
-        multi_parser.print_token(multi_parser.token_text);
-        multi_parser.indent();
-        multi_parser.current_mode = 'CONTENT';
-        break;
-      case 'TK_TAG_STYLE':
-      case 'TK_TAG_SCRIPT':
-        multi_parser.print_newline(false, multi_parser.output);
-        multi_parser.print_token(multi_parser.token_text);
-        multi_parser.current_mode = 'CONTENT';
-        break;
-      case 'TK_TAG_END':
-        //Print new line only if the tag has no content and has child
-        if (multi_parser.last_token === 'TK_CONTENT' && multi_parser.last_text === '') {
-            var tag_name = multi_parser.token_text.match(/\w+/)[0];
-            var tag_extracted_from_last_output = multi_parser.output[multi_parser.output.length -1].match(/<\s*(\w+)/);
-            if (tag_extracted_from_last_output === null || tag_extracted_from_last_output[1] !== tag_name)
-                multi_parser.print_newline(true, multi_parser.output);
-        }
-        multi_parser.print_token(multi_parser.token_text);
-        multi_parser.current_mode = 'CONTENT';
-        break;
-      case 'TK_TAG_SINGLE':
-        // Don't add a newline before elements that should remain unformatted.
-        var tag_check = multi_parser.token_text.match(/^\s*<([a-z]+)/i);
-        if (!tag_check || !multi_parser.Utils.in_array(tag_check[1], unformatted)){
-            multi_parser.print_newline(false, multi_parser.output);
-        }
-        multi_parser.print_token(multi_parser.token_text);
-        multi_parser.current_mode = 'CONTENT';
-        break;
-      case 'TK_CONTENT':
-        if (multi_parser.token_text !== '') {
-          multi_parser.print_token(multi_parser.token_text);
-        }
-        multi_parser.current_mode = 'TAG';
-        break;
-      case 'TK_STYLE':
-      case 'TK_SCRIPT':
-        if (multi_parser.token_text !== '') {
-          multi_parser.output.push('\n');
-          var text = multi_parser.token_text;
-          if (multi_parser.token_type == 'TK_SCRIPT') {
-            var _beautifier = typeof js_beautify == 'function' && js_beautify;
-          } else if (multi_parser.token_type == 'TK_STYLE') {
-            var _beautifier = typeof css_beautify == 'function' && css_beautify;
-          }
-
-          if (options.indent_scripts == "keep") {
-            var script_indent_level = 0;
-          } else if (options.indent_scripts == "separate") {
-            var script_indent_level = -multi_parser.indent_level;
-          } else {
-            var script_indent_level = 1;
-          }
-
-          var indentation = multi_parser.get_full_indent(script_indent_level);
-          if (_beautifier) {
-            // call the Beautifier if avaliable
-            text = _beautifier(text.replace(/^\s*/, indentation), options);
-          } else {
-            // simply indent the string otherwise
-            var white = text.match(/^\s*/)[0];
-            var _level = white.match(/[^\n\r]*$/)[0].split(multi_parser.indent_string).length - 1;
-            var reindent = multi_parser.get_full_indent(script_indent_level -_level);
-            text = text.replace(/^\s*/, indentation)
-                   .replace(/\r\n|\r|\n/g, '\n' + reindent)
-                   .replace(/\s*$/, '');
-          }
-          if (text) {
-            multi_parser.print_token(text);
-            multi_parser.print_newline(true, multi_parser.output);
-          }
-        }
-        multi_parser.current_mode = 'TAG';
-        break;
-    }
-    multi_parser.last_token = multi_parser.token_type;
-    multi_parser.last_text = multi_parser.token_text;
-  }
-  return multi_parser.output.join('');
-}
-
-module.exports = {
-  prettyPrint: style_html
-};
-},{}],19:[function(require,module,exports){
+},{}],20:[function(require,module,exports){
 function dlv(t,e,n,l){for(l=0,e=e.split?e.split("."):e;t&&l<e.length;)t=t[e[l++]];return void 0===t?n:t}function linkState(t,e,n){var l=e.split("."),r=t.__lsc||(t.__lsc={});return r[e+n]||(r[e+n]=function(e){for(var r=e&&e.target||this,a={},i=a,o="string"==typeof n?dlv(e,n):r.nodeName?r.type.match(/^che|rad/)?r.checked:r.value:e,s=0;s<l.length-1;s++)i=i[l[s]]||(i[l[s]]=!s&&t.state[l[s]]||{});i[l[s]]=o,t.setState(a)})}module.exports=linkState;
 
 
-},{}],20:[function(require,module,exports){
+},{}],21:[function(require,module,exports){
 (function (global, factory) {
 	typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory() :
 	typeof define === 'function' && define.amd ? define(factory) :
@@ -14242,7 +13878,7 @@ return renderToString;
 })));
 
 
-},{}],21:[function(require,module,exports){
+},{}],22:[function(require,module,exports){
 !function() {
     'use strict';
     function VNode() {}
@@ -14329,7 +13965,7 @@ return renderToString;
             setProperty(node, name, null == value ? '' : value);
             if (null == value || !1 === value) node.removeAttribute(name);
         } else {
-            var ns = isSvg && name !== (name = name.replace(/^xlink\:?/, ''));
+            var ns = isSvg && name !== (name = name.replace(/^xlink:?/, ''));
             if (null == value || !1 === value) if (ns) node.removeAttributeNS('http://www.w3.org/1999/xlink', name.toLowerCase()); else node.removeAttribute(name); else if ('function' != typeof value) if (ns) node.setAttributeNS('http://www.w3.org/1999/xlink', name.toLowerCase(), value); else node.setAttribute(name, value);
         }
     }
@@ -14651,7 +14287,7 @@ return renderToString;
     if ('undefined' != typeof module) module.exports = preact; else self.preact = preact;
 }();
 
-},{}],22:[function(require,module,exports){
+},{}],23:[function(require,module,exports){
 function tlite(getTooltipOpts) {
   document.addEventListener('mouseover', function (e) {
     var el = e.target;

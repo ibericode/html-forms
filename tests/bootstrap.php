@@ -10,6 +10,10 @@ function esc_attr( $a ) {
 	return $a; 
 }
 
+function esc_html($a) {
+   return $a;
+}
+
 function __( $a, $text_domain = '' ) { 
 	return $a; 
 }

@@ -91,6 +91,4 @@ function createToggleActionHandler(wrap, content) {
 }
 
 
-export default {
-    'init': init,
-};
+export default { init }

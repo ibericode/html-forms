@@ -25,6 +25,10 @@ If you need help with the plugin, please check out the [HTML Forms knowledge bas
 - For bugs, [create a new GitHub issue](https://github.com/ibericode/html-forms/issues).
 - For example code snippets, check out the [HTML Forms code snippets](https://github.com/ibericode/html-forms-code-snippets) repository.
 
+## Contributing
+
+When contributing code to HTML Forms that is not simply fixing a bug, please first discuss the change before spending too much time on it. 
+
 ## License
 
 GPLv2

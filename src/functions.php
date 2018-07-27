@@ -4,13 +4,13 @@ use HTML_Forms\Form;
 use HTML_Forms\Submission;
 
 /**
- * @param $form_id_or_slug int|string
+ * @param $form_id_or_slug int|string|WP_Post
  * @return Form
  * @throws Exception
  */
 function hf_get_form( $form_id_or_slug ) {
 
-    if( is_numeric( $form_id_or_slug ) ) {
+    if( is_numeric( $form_id_or_slug ) || $form_id_or_slug instanceof WP_Post ) {
         $post = get_post( $form_id_or_slug );
 
         if( ! $post || $post->post_type !== 'html-form' ) {
@@ -32,31 +32,31 @@ function hf_get_form( $form_id_or_slug ) {
         $post = $posts[0];
     }
 
-    static $default_messages;
-    if( $default_messages === null ) {
-        $default_messages = array(
-            'success' => __('Thank you! We will be in touch soon.', 'html-forms'),
-            'invalid_email' => __( 'Sorry, that email address looks invalid.', 'html-forms' ),
-            'required_field_missing' => __( "Please fill in the required fields.", "html-forms" ),
-            'error' => __( 'Oops. An error occurred.', 'html-forms' ),
-        );
-    }
+    // get all post meta in a single call for performance
+    $post_meta = get_post_meta( $post->ID );
 
-    static $default_settings = array(
+    // grab & merge form settings
+    $default_settings = array(
+        'save_submissions' => 1,
         'hide_after_success' => 0,
         'redirect_url' => '',
         'required_fields' =>'',
         'email_fields' => '',
     );
-
-    $post_meta = get_post_meta( $post->ID );
-
+    $default_settings = apply_filters( 'hf_form_default_settings', $default_settings );
     $settings = array();
     if( ! empty( $post_meta['_hf_settings'][0] ) ) {
         $settings = (array) maybe_unserialize( $post_meta['_hf_settings'][0] );
     }
     $settings = array_merge( $default_settings, $settings );
 
+    // grab & merge form messages
+    $default_messages = array(
+        'success' => __('Thank you! We will be in touch soon.', 'html-forms'),
+        'invalid_email' => __( 'Sorry, that email address looks invalid.', 'html-forms' ),
+        'required_field_missing' => __( "Please fill in the required fields.", "html-forms" ),
+        'error' => __( 'Oops. An error occurred.', 'html-forms' ),
+    );
     $messages = array();
     foreach( $post_meta as $meta_key => $meta_values ) {
         if( strpos( $meta_key, 'hf_message_' ) === 0 ) {
@@ -66,6 +66,7 @@ function hf_get_form( $form_id_or_slug ) {
     }
     $messages = array_merge( $default_messages, $messages );
 
+    // finally, create form instance
     $form = new Form( $post->ID );
     $form->title = $post->post_title;
     $form->slug = $post->post_name;
@@ -113,9 +114,8 @@ function hf_get_form_submission( $submission_id ) {
  * @return array
  */
 function hf_get_settings() {
-    static $default_settings = array(
+    $default_settings = array(
         'load_stylesheet' => 0,
-        'save_submissions' => 1,
     );
 
     $settings = get_option( 'hf_settings', array() );
@@ -214,9 +214,87 @@ function hf_replace_data_variables( $string, $data = array() ) {
     $string = preg_replace_callback( '/\[([a-zA-Z0-9\-\._]+)\]/', function( $matches ) use ( $data ) {
         $key = $matches[1];
         $replacement = hf_array_get( $data, $key, '' );
-        $replacement = is_array( $replacement ) ? join( ', ', $replacement ) : $replacement;
+        $replacement = hf_field_value( $replacement );
         return $replacement;
     }, $string );
     return $string;
+} 
+
+/**
+* Returns an escaped and formatted field value. Detects file-, array- and date-types.
+*
+* Caveat: if value is a file, an HTML string is returned (which means email action should use "Content-Type: html" when it includes a file field).
+*
+* @param string $value
+* @param int $limit 
+* @return string
+* @since 1.3.1
+*/
+function hf_field_value( $value, $limit = 0 ) {
+    if( $value === '' ) {
+        return $value;
+    }
+
+    if( hf_is_file( $value ) ) {
+        $file_url = isset( $value['url'] ) ? $value['url'] : '';
+        if( isset( $value['attachment_id'] ) ) {
+            $file_url = admin_url( sprintf( 'post.php?action=edit&post=%d', $value['attachment_id'] ) );
+        }
+        $short_name = substr( $value['name'], 0, 20 );
+        $suffix = strlen( $value['name'] ) > 20 ? '...' : '';
+        return sprintf( '<a href="%s">%s%s</a> (%s)', esc_attr( $file_url ), esc_html( $short_name ), esc_html( $suffix ), hf_human_filesize( $value['size'] ) ); 
+    }
+
+    if( hf_is_date( $value ) ) {
+        $date_format = get_option( 'date_format' );
+        return date( $date_format, strtotime( $value ) );
+    } 
+
+    // join array-values with comma
+    if( is_array( $value ) ) {
+        $value = join( ', ', $value );
+    }
+
+    // limit string to certain length
+    $value = esc_html( $value );
+    if( $limit > 0 ) {
+        return sprintf( '%s%s', substr( $value, 0, $limit ), strlen( $value ) > $limit ? '...' : '' );
+    }
+
+    return $value;
 }
 
+/**
+* Returns true if value is a "file"
+* @return bool
+*/
+function hf_is_file( $value ) {
+    return is_array( $value ) 
+        && isset( $value['name'] ) 
+        && isset( $value['size'] ) 
+        && isset( $value['type'] );
+}
+
+/**
+* Returns true if value looks like a date-string submitted from a <input type="date">
+* @return bool
+* @since 1.3.1
+*/
+function hf_is_date( $value ) {
+    return is_string( $value ) 
+        && strlen( $value ) === 10 
+        && preg_match( '/\d{2,4}[-\/]\d{2}[-\/]\d{2,4}/', $value ) > 0 
+        && ( $timestamp = strtotime($value) ) 
+        && $timestamp != false;
+}
+
+/** 
+* @return string
+*/
+function hf_human_filesize($size, $precision = 2) {
+    for( $i = 0; ($size / 1024) > 0.9; $i++, $size /= 1024 ) {
+        // nothing, loop logic contains everything
+    }
+    $steps = array( 'B', 'kB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB' );
+    return round($size, $precision) . $steps[$i];
+}

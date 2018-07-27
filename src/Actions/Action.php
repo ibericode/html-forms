@@ -12,7 +12,7 @@ abstract class Action {
 
     public function hook() {
         add_filter( 'hf_available_form_actions', array( $this, 'register' ) );
-        add_action( 'hf_render_form_action_' . $this->type . '_settings', array( $this, 'page_settings' ), 10, 2 );
+        add_action( 'hf_output_form_action_' . $this->type . '_settings', array( $this, 'page_settings' ), 10, 2 );
         add_action( 'hf_process_form_action_' . $this->type, array( $this, 'process' ), 10, 3 );
     }
 

@@ -61,7 +61,7 @@ class Forms
         $suffix = defined( 'SCRIPT_DEBUG' ) && SCRIPT_DEBUG ? '' : '.min';
         $assets_url = plugins_url( 'assets/', $this->plugin_file );
 
-        wp_enqueue_script('html-forms', $assets_url . "js/public{$suffix}.js", array(), HTML_FORMS_VERSION, true);
+        wp_register_script('html-forms', $assets_url . "js/public{$suffix}.js", array(), HTML_FORMS_VERSION, true);
         wp_localize_script('html-forms', 'hf_js_vars', array(
             'ajax_url' => admin_url('admin-ajax.php'),
         ));
@@ -89,10 +89,11 @@ class Forms
             return 'spam';
         }
 
+        $was_required = (array) hf_array_get( $data, '_was_required', array() );
         $required_fields = $form->get_required_fields();
         foreach ($required_fields as $field_name) {
             $value = hf_array_get( $data, $field_name );
-            if ( empty( $value ) ) {
+            if ( empty( $value ) && ! in_array( $field_name, $was_required ) ) {
                 return 'required_field_missing';
             }
         }
@@ -146,6 +147,9 @@ class Forms
     public function sanitize( $value )
     {
         if (is_string($value)) {
+            // strip slashes
+            $value = stripslashes( $value );
+
             // strip all HTML tags & whitespace
             $value = trim(strip_tags($value));
 
@@ -168,13 +172,33 @@ class Forms
                 $new_value[$key] = $this->sanitize($sub_value);
             }
             $value = is_object( $value ) ? (object) $new_value : $new_value;
-        } 
+        }
 
         return $value;
     }
 
-    public function listen_for_submit() 
+    /**
+    * @return array
+    */ 
+    public function get_request_data() {
+        $data = $_POST;
+
+        if( ! empty( $_FILES ) ) {
+            foreach( $_FILES as $field_name => $file ) {
+                // only add non-empty files so that required field validation works as expected
+                // upload could still have errored at this point
+                if( $file['error'] !== UPLOAD_ERR_NO_FILE ) {
+                    $data[$field_name] = $file;
+                }
+            }
+        }
+
+        return $data;
+    }
+
+    public function listen_for_submit()
     {
+
         // only respond to AJAX requests with _hf_form_id set.
         if (empty($_POST['_hf_form_id'])
             || empty( $_SERVER['HTTP_X_REQUESTED_WITH'] )
@@ -182,7 +206,7 @@ class Forms
             return;
         }
 
-        $data = $_POST;
+        $data = $this->get_request_data();
         $form_id = (int) $data['_hf_form_id'];
         $form = hf_get_form($form_id);
         $error_code = $this->validate_form($form, $data);
@@ -190,7 +214,7 @@ class Forms
         if (empty( $error_code ) ) {
 
             /**
-            * Filters the field names that should be ignored on the Submission object. 
+            * Filters the field names that should be ignored on the Submission object.
             * Fields starting with an underscore (_) are ignored by default.
             *
             * @param array $names
@@ -204,9 +228,6 @@ class Forms
                 }
             }
 
-            // strip slashes
-            $data = stripslashes_deep( $data );
-
             // sanitize data: strip tags etc.
             $data = $this->sanitize( $data );
 
@@ -219,7 +240,18 @@ class Forms
             $submission->referer_url = ! empty( $_SERVER['HTTP_REFERER'] ) ? sanitize_text_field( $_SERVER['HTTP_REFERER'] ) : '';
             $submission->submitted_at = gmdate( 'Y-m-d H:i:s' );
 
-            if( $this->settings['save_submissions'] ) {
+            // save submission object so that other form processor have an insert ID to work with (eg file upload)
+            if( $form->settings['save_submissions'] ) {
+                 $submission->save();
+            }
+
+            /**
+            * General purpose hook that runs before all form actions, so we can still modify the submission object that is passed to actions.
+            */
+            do_action( 'hf_process_form', $form, $submission );
+
+            // re-save submission object for convenience in form processors hooked into hf_process_form
+            if( $form->settings['save_submissions'] ) {
                  $submission->save();
             }
 
@@ -278,7 +310,7 @@ class Forms
 
             wp_send_json($response, 200);
             exit;
-        });      
+        });
     }
 
     public function listen_for_preview() {
@@ -290,7 +322,7 @@ class Forms
             $form = hf_get_form( $_GET['hf_preview_form'] );
         } catch( \Exception $e ) {
             return;
-        }  
+        }
 
         show_admin_bar(false);
         add_filter( 'pre_handle_404', '__return_true' );
@@ -301,13 +333,13 @@ class Forms
                 ob_end_clean();
             }
 
-            http_response_code(200);
+            status_header(200);
             require dirname( $this->plugin_file ) . '/views/form-preview.php';
             exit;
         });
     }
 
-    private function get_response_for_error_code( $error_code, Form $form ) 
+    private function get_response_for_error_code( $error_code, Form $form )
     {
         // return success response for empty error code string or spam (to trick bots)
         if( $error_code === "" || $error_code === "spam" ) {

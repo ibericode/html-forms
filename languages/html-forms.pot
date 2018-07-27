@@ -13,31 +13,31 @@ msgstr ""
 "X-Poedit-SourceCharset: UTF-8\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#: src/Form.php:55
+#: src/Form.php:66
 msgid "Please enable JavaScript for this form to work."
 msgstr ""
 
-#: src/Forms.php:356
+#: src/Forms.php:388
 msgid "Error:"
 msgstr ""
 
-#: src/Forms.php:356
+#: src/Forms.php:388
 msgid "No form found with slug %s"
 msgstr ""
 
-#: src/functions.php:38
+#: src/functions.php:55
 msgid "Thank you! We will be in touch soon."
 msgstr ""
 
-#: src/functions.php:39
+#: src/functions.php:56
 msgid "Sorry, that email address looks invalid."
 msgstr ""
 
-#: src/functions.php:40
+#: src/functions.php:57
 msgid "Please fill in the required fields."
 msgstr ""
 
-#: src/functions.php:41
+#: src/functions.php:58
 msgid "Oops. An error occurred."
 msgstr ""
 
@@ -53,7 +53,7 @@ msgstr ""
 msgid "To"
 msgstr ""
 
-#: src/Actions/Email.php:55, src/Admin/Admin.php:307
+#: src/Actions/Email.php:55, src/Admin/Admin.php:343
 msgid "Subject"
 msgstr ""
 
@@ -61,7 +61,7 @@ msgstr ""
 msgid "Your email subject"
 msgstr ""
 
-#: src/Actions/Email.php:62, src/Admin/Admin.php:308
+#: src/Actions/Email.php:62, src/Admin/Admin.php:344
 msgid "Message"
 msgstr ""
 
@@ -81,23 +81,67 @@ msgstr ""
 msgid "Additional headers"
 msgstr ""
 
-#: src/Admin/Admin.php:305
+#: src/Actions/MailChimp.php:13
+msgid "MailChimp"
+msgstr ""
+
+#: src/Actions/MailChimp.php:41
+msgid "Subscribe to %s"
+msgstr ""
+
+#: src/Actions/MailChimp.php:46
+msgid "List"
+msgstr ""
+
+#: src/Actions/MailChimp.php:50
+msgid "Select MailChimp list"
+msgstr ""
+
+#: src/Actions/MailChimp.php:57
+msgid "Please connect your MailChimp account first."
+msgstr ""
+
+#: src/Admin/Admin.php:121
+msgid "Forms"
+msgstr ""
+
+#: src/Admin/Admin.php:121
+msgid "All Forms"
+msgstr ""
+
+#: src/Admin/Admin.php:122
+msgid "Add new form"
+msgstr ""
+
+#: src/Admin/Admin.php:122
+msgid "Add New"
+msgstr ""
+
+#: src/Admin/Admin.php:123, src/Admin/Admin.php:123, src/Admin/Table.php:182
+msgid "Settings"
+msgstr ""
+
+#: src/Admin/Admin.php:341
 msgid "Your name"
 msgstr ""
 
-#: src/Admin/Admin.php:306
+#: src/Admin/Admin.php:342
 msgid "Your email"
 msgstr ""
 
-#: src/Admin/Admin.php:309
+#: src/Admin/Admin.php:345
 msgid "Send"
 msgstr ""
 
-#: src/Admin/Table.php:113
+#: src/Admin/GDPR.php:36
+msgid "Form submissions"
+msgstr ""
+
+#: src/Admin/Table.php:110
 msgid "Form"
 msgstr ""
 
-#: src/Admin/Table.php:114
+#: src/Admin/Table.php:111
 msgid "Shortcode"
 msgstr ""
 
@@ -107,10 +151,6 @@ msgstr ""
 
 #: src/Admin/Table.php:181
 msgid "Messages"
-msgstr ""
-
-#: src/Admin/Table.php:182
-msgid "Settings"
 msgstr ""
 
 #: src/Admin/Table.php:183

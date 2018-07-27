@@ -58,6 +58,7 @@
   .hf-field-builder input[type="text"] {
     width: 100%; }
   .hf-field-builder .available-fields button {
+    margin-bottom: 4px;
     margin-right: 4px; }
   .hf-field-builder .field-config *:last-child {
     margin-bottom: 0; }

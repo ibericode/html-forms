@@ -156,6 +156,6 @@ function uniq(a) {
 }
 
 export default {
-    'init': init,
-    'replaceSelection': replaceSelection,
+    init,
+    replaceSelection
 };

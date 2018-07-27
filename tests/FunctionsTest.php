@@ -62,7 +62,31 @@ class FunctionsTest extends TestCase {
 		self::assertEquals( 'bar', hf_array_get( array( 'foo' => 'bar' ), 'foo' ) );
 		self::assertEquals( 'foobar', hf_array_get( array( 'foo' => array( 'bar' => 'foobar' ) ), 'foo.bar' ) );
 		self::assertEquals( 'default', hf_array_get( array( 'foo' => array( 'bar' => 'foobar' ) ), 'bar', 'default' ) );
-
 	}
+
+	public function test_hf_is_date() {
+		$true = array(
+			'2017/01/01',
+			'2017-01-01',
+			'01-01-2017',
+			'01/01/2017',
+		);
+		foreach( $true as $date ) {
+			self::assertTrue( hf_is_date( $date ) );
+		}
+
+		$false = array(
+			'',
+			'johndoe@email.com',
+			'06-12345678',
+			'2017-2017',
+			'2017-2017-22',
+		);
+
+		foreach( $false as $date ) {
+			self::assertFalse( hf_is_date( $date ) );
+		}
+	}
+
 
 }

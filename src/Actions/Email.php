@@ -94,28 +94,33 @@ class Email extends Action {
      * @param Form $form
      */
    public function process( array $settings, Submission $submission, Form $form ) {
-       if( empty( $settings['to'] ) || empty( $settings['message'] ) ) {
-           return false;
-       }
+    if( empty( $settings['to'] ) || empty( $settings['message'] ) ) {
+      return false;
+    }
 
-       $settings = array_merge( $this->get_default_settings(), $settings );
+    $settings = array_merge( $this->get_default_settings(), $settings );
 
-       $to = hf_replace_data_variables( $settings['to'], $submission->data );
-       $subject = ! empty( $settings['subject'] ) ? hf_replace_data_variables( $settings['subject'], $submission->data ) : '';
-       $message = hf_replace_data_variables( $settings['message'], $submission->data );
-       $headers = explode( PHP_EOL, hf_replace_data_variables( $settings['headers'], $submission->data ) );
-       $html_email = $settings['content_type'] === 'text/html';
+    $to = hf_replace_data_variables( $settings['to'], $submission->data );
+    $subject = ! empty( $settings['subject'] ) ? hf_replace_data_variables( $settings['subject'], $submission->data ) : '';
+    $message = hf_replace_data_variables( $settings['message'], $submission->data );
+    
+    // parse additional email headers from settings
+    $headers = array();
+    if( ! empty( $settings['headers'] ) ) {
+      $headers = explode( PHP_EOL, hf_replace_data_variables( $settings['headers'], $submission->data ) );
+    }
 
-       if( $html_email ) {
-          $headers[] = 'Content-Type: text/html';
-          $message = nl2br( $message );
-       }
+    $html_email = $settings['content_type'] === 'text/html';
+    if( $html_email ) {
+      $headers[] = 'Content-Type: text/html';
+      $message = nl2br( $message );
+    } 
 
-       if( ! empty( $settings['from'] ) ) {
-           $from = hf_replace_data_variables($settings['from'], $submission->data);
-           $headers[] = sprintf( 'From: %s', $from );
-       }
+    if( ! empty( $settings['from'] ) ) {
+      $from = hf_replace_data_variables($settings['from'], $submission->data);
+      $headers[] = sprintf( 'From: %s', $from );
+    }
 
-       return wp_mail( $to, $subject, $message, $headers );
-   }
+    return wp_mail( $to, $subject, $message, $headers );
+  }
 }

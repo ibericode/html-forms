@@ -1,5 +1,7 @@
 'use strict';
 
+window.html_forms = {};
+
 import Tabs from './tabs.js';
 import Editor from './form-editor.js';
 import Actions from './form-actions.js';
@@ -19,8 +21,10 @@ if( document.getElementById('hf-form-editor') ) {
 
 tlite(el => el.className.indexOf('hf-tooltip') > -1 );
 
-// expose variables
-window.html_forms = {
-	'FieldBuilder': FieldBuilder,
-	'Editor': Editor,
-};
+window.html_forms.FieldBuilder = FieldBuilder;
+window.html_forms.Editor = Editor;
+
+// tell WP common.js to override the method used for determining hidden columns (screen options)
+if( hf_options.view === 'edit' ) {
+	window.columns.useCheckboxesForHidden();
+}

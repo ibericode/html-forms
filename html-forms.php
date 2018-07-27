@@ -1,15 +1,15 @@
 <?php
 /*
 Plugin Name: HTML Forms
-Plugin URI: https://htmlformsplus.com/#utm_source=wp-plugin&utm_medium=html-forms&utm_campaign=plugins-page
+Plugin URI: https://www.htmlforms.io/#utm_source=wp-plugin&utm_medium=html-forms&utm_campaign=plugins-page
 Description: Not just another forms plugin. Simple and flexible.
-Version: 1.1.3
+Version: 1.3.1
 Author: ibericode
 Author URI: https://ibericode.com/
 License: GPL v3
 Text Domain: html-forms
 
-HTML Forms Plus
+HTML Forms 
 Copyright (C) 2017-2018, Danny van Kooten, danny@ibericode.com
 
 This program is free software: you can redistribute it and/or modify
@@ -42,11 +42,19 @@ function _bootstrap() {
     $email_action = new Actions\Email();
     $email_action->hook();
 
+    if( class_exists( 'MC4WP_MailChimp' ) ) {
+        $mailchimp_action = new Actions\MailChimp();
+        $mailchimp_action->hook();
+    }
+
     if( is_admin() ) {
         if( ! defined( 'DOING_AJAX' ) || ! DOING_AJAX ) {
             $admin = new Admin\Admin( __FILE__ );
             $admin->hook();
         }
+
+        $gdpr = new Admin\GDPR();
+        $gdpr->hook();
     }
 }
 
@@ -68,7 +76,7 @@ function _install() {
 
 }
 
-define( 'HTML_FORMS_VERSION', '1.1.3' );
+define( 'HTML_FORMS_VERSION', '1.3.1' );
 
 if( ! function_exists( 'hf_get_form' ) ) {
     require __DIR__ . '/vendor/autoload.php';

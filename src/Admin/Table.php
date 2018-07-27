@@ -3,10 +3,9 @@
 namespace HTML_Forms\Admin;
 use WP_List_Table, WP_Post;
 
+// Check if WP Core class exists so that we can keep testing rest of HTML Forms in isolation..
 if( class_exists( 'WP_List_Table' ) ) {
-    /**
-     * Class MC4WP_Forms_Table
-     */
+
     class Table extends WP_List_Table {
 
         /**
@@ -63,12 +62,10 @@ if( class_exists( 'WP_List_Table' ) ) {
          * @return array
          */
         public function get_views() {
-
             $counts = wp_count_posts( 'html-form' );
             $current = isset( $_GET['post_status'] ) ? $_GET['post_status'] : '';
-
             $count_any = $counts->publish + $counts->draft + $counts->future + $counts->pending;
-
+            
             return array(
                 '' => sprintf( '<a href="%s" class="%s">%s</a> (%d)', remove_query_arg( 'post_status' ), $current == '' ? 'current' : '', __( 'All' ), $count_any ),
                 'trash' => sprintf( '<a href="%s" class="%s">%s</a> (%d)', add_query_arg( array( 'post_status' => 'trash' ) ), $current == 'trash' ? 'current' : '', __( 'Trash' ), $counts->trash ),
@@ -128,7 +125,8 @@ if( class_exists( 'WP_List_Table' ) ) {
         public function get_items() {
             $args = array(
                 'post_type' => 'html-form',
-                'post_status' =>  array( 'publish', 'draft', 'pending', 'future' )
+                'post_status' =>  array( 'publish', 'draft', 'pending', 'future' ),
+                'numberposts' => -1,
             );
 
             if( ! empty( $_GET['s'] ) ) {
@@ -172,6 +170,8 @@ if( class_exists( 'WP_List_Table' ) ) {
                 return sprintf( '<strong>%s</strong>', esc_html( $post->post_title ) );
             }
 
+            $form = hf_get_form( $post );
+
             $edit_link = admin_url( 'admin.php?page=html-forms&view=edit&form_id=' . $post->ID );
             $title      = '<strong><a class="row-title" href="' . $edit_link . '">' . esc_html( $post->post_title ) . '</a></strong>';
 
@@ -183,7 +183,7 @@ if( class_exists( 'WP_List_Table' ) ) {
                 'actions'       => __( 'Actions', 'html-forms' ),
             );
 
-            if( $this->settings['save_submissions'] ) {
+            if( $form->settings['save_submissions'] ) {
                 $tabs['submissions'] = __( 'Submissions', 'html-forms' );
             }
 
@@ -262,6 +262,19 @@ if( class_exists( 'WP_List_Table' ) ) {
 
         public function process_bulk_action_untrash( $forms ) {
             return array_map( 'wp_untrash_post', $forms );
+        }
+
+        /**
+         * Generates content for a single row of the table
+         *
+         * @since 3.1.0
+         *
+         * @param object $item The current item
+         */
+        public function single_row( $item ) {
+            echo sprintf( '<tr id="hf-forms-item-%d">',$item->ID );
+            $this->single_row_columns( $item );
+            echo '</tr>';
         }
 
     }

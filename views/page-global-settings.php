@@ -28,18 +28,12 @@
                     </td>
                 </tr>
 
-                <tr valign="top">
-                    <th scope="row"><?php _e( 'Save form submissions?', 'html-forms' ); ?></th>
-                    <td>
-                        <label><input type="radio" name="hf_settings[save_submissions]" value="1" <?php checked( $settings['save_submissions'], 1 ); ?>> <?php _e( 'Yes' ); ?></label> &nbsp;
-                        <label><input type="radio"  name="hf_settings[save_submissions]" value="0"  <?php checked( $settings['save_submissions'], 0 ); ?>> <?php _e( 'No' ); ?></label>
-
-                        <p class="help"><?php _e( 'Select "yes" to store all successful form submissions.', 'html-forms' ); ?></p>
-                    </td>
-                </tr>
             </table>
         <?php submit_button(); ?>
     </form>
+
+
+    <?php do_action( 'hf_admin_output_misc_settings' ); ?>
 
     <?php require __DIR__ . '/admin-footer.php'; ?>
 </div>

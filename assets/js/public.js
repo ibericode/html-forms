@@ -1,4 +1,4 @@
-(function () { var require = undefined; var module = undefined; var exports = undefined; var define = undefined;(function(){function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s}return e})()({1:[function(require,module,exports){
+(function () { var require = undefined; var module = undefined; var exports = undefined; var define = undefined;(function(){function r(e,n,t){function o(i,f){if(!n[i]){if(!e[i]){var c="function"==typeof require&&require;if(!f&&c)return c(i,!0);if(u)return u(i,!0);var a=new Error("Cannot find module '"+i+"'");throw a.code="MODULE_NOT_FOUND",a}var p=n[i]={exports:{}};e[i][0].call(p.exports,function(r){var n=e[i][1][r];return o(n||r)},p,p.exports,r,e,n,t)}return n[i].exports}for(var u="function"==typeof require&&require,i=0;i<t.length;i++)o(t[i]);return o}return r})()({1:[function(require,module,exports){
 'use strict';
 
 // Get fields based on name from a form.
@@ -7,7 +7,7 @@ Object.defineProperty(exports, "__esModule", {
     value: true
 });
 function getFields(form, fieldName) {
-    return form.querySelectorAll('input[name="' + fieldName + '"], select[name="' + fieldName + '"], textarea[name="' + fieldName + '"]');
+    return form.querySelectorAll('input[name="' + fieldName + '"], select[name="' + fieldName + '"], textarea[name="' + fieldName + '"], button[name="' + fieldName + '"]');
 }
 
 function getFieldValues(form, fieldName) {
@@ -20,6 +20,14 @@ function getFieldValues(form, fieldName) {
 
         if ((type === "radio" || type === "checkbox") && !input.checked) {
             continue;
+        }
+
+        if (type === 'button' || type === 'submit' || input.tagName === 'BUTTON') {
+            if ((!evt || evt.target !== input) && form.dataset[fieldName] !== input.value) {
+                continue;
+            }
+
+            form.dataset[fieldName] = input.value;
         }
 
         values.push(input.value);
@@ -42,13 +50,13 @@ function findForm(element) {
     return null;
 }
 
-function toggleElement(el) {
+function toggleElement(el, evt) {
     var show = !!el.getAttribute('data-show-if');
     var conditions = show ? el.getAttribute('data-show-if').split(':') : el.getAttribute('data-hide-if').split(':');
     var fieldName = conditions[0];
     var expectedValues = (conditions.length > 1 ? conditions[1] : "*").split('|');
     var form = findForm(el);
-    var values = getFieldValues(form, fieldName);
+    var values = getFieldValues(form, fieldName, evt);
 
     // determine whether condition is met
     var conditionMet = false;
@@ -85,7 +93,7 @@ function toggleElement(el) {
     });
 }
 
-function selectOption(el) {
+function selectOption(el, evt) {
     var conditions = el.getAttribute('data-select-if').split(':');
     var conditionKey = conditions[0];
     var expectedValues = (conditions.length > 1 ? conditions[1] : "*").split('|');
@@ -110,7 +118,7 @@ function selectOption(el) {
     }
 }
 
-function checkOptions(el) {
+function checkOptions(el, evt) {
     var conditions = el.getAttribute('data-check-if').split(':');
     var conditionKey = conditions[0];
     var expectedValues = (conditions.length > 1 ? conditions[1] : "*").split('|');
@@ -158,19 +166,26 @@ function handleInputEvent(evt) {
 
     var form = evt.target.form;
     var elements = form.querySelectorAll('[data-show-if], [data-hide-if]');
-    [].forEach.call(elements, toggleElement);
+    [].forEach.call(elements, function (el) {
+        return toggleElement(el, evt);
+    });
 
     // auto-select
     var selectIfElements = form.querySelectorAll('.hf-form [data-select-if]');
-    [].forEach.call(selectIfElements, selectOption);
+    [].forEach.call(selectIfElements, function (el) {
+        return selectOption(el, evt);
+    });
 
     // auto-check
     var checkIfElements = form.querySelectorAll('.hf-form [data-check-if]');
-    [].forEach.call(checkIfElements, checkOptions);
+    [].forEach.call(checkIfElements, function (el) {
+        return checkOptions(el, evt);
+    });
 }
 
 exports.default = {
     'init': function init() {
+        document.addEventListener('click', handleInputEvent, true);
         document.addEventListener('keyup', handleInputEvent, true);
         document.addEventListener('change', handleInputEvent, true);
         document.addEventListener('hf-refresh', evaluate, true);
@@ -245,21 +260,113 @@ Loader.prototype.stop = function () {
 module.exports = Loader;
 
 },{}],3:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+	value: true
+});
+
+var _slicedToArray = function () { function sliceIterator(arr, i) { var _arr = []; var _n = true; var _d = false; var _e = undefined; try { for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) { _arr.push(_s.value); if (i && _arr.length === i) break; } } catch (err) { _d = true; _e = err; } finally { try { if (!_n && _i["return"]) _i["return"](); } finally { if (_d) throw _e; } } return _arr; } return function (arr, i) { if (Array.isArray(arr)) { return arr; } else if (Symbol.iterator in Object(arr)) { return sliceIterator(arr, i); } else { throw new TypeError("Invalid attempt to destructure non-iterable instance"); } }; }();
+
+var populate = require('populate.js');
+
+// parse ?query=string with array support. no nesting.
+function parseUrlParams(q) {
+	var params = new URLSearchParams(q);
+	var obj = {};
+	var _iteratorNormalCompletion = true;
+	var _didIteratorError = false;
+	var _iteratorError = undefined;
+
+	try {
+		for (var _iterator = params.entries()[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
+			var _step$value = _slicedToArray(_step.value, 2),
+			    name = _step$value[0],
+			    value = _step$value[1];
+
+			if (name.substr(name.length - 2) === "[]") {
+				var arrName = name.substr(0, name.length - 2);
+				obj[arrName] = obj[arrName] || [];
+				obj[arrName].push(value);
+			} else {
+				obj[name] = value;
+			}
+		}
+	} catch (err) {
+		_didIteratorError = true;
+		_iteratorError = err;
+	} finally {
+		try {
+			if (!_iteratorNormalCompletion && _iterator.return) {
+				_iterator.return();
+			}
+		} finally {
+			if (_didIteratorError) {
+				throw _iteratorError;
+			}
+		}
+	}
+
+	return obj;
+}
+
+function init() {
+	// only act on form elements outputted by HTML Forms
+	var forms = [].filter.call(document.forms, function (f) {
+		return f.className.indexOf('hf-form') > -1;
+	});
+	if (!forms) {
+		return;
+	}
+
+	// fill each form with data from URL params
+	var data = parseUrlParams(window.location.search);
+	forms.forEach(function (f) {
+		populate(f, data);
+	});
+}
+
+exports.default = { init: init };
+
+},{"populate.js":7}],4:[function(require,module,exports){
 "use strict";
 
-var _conditionalElements = require('./conditional-elements.js');
+/* window.CustomEvent polyfill for IE */
+(function () {
+  if (typeof window.CustomEvent === "function") return false;
 
-var _conditionalElements2 = _interopRequireDefault(_conditionalElements);
+  function CustomEvent(event, params) {
+    params = params || { bubbles: false, cancelable: false, detail: undefined };
+    var evt = document.createEvent('CustomEvent');
+    evt.initCustomEvent(event, params.bubbles, params.cancelable, params.detail);
+    return evt;
+  }
+
+  CustomEvent.prototype = window.Event.prototype;
+
+  window.CustomEvent = CustomEvent;
+})();
+
+},{}],5:[function(require,module,exports){
+"use strict";
+
+var _formPrefiller = require('./form-prefiller.js');
+
+var _formPrefiller2 = _interopRequireDefault(_formPrefiller);
+
+var _conditionality = require('./conditionality.js');
+
+var _conditionality2 = _interopRequireDefault(_conditionality);
+
+require('./polyfills/custom-event.js');
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 var shim = require('es5-shim');
-var serialize = require('form-serialize');
 var Loader = require('./form-loading-indicator.js');
 var vars = window.hf_js_vars || { ajax_url: window.location.href };
 var EventEmitter = require('wolfy87-eventemitter');
 var events = new EventEmitter();
-
 
 function cleanFormMessages(formEl) {
     var messageElements = formEl.querySelectorAll('.hf-message');
@@ -277,29 +384,38 @@ function addFormMessage(formEl, message) {
 
 function handleSubmitEvents(e) {
     var formEl = e.target;
-
-    // only act on html-forms
     if (formEl.className.indexOf('hf-form') < 0) {
         return;
     }
 
+    // always prevent default (because regular submit doesn't work for HTML Forms)
     e.preventDefault();
     submitForm(formEl);
 }
 
 function submitForm(formEl) {
-    events.emit('submit', [formEl]);
-
-    var data = serialize(formEl, { "hash": false, "empty": true });
-    var request = new XMLHttpRequest();
-
     cleanFormMessages(formEl);
+    emitEvent('submit', formEl);
+
+    var formData = new FormData(formEl);
+    [].forEach.call(formEl.querySelectorAll('[data-was-required=true]'), function (el) {
+        formData.append('_was_required[]', el.getAttribute('name'));
+    });
+
+    var request = new XMLHttpRequest();
     request.onreadystatechange = createRequestHandler(formEl);
     request.open('POST', vars.ajax_url, true);
-    request.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
     request.setRequestHeader("X-Requested-With", "XMLHttpRequest");
-    request.send(data);
+    request.send(formData);
     request = null;
+}
+
+function emitEvent(eventName, element) {
+    // browser event API: formElement.on('hf-success', ..)
+    element.dispatchEvent(new CustomEvent("hf-" + eventName));
+
+    // custom events API: html_forms.on('success', ..)
+    events.emit(eventName, [element]);
 }
 
 function createRequestHandler(formEl) {
@@ -320,12 +436,12 @@ function createRequestHandler(formEl) {
                     return;
                 }
 
-                events.emit('submitted', [formEl]);
+                emitEvent('submitted', formEl);
 
                 if (response.error) {
-                    events.emit('error', [formEl]);
+                    emitEvent('error', formEl);
                 } else {
-                    events.emit('success', [formEl]);
+                    emitEvent('success', formEl);
                 }
 
                 // Show form message
@@ -355,14 +471,16 @@ function createRequestHandler(formEl) {
     };
 }
 
-document.addEventListener('submit', handleSubmitEvents, true);
-_conditionalElements2.default.init();
+document.addEventListener('submit', handleSubmitEvents, false); // useCapture=false to ensure we bubble upwards (and thus can cancel propagation)
+_conditionality2.default.init();
+_formPrefiller2.default.init();
 
 window.html_forms = {
-    'on': events.on.bind(events)
+    'on': events.on.bind(events),
+    'submit': submitForm
 };
 
-},{"./conditional-elements.js":1,"./form-loading-indicator.js":2,"es5-shim":4,"form-serialize":5,"wolfy87-eventemitter":6}],4:[function(require,module,exports){
+},{"./conditionality.js":1,"./form-loading-indicator.js":2,"./form-prefiller.js":3,"./polyfills/custom-event.js":4,"es5-shim":6,"wolfy87-eventemitter":8}],6:[function(require,module,exports){
 /*!
  * https://github.com/es-shims/es5-shim
  * @license es5-shim Copyright 2009-2015 by contributors, MIT License
@@ -2462,271 +2580,105 @@ window.html_forms = {
     }
 }));
 
-},{}],5:[function(require,module,exports){
-// get successful control from form and assemble into object
-// http://www.w3.org/TR/html401/interact/forms.html#h-17.13.2
+},{}],7:[function(require,module,exports){
+/*! populate.js v1.0.2 by @dannyvankooten | MIT license */
+;(function(root) {
 
-// types which indicate a submit action and are not successful controls
-// these will be ignored
-var k_r_submitter = /^(?:submit|button|image|reset|file)$/i;
+	/**
+	 * Populate form fields from a JSON object.
+	 *
+	 * @param form object The form element containing your input fields.
+	 * @param data array JSON data to populate the fields with.
+	 * @param basename string Optional basename which is added to `name` attributes
+	 */
+	var populate = function( form, data, basename) {
 
-// node names which could be successful controls
-var k_r_success_contrls = /^(?:input|select|textarea|keygen)/i;
+		for(var key in data) {
 
-// Matches bracket notation.
-var brackets = /(\[[^\[\]]*\])/g;
+			if( ! data.hasOwnProperty( key ) ) {
+				continue;
+			}
 
-// serializes form fields
-// @param form MUST be an HTMLForm element
-// @param options is an optional argument to configure the serialization. Default output
-// with no options specified is a url encoded string
-//    - hash: [true | false] Configure the output type. If true, the output will
-//    be a js object.
-//    - serializer: [function] Optional serializer function to override the default one.
-//    The function takes 3 arguments (result, key, value) and should return new result
-//    hash and url encoded str serializers are provided with this module
-//    - disabled: [true | false]. If true serialize disabled fields.
-//    - empty: [true | false]. If true serialize empty fields
-function serialize(form, options) {
-    if (typeof options != 'object') {
-        options = { hash: !!options };
-    }
-    else if (options.hash === undefined) {
-        options.hash = true;
-    }
+			var name = key;
+			var value = data[key];
 
-    var result = (options.hash) ? {} : '';
-    var serializer = options.serializer || ((options.hash) ? hash_serializer : str_serialize);
+                        if ('undefined' === typeof value) {
+                            value = '';
+                        }
 
-    var elements = form && form.elements ? form.elements : [];
+                        if (null === value) {
+                            value = '';
+                        }
 
-    //Object store each radio and set if it's empty or not
-    var radio_store = Object.create(null);
+			// handle array name attributes
+			if(typeof(basename) !== "undefined") {
+				name = basename + "[" + key + "]";
+			}
 
-    for (var i=0 ; i<elements.length ; ++i) {
-        var element = elements[i];
+			if(value.constructor === Array) {
+				name += '[]';
+			} else if(typeof value == "object") {
+				populate( form, value, name);
+				continue;
+			}
 
-        // ingore disabled fields
-        if ((!options.disabled && element.disabled) || !element.name) {
-            continue;
-        }
-        // ignore anyhting that is not considered a success field
-        if (!k_r_success_contrls.test(element.nodeName) ||
-            k_r_submitter.test(element.type)) {
-            continue;
-        }
+			// only proceed if element is set
+			var element = form.elements.namedItem( name );
+			if( ! element ) {
+				continue;
+			}
 
-        var key = element.name;
-        var val = element.value;
+			var type = element.type || element[0].type;
 
-        // we can't just use element.value for checkboxes cause some browsers lie to us
-        // they say "on" for value when the box isn't checked
-        if ((element.type === 'checkbox' || element.type === 'radio') && !element.checked) {
-            val = undefined;
-        }
+			switch(type ) {
+				default:
+					element.value = value;
+					break;
 
-        // If we want empty elements
-        if (options.empty) {
-            // for checkbox
-            if (element.type === 'checkbox' && !element.checked) {
-                val = '';
-            }
+				case 'radio':
+				case 'checkbox':
+					for( var j=0; j < element.length; j++ ) {
+						element[j].checked = ( value.indexOf(element[j].value) > -1 );
+					}
+					break;
 
-            // for radio
-            if (element.type === 'radio') {
-                if (!radio_store[element.name] && !element.checked) {
-                    radio_store[element.name] = false;
-                }
-                else if (element.checked) {
-                    radio_store[element.name] = true;
-                }
-            }
+				case 'select-multiple':
+					var values = value.constructor == Array ? value : [value];
 
-            // if options empty is true, continue only if its radio
-            if (val == undefined && element.type == 'radio') {
-                continue;
-            }
-        }
-        else {
-            // value-less fields are ignored unless options.empty is true
-            if (!val) {
-                continue;
-            }
-        }
+					for(var k = 0; k < element.options.length; k++) {
+						element.options[k].selected |= (values.indexOf(element.options[k].value) > -1 );
+					}
+					break;
 
-        // multi select boxes
-        if (element.type === 'select-multiple') {
-            val = [];
+				case 'select':
+				case 'select-one':
+					element.value = value.toString() || value;
+					break;
+				case 'date':
+          				element.value = new Date(value).toISOString().split('T')[0];	
+					break;
+			}
 
-            var selectOptions = element.options;
-            var isSelectedOptions = false;
-            for (var j=0 ; j<selectOptions.length ; ++j) {
-                var option = selectOptions[j];
-                var allowedEmpty = options.empty && !option.value;
-                var hasValue = (option.value || allowedEmpty);
-                if (option.selected && hasValue) {
-                    isSelectedOptions = true;
+		}
 
-                    // If using a hash serializer be sure to add the
-                    // correct notation for an array in the multi-select
-                    // context. Here the name attribute on the select element
-                    // might be missing the trailing bracket pair. Both names
-                    // "foo" and "foo[]" should be arrays.
-                    if (options.hash && key.slice(key.length - 2) !== '[]') {
-                        result = serializer(result, key + '[]', option.value);
-                    }
-                    else {
-                        result = serializer(result, key, option.value);
-                    }
-                }
-            }
+	};
 
-            // Serialize if no selected options and options.empty is true
-            if (!isSelectedOptions && options.empty) {
-                result = serializer(result, key, '');
-            }
+	// Play nice with AMD, CommonJS or a plain global object.
+	if ( typeof define == 'function' && typeof define.amd == 'object' && define.amd ) {
+		define(function() {
+			return populate;
+		});
+	}	else if ( typeof module !== 'undefined' && module.exports ) {
+		module.exports = populate;
+	} else {
+		root.populate = populate;
+	}
 
-            continue;
-        }
+}(this));
 
-        result = serializer(result, key, val);
-    }
-
-    // Check for all empty radio buttons and serialize them with key=""
-    if (options.empty) {
-        for (var key in radio_store) {
-            if (!radio_store[key]) {
-                result = serializer(result, key, '');
-            }
-        }
-    }
-
-    return result;
-}
-
-function parse_keys(string) {
-    var keys = [];
-    var prefix = /^([^\[\]]*)/;
-    var children = new RegExp(brackets);
-    var match = prefix.exec(string);
-
-    if (match[1]) {
-        keys.push(match[1]);
-    }
-
-    while ((match = children.exec(string)) !== null) {
-        keys.push(match[1]);
-    }
-
-    return keys;
-}
-
-function hash_assign(result, keys, value) {
-    if (keys.length === 0) {
-        result = value;
-        return result;
-    }
-
-    var key = keys.shift();
-    var between = key.match(/^\[(.+?)\]$/);
-
-    if (key === '[]') {
-        result = result || [];
-
-        if (Array.isArray(result)) {
-            result.push(hash_assign(null, keys, value));
-        }
-        else {
-            // This might be the result of bad name attributes like "[][foo]",
-            // in this case the original `result` object will already be
-            // assigned to an object literal. Rather than coerce the object to
-            // an array, or cause an exception the attribute "_values" is
-            // assigned as an array.
-            result._values = result._values || [];
-            result._values.push(hash_assign(null, keys, value));
-        }
-
-        return result;
-    }
-
-    // Key is an attribute name and can be assigned directly.
-    if (!between) {
-        result[key] = hash_assign(result[key], keys, value);
-    }
-    else {
-        var string = between[1];
-        // +var converts the variable into a number
-        // better than parseInt because it doesn't truncate away trailing
-        // letters and actually fails if whole thing is not a number
-        var index = +string;
-
-        // If the characters between the brackets is not a number it is an
-        // attribute name and can be assigned directly.
-        if (isNaN(index)) {
-            result = result || {};
-            result[string] = hash_assign(result[string], keys, value);
-        }
-        else {
-            result = result || [];
-            result[index] = hash_assign(result[index], keys, value);
-        }
-    }
-
-    return result;
-}
-
-// Object/hash encoding serializer.
-function hash_serializer(result, key, value) {
-    var matches = key.match(brackets);
-
-    // Has brackets? Use the recursive assignment function to walk the keys,
-    // construct any missing objects in the result tree and make the assignment
-    // at the end of the chain.
-    if (matches) {
-        var keys = parse_keys(key);
-        hash_assign(result, keys, value);
-    }
-    else {
-        // Non bracket notation can make assignments directly.
-        var existing = result[key];
-
-        // If the value has been assigned already (for instance when a radio and
-        // a checkbox have the same name attribute) convert the previous value
-        // into an array before pushing into it.
-        //
-        // NOTE: If this requirement were removed all hash creation and
-        // assignment could go through `hash_assign`.
-        if (existing) {
-            if (!Array.isArray(existing)) {
-                result[key] = [ existing ];
-            }
-
-            result[key].push(value);
-        }
-        else {
-            result[key] = value;
-        }
-    }
-
-    return result;
-}
-
-// urlform encoding serializer
-function str_serialize(result, key, value) {
-    // encode newlines as \r\n cause the html spec says so
-    value = value.replace(/(\r)?\n/g, '\r\n');
-    value = encodeURIComponent(value);
-
-    // spaces should be '+' rather than '%20'.
-    value = value.replace(/%20/g, '+');
-    return result + (result ? '&' : '') + encodeURIComponent(key) + '=' + value;
-}
-
-module.exports = serialize;
-
-},{}],6:[function(require,module,exports){
+},{}],8:[function(require,module,exports){
 /*!
- * EventEmitter v5.2.4 - git.io/ee
+ * EventEmitter v5.2.5 - git.io/ee
  * Unlicense - http://unlicense.org/
  * Oliver Caldwell - http://oli.me.uk/
  * @preserve
@@ -3210,7 +3162,7 @@ module.exports = serialize;
     else {
         exports.EventEmitter = EventEmitter;
     }
-}(this || {}));
+}(typeof window !== 'undefined' ? window : this || {}));
 
-},{}]},{},[3]);
+},{}]},{},[5]);
 ; })();

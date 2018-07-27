@@ -21,9 +21,7 @@ class Submission {
         );
 
         foreach( array( 'ip_address', 'user_agent', 'submitted_at', 'referer_url' ) as $prop ) {
-            if( ! empty( $this->$prop ) ) {
-                $data[ $prop ] = $this->$prop;
-            }
+            $data[ $prop ] = $this->$prop;
         }
 
         if( ! empty( $this->id ) ) {

@@ -1,12 +1,14 @@
 "use strict";
 
 const shim = require('es5-shim');
-const serialize = require('form-serialize');
 const Loader = require('./form-loading-indicator.js');
 const vars = window.hf_js_vars || { ajax_url: window.location.href };
 const EventEmitter = require('wolfy87-eventemitter');
 const events = new EventEmitter();
-import ConditionalElements from './conditional-elements.js';
+
+import prefiller from './form-prefiller.js';
+import conditionality from './conditionality.js';
+import './polyfills/custom-event.js';
 
 function cleanFormMessages(formEl) {
     let messageElements = formEl.querySelectorAll('.hf-message');
@@ -24,29 +26,38 @@ function addFormMessage(formEl, message) {
 
 function handleSubmitEvents(e) {
     const formEl = e.target;
-
-    // only act on html-forms
     if( formEl.className.indexOf('hf-form') < 0 ) {
         return;
-    }
+    }   
 
+    // always prevent default (because regular submit doesn't work for HTML Forms)
     e.preventDefault();
-    submitForm(formEl);
+    submitForm(formEl);       
 }
 
 function submitForm(formEl) {
-    events.emit('submit', [formEl]);
-
-    const data = serialize(formEl, { "hash": false, "empty": true });
-    let request = new XMLHttpRequest();
-
     cleanFormMessages(formEl);
+    emitEvent('submit', formEl);
+
+    let formData = new FormData(formEl);
+    [].forEach.call(formEl.querySelectorAll('[data-was-required=true]'), function(el) {
+        formData.append('_was_required[]', el.getAttribute('name'))
+    });
+
+    let request = new XMLHttpRequest();
     request.onreadystatechange = createRequestHandler(formEl);
     request.open('POST', vars.ajax_url, true);
-    request.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
     request.setRequestHeader("X-Requested-With", "XMLHttpRequest");
-    request.send(data);
+    request.send(formData);
     request = null;
+}
+
+function emitEvent(eventName, element) {
+    // browser event API: formElement.on('hf-success', ..)
+    element.dispatchEvent(new CustomEvent("hf-"+eventName));
+
+    // custom events API: html_forms.on('success', ..)
+    events.emit(eventName, [element]);
 }
 
 function createRequestHandler(formEl) {
@@ -67,12 +78,12 @@ function createRequestHandler(formEl) {
                     return;
                 }
 
-                events.emit('submitted', [formEl]);
+                emitEvent('submitted', formEl);
 
                 if( response.error ) {
-                    events.emit('error', [formEl]);
+                    emitEvent('error', formEl);
                 } else {
-                    events.emit('success', [formEl]);
+                    emitEvent('success', formEl);
                 }
 
                 // Show form message
@@ -102,10 +113,11 @@ function createRequestHandler(formEl) {
     }
 }
 
-
-document.addEventListener('submit', handleSubmitEvents, true);
-ConditionalElements.init();
+document.addEventListener('submit', handleSubmitEvents, false); // useCapture=false to ensure we bubble upwards (and thus can cancel propagation)
+conditionality.init();
+prefiller.init();
 
 window.html_forms = {
     'on': events.on.bind(events),
+    'submit': submitForm,
 };

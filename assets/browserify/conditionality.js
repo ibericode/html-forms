@@ -2,7 +2,7 @@
 
 // Get fields based on name from a form.
 function getFields(form, fieldName) {
-    return form.querySelectorAll('input[name="' + fieldName + '"], select[name="' + fieldName + '"], textarea[name="' + fieldName + '"]');
+    return form.querySelectorAll('input[name="'+fieldName+'"], select[name="'+fieldName+'"], textarea[name="'+fieldName+'"], button[name="'+fieldName+'"]');
 }
 
 function getFieldValues(form, fieldName) {
@@ -13,10 +13,18 @@ function getFieldValues(form, fieldName) {
         const input = inputs[i];
         const type = input.getAttribute("type");
 
-        if( ( type === "radio" || type === "checkbox" ) && ! input.checked) {
+        if( ( type === "radio" || type === "checkbox" ) && ( ! input.checked ) ) {
             continue;
         }
 
+        if( type === 'button' || type === 'submit' || input.tagName === 'BUTTON' ) {
+            if ( ( ! evt || evt.target !== input ) && form.dataset[fieldName] !== input.value ) {
+                continue;
+            }
+
+            form.dataset[fieldName] = input.value;
+        } 
+    
         values.push(input.value);
     }
 
@@ -37,13 +45,13 @@ function findForm(element) {
     return null;
 }
 
-function toggleElement(el) {
+function toggleElement(el, evt) {
     const show = !!el.getAttribute('data-show-if');
     const conditions = show ? el.getAttribute('data-show-if').split(':') : el.getAttribute('data-hide-if').split(':');
     const fieldName = conditions[0];
     const expectedValues = ((conditions.length > 1 ? conditions[1] : "*").split('|'));
     const form = findForm(el);
-    const values = getFieldValues(form, fieldName);
+    const values = getFieldValues(form, fieldName, evt);
 
     // determine whether condition is met
     let conditionMet = false;
@@ -80,7 +88,7 @@ function toggleElement(el) {
     });
 }
 
-function selectOption(el) {
+function selectOption(el, evt) {
     var conditions = el.getAttribute('data-select-if').split(':');
     var conditionKey = conditions[0];
     var expectedValues = (conditions.length > 1 ? conditions[1] : "*").split('|');
@@ -106,7 +114,7 @@ function selectOption(el) {
 
 }
 
-function checkOptions(el) {
+function checkOptions(el, evt) {
     var conditions = el.getAttribute('data-check-if').split(':');
     var conditionKey = conditions[0];
     var expectedValues = (conditions.length > 1 ? conditions[1] : "*").split('|');
@@ -155,19 +163,21 @@ function handleInputEvent(evt) {
 
     const form = evt.target.form;
     const elements = form.querySelectorAll('[data-show-if], [data-hide-if]');
-    [].forEach.call(elements, toggleElement);
+    [].forEach.call(elements, (el) => toggleElement(el, evt));
 
     // auto-select
     const selectIfElements = form.querySelectorAll('.hf-form [data-select-if]');
-    [].forEach.call(selectIfElements, selectOption);
+    [].forEach.call(selectIfElements, (el) => selectOption(el, evt));
 
     // auto-check
     var checkIfElements = form.querySelectorAll('.hf-form [data-check-if]');
-    [].forEach.call(checkIfElements, checkOptions);
+    [].forEach.call(checkIfElements, (el) => checkOptions(el, evt));
+
 }
 
 export default {
     'init': function() {
+        document.addEventListener('click', handleInputEvent, true);
         document.addEventListener('keyup', handleInputEvent, true);
         document.addEventListener('change', handleInputEvent, true);
         document.addEventListener('hf-refresh', evaluate, true);

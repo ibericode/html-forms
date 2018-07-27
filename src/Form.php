@@ -16,12 +16,23 @@ class Form {
      *
      * @param $ID
      */
-    public function __construct($ID) 
+    public function __construct($ID)
     {
         $this->ID = $ID;
     }
 
-    public function get_html() 
+    /**
+    * Magic method for accessing unexisting properties, eg lowercase "id".
+    *
+    * @return mixed
+    */
+    public function __get( $property ) {
+        if( $property === 'id' ) {
+            return $this->ID;
+        }
+    }
+
+    public function get_html()
     {
         $form = $this;
 
@@ -48,14 +59,19 @@ class Form {
         $html .= sprintf( '<!-- HTML Forms v%s - %s -->', HTML_FORMS_VERSION, 'https://wordpress.org/plugins/html-forms/' );
         $html .= sprintf( '<form method="post" %s class="hf-form hf-form-%d %s" %s>', $form_action_attr, $this->ID, esc_attr( $form_classes_attr ), $data_attributes );
 
-        $html .= '<div class="hf-fields-wrap">';
         $html .= sprintf( '<input type="hidden" name="_hf_form_id" value="%d" />', $this->ID );
         $html .= sprintf( '<div style="display: none;"><input type="text" name="_hf_h%d" value="" /></div>', $this->ID );
+        $html .= '<div class="hf-fields-wrap">';
         $html .= $this->get_markup();
         $html .= '<noscript>' . __( "Please enable JavaScript for this form to work.", 'html-forms' ) . '</noscript>';
         $html .= '</div>'; // end field wrap
         $html .= '</form>';
         $html .= '<!-- / HTML Forms -->';
+
+        // ensure JS script is enqueued whenever this function is called
+        if( function_exists( 'wp_enqueue_script' ) ) {
+            wp_enqueue_script('html-forms');
+        }
 
         /**
          * Filters the resulting HTML for this form.
@@ -72,7 +88,7 @@ class Form {
         $attributes = array(
             'id' => $this->ID,
             'title' => $this->title,
-            'slug' => $this->slug, 
+            'slug' => $this->slug,
         );
 
         // add messages
@@ -108,7 +124,7 @@ class Form {
     /**
      * @return string
      */
-    public function __toString() 
+    public function __toString()
     {
         return $this->get_html();
     }
@@ -123,7 +139,7 @@ class Form {
     /**
      * @return array
      */
-    public function get_required_fields() 
+    public function get_required_fields()
     {
         if( empty( $this->settings['required_fields'] ) ) {
             return array();
@@ -136,7 +152,7 @@ class Form {
     /**
      * @return array
      */
-    public function get_email_fields() 
+    public function get_email_fields()
     {
         if( empty( $this->settings['email_fields'] ) ) {
             return array();
@@ -150,7 +166,7 @@ class Form {
     * @param string $code
     * @return string
     */
-    public function get_message( $code ) 
+    public function get_message( $code )
     {
         $form = $this;
         $message = isset( $this->messages[ $code ] ) ? $this->messages[ $code ] : '';
@@ -167,6 +183,8 @@ class Form {
     * @return int The number of named fields in the form
     */
     public function get_field_count() {
-        return substr_count( strtolower( $this->get_html() ), ' name=' );
+        $count = substr_count( strtolower( $this->get_html() ), ' name=' );
+        $count++; // Add one for 'was-required'
+        return $count;
     }
 }

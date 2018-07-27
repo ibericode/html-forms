@@ -7,7 +7,7 @@ $tabs = array(
     'actions'       => __( 'Actions', 'html-forms' ),
 );
 
-if( $settings['save_submissions'] ) {
+if( $form->settings['save_submissions'] ) {
     $tabs['submissions'] = __( 'Submissions', 'html-forms' );
 }
 

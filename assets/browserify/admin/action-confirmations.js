@@ -19,5 +19,5 @@ function handleClickEvent(e) {
 }
 
 export default {
-    'init': init,
+   init
 }

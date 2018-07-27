@@ -29,7 +29,7 @@ class FormsTest extends TestCase {
 
 		// more fields than in form
 		$form->markup = '';
-		$data = array( '_hf_h1' => '', 'foo' => 'bar', 'bar' => 'foo' );
+		$data = array( '_hf_h1' => '', 'foo' => 'bar', 'bar' => 'foo', 'was-required' => array() ); 
 		self::assertEquals('spam', $instance->validate_form($form, $data));
 
 		// required field missing

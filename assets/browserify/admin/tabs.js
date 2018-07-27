@@ -1,17 +1,16 @@
 'use strict';
 
 let tabs, tabNavs;
-let Tabs = {};
 
-Tabs.init = function() {
+function init() {
     tabs = document.querySelectorAll('.hf-tab');
     tabNavs = document.querySelectorAll('#hf-tabs-nav a');
     for(let i=0; i<tabNavs.length; i++) {
-        tabNavs[i].addEventListener('click', Tabs.open);
+        tabNavs[i].addEventListener('click', open);
     }
 };
 
-Tabs.open = function(e) {
+function open(e) {
     let tabTarget = this.getAttribute('data-tab-target');
     for(let i=0; i<tabNavs.length; i++) {
         tabNavs[i].classList.toggle('nav-tab-active', tabNavs[i] === this);
@@ -37,4 +36,7 @@ Tabs.open = function(e) {
 };
 
 
-export default Tabs;
+export default {
+ init,
+ open 
+};

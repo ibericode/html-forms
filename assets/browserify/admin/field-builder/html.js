@@ -1,10 +1,14 @@
-import htmlutil from 'html';
+'use strict';
+
 import renderToString from 'preact-render-to-string';
 import { h } from 'preact';
 
-
 function htmlgenerate(conf) {
-    const label = conf.fieldLabel.length && conf.fieldType !== 'submit' ? h("label", {}, conf.fieldLabel ) : "";
+    const fieldName = namify(conf.fieldLabel); 
+    const fieldId = conf.formSlug + '-' + fieldName;
+    const label = conf.fieldLabel.length && conf.fieldType !== 'submit' ? h("label", {
+        "for": fieldId,
+    }, conf.fieldLabel ) : "";
     let fieldAttr, field;
 
     switch(conf.fieldType) {
@@ -12,39 +16,42 @@ function htmlgenerate(conf) {
         default:
             fieldAttr = {
                 type: conf.fieldType,
-                name: namify(conf.fieldLabel),
+                name: fieldName,
                 value: conf.value,
                 placeholder: conf.placeholder,
                 required: conf.required,
+                id: fieldId,
             };
             field = html("input", fieldAttr);
             break;
         case "textarea":
             fieldAttr = {
-                name: namify(conf.fieldLabel),
+                name: fieldName,
                 placeholder: conf.placeholder,
                 required: conf.required,
+                id: fieldId,
             };
             field = html("textarea", fieldAttr, conf.value);
             break;
 
         case "dropdown":
             fieldAttr = {
-                name: namify(conf.fieldLabel),
+                name: fieldName,
                 required: conf.required,
+                id: fieldId,
             };
             const opts = conf.choices.map((choice) => (
-                html("option", { defaultChecked: choice.checked }, choice.label )
+                html("option", { selected: choice.checked }, choice.label )
             ));
             field = html("select", fieldAttr, opts);
             break;
 
-        case "radio-buttons":
+        case "radio":
             field = conf.choices.map((choice) => (
                 html("label", {}, [
                     html("input", {
                         type:"radio",
-                        name: namify(conf.fieldLabel),
+                        name: fieldName,
                         value: choice.label,
                         selected: choice.checked,
                     }),
@@ -54,12 +61,12 @@ function htmlgenerate(conf) {
             ));
             break;
 
-        case "checkboxes":
+        case "checkbox":
             field = conf.choices.map((choice) => (
                 html("label", {}, [
                     html("input", {
                         type: "checkbox",
-                        name: namify(conf.fieldLabel) + "[]",
+                        name: fieldName + "[]",
                         value: choice.label,
                         checked: choice.checked,
                     }),
@@ -69,6 +76,22 @@ function htmlgenerate(conf) {
             ));
             break;
 
+        case "file":
+            fieldAttr = {
+                type: "file",
+                name: fieldName,
+                required: conf.required,
+                id: fieldId,
+            };
+
+            if(conf['accept']) {
+                fieldAttr['accept'] = conf['accept'];
+            }
+
+            field = html("input", fieldAttr);
+            break;    
+
+
         case "submit":
             fieldAttr = {
                 type: "submit",
@@ -77,21 +100,18 @@ function htmlgenerate(conf) {
             field = html("input", fieldAttr);
             break;
 
-
-
     }
 
 
     let str = "";
     if( conf.wrap ) {
         let tmpl = h("p", {}, [label, field]);
-        str = renderToString(tmpl);
+        str = renderToString(tmpl, null, { pretty: true });
     } else {
-        str += renderToString(label);
-        str += renderToString(field);
+        str += renderToString(label, null, { pretty: true });
+        str += "\n";
+        str += renderToString(field, null, { pretty: true });
     }
-
-    str = htmlutil.prettyPrint(str);
 
     return str;
 }

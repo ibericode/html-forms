@@ -27,6 +27,7 @@ class Admin {
         add_action( 'admin_init', array( $this, 'run_migrations' ) );
         add_action( 'admin_init', array( $this, 'listen' ) );
         add_action( 'admin_print_styles', array( $this, 'assets' ) );
+        add_action( 'admin_head', array( $this, 'add_screen_options' ) );
         add_action( 'hf_admin_action_create_form', array( $this, 'process_create_form' ) );
         add_action( 'hf_admin_action_save_form', array( $this, 'process_save_form' ) );
         add_action( 'hf_admin_action_bulk_delete_submissions', array( $this, 'process_bulk_delete_submissions' ) );
@@ -103,16 +104,48 @@ class Admin {
 
         $suffix = defined( 'SCRIPT_DEBUG' ) && SCRIPT_DEBUG ? '' : '.min';
 
-        wp_enqueue_style( 'hf-admin', plugins_url( 'assets/css/admin'. $suffix .'.css', $this->plugin_file ), array(), HTML_FORMS_VERSION );
-        wp_enqueue_script( 'hf-admin', plugins_url( 'assets/js/admin'. $suffix .'.js', $this->plugin_file ), array(), HTML_FORMS_VERSION, true  );
+        wp_enqueue_style( 'html-forms-admin', plugins_url( 'assets/css/admin'. $suffix .'.css', $this->plugin_file ), array(), HTML_FORMS_VERSION );
+        wp_enqueue_script( 'html-forms-admin', plugins_url( 'assets/js/admin'. $suffix .'.js', $this->plugin_file ), array(), HTML_FORMS_VERSION, true  );
+        wp_localize_script( 'html-forms-admin', 'hf_options', array(
+            'page' => $_GET['page'],
+            'view' => empty( $_GET['view'] ) ? '' : $_GET['view'],
+            'form_id' => empty( $_GET['form_id'] ) ? 0 : (int) $_GET['form_id'],
+        ));
     }
 
     public function menu() {
         $capability = 'edit_forms';
-        add_menu_page( 'HTML Forms', 'HTML Forms', $capability, 'html-forms', array( $this, 'page_overview' ), plugins_url('assets/img/icon.svg', $this->plugin_file ), '99.88491' );
-        add_submenu_page( 'html-forms', 'Forms', 'All Forms', $capability, 'html-forms', array( $this, 'page_overview' ) );
-        add_submenu_page( 'html-forms', 'Add new form', 'Add New', $capability, 'html-forms-add-form', array( $this, 'page_new_form' ) );
-        add_submenu_page( 'html-forms', 'Settings', 'Settings', $capability, 'html-forms-settings', array( $this, 'page_settings' ) );
+        $svg_icon = '<svg version="1.0" xmlns="http://www.w3.org/2000/svg" width="256.000000pt" height="256.000000pt" viewBox="0 0 256.000000 256.000000" preserveAspectRatio="xMidYMid meet"><g transform="translate(0.000000,256.000000) scale(0.100000,-0.100000)"
+fill="#000000" stroke="none"><path d="M0 1280 l0 -1280 1280 0 1280 0 0 1280 0 1280 -1280 0 -1280 0 0 -1280z m2031 593 c8 -8 9 -34 4 -78 -6 -56 -9 -65 -23 -60 -43 16 -98 15 -132 -2 -50 -26 -72 -72 -78 -159 l-5 -74 92 0 91 0 0 -70 0 -70 -90 0 -90 0 0 -345 0 -345 -90 0 -90 0 0 345 0 345 -55 0 -55 0 0 70 0 70 55 0 55 0 0 38 c0 63 20 153 45 202 54 105 141 152 273 147 45 -2 87 -8 93 -14z m-1291 -288 l0 -235 230 0 230 0 0 235 0 235 90 0 90 0 0 -575 0 -575 -90 0 -90 0 0 260 0 260 -230 0 -230 0 0 -260 0 -260 -90 0 -90 0 0 575 0 575 90 0 90 0 0 -235z"/></g></svg>';
+        add_menu_page( 'HTML Forms', 'HTML Forms', $capability, 'html-forms', array( $this, 'page_overview' ), 'data:image/svg+xml;base64,' . base64_encode( $svg_icon ), '99.88491' );
+        add_submenu_page( 'html-forms', __( 'Forms', 'html-forms' ), __( 'All Forms', 'html-forms' ), $capability, 'html-forms', array( $this, 'page_overview' ) );
+        add_submenu_page( 'html-forms', __( 'Add new form', 'html-forms' ), __( 'Add New', 'html-forms' ), $capability, 'html-forms-add-form', array( $this, 'page_new_form' ) );
+        add_submenu_page( 'html-forms', __( 'Settings', 'html-forms' ), __( 'Settings', 'html-forms' ), $capability, 'html-forms-settings', array( $this, 'page_settings' ) );
+
+        if( ! defined( 'HF_PREMIUM_VERSION' ) ) {
+            add_submenu_page( 'html-forms', 'Premium', '<span style="color: #ea6ea6;">Premium</span>', $capability, 'html-forms-premium', array( $this, 'page_premium' ) );
+        }
+    }
+
+    public function add_screen_options() {
+        // only run on the submissions overview page (not detail)
+        if( empty( $_GET['page'] ) || $_GET['page'] !== 'html-forms' || empty( $_GET['view'] ) || $_GET['view'] !== 'edit' || empty( $_GET['form_id'] ) || ! empty( $_GET['submission_id'] ) ) {
+            return; 
+        }
+
+        // don't run if form does not have submissions enabled
+        $form = hf_get_form( $_GET['form_id'] );
+        if( ! $form->settings['save_submissions'] ) {
+            return;
+        }
+
+        // tell screen options to show columns option
+        $submissions = hf_get_form_submissions( $_GET['form_id'] );
+        $columns = $this->get_submission_columns( $submissions );
+        add_filter( 'manage_toplevel_page_html-forms_columns', function( $unused ) use( $columns ) {
+            return $columns;
+        });  
+        add_screen_option( 'layout_columns' );   
     }
 
     public function page_overview() {
@@ -126,33 +159,34 @@ class Admin {
         require_once ABSPATH . 'wp-admin/includes/class-wp-list-table.php';
         $table = new Table( $settings );
 
-        require dirname( $this->plugin_file ) . '/views/overview.php';
+        require dirname( $this->plugin_file ) . '/views/page-overview.php';
     }
 
     public function page_new_form() {
-        require dirname( $this->plugin_file )  . '/views/add-form.php';
+        require dirname( $this->plugin_file )  . '/views/page-add-form.php';
     }
-
 
     public function page_settings() {
         $settings = hf_get_settings();
-        require dirname( $this->plugin_file )  . '/views/global-settings.php';
+        require dirname( $this->plugin_file )  . '/views/page-global-settings.php';
     }
 
+    public function page_premium() {
+        require dirname( $this->plugin_file ) . '/views/page-premium.php';
+    }
 
     public function page_edit_form() {
         $active_tab = ! empty( $_GET['tab'] ) ? $_GET['tab'] : 'fields';
         $form_id = (int) $_GET['form_id'];
         $form = hf_get_form( $form_id );
-        $settings = hf_get_settings();
-
-        require dirname( $this->plugin_file )  . '/views/edit-form.php';
+        $settings = hf_get_settings();        
+        require dirname( $this->plugin_file )  . '/views/page-edit-form.php';
     }
 
     public function tab_fields( Form $form ) {
         $form_preview_url = add_query_arg( array( 
             'hf_preview_form' => $form->ID,
-        ), get_option( 'home' ) );
+        ), site_url( '/', 'admin' ) );
         require dirname( $this->plugin_file )  . '/views/tab-fields.php';
     }
 
@@ -170,15 +204,7 @@ class Admin {
         require dirname( $this->plugin_file )  . '/views/tab-actions.php';
     }
 
-
-    public function tab_submissions_list( Form $form ) {
-        if( ! empty( $_GET['submission_id'] ) ) {
-            return;
-        }
-
-        $submissions = hf_get_form_submissions( $form->ID );
-
-        // create array of columns for submissions tab
+    public function get_submission_columns( array $submissions ) {
         $columns = array();
         foreach( $submissions as $s ) {
             if( ! is_array( $s->data ) ) {
@@ -186,13 +212,23 @@ class Admin {
             }
 
             foreach( $s->data as $field => $value ) {
-                if (!array_key_exists($field, $columns)) {
-                    $columns[$field] = true;
+                if( ! isset( $columns[$field] ) ) {
+                    $columns[$field] = esc_html( ucfirst( strtolower( str_replace( '_', ' ', $field ) ) ) );
                 }
             }
         }
-        $columns = array_keys( $columns );
+        return $columns;
+    }
 
+    public function tab_submissions_list( Form $form ) {
+        if( ! empty( $_GET['submission_id'] ) ) {
+            return;
+        }
+
+        $submissions = hf_get_form_submissions( $form->ID );
+        $columns = $this->get_submission_columns( $submissions );
+        $hidden_columns = get_hidden_columns( get_current_screen() ); 
+        
         require dirname( $this->plugin_file )  . '/views/tab-submissions-list.php';
     }
 
