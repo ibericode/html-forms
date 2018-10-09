@@ -1,3 +1,19 @@
+.hf-form-meta-row {
+  display: flex;
+  flex-wrap: wrap; }
+
+.hf-form-meta-section {
+  margin-right: 2em;
+  max-width: 100%; }
+  .hf-form-meta-section:last-child {
+    flex: 1; }
+  .hf-form-meta-section input {
+    max-width: 100%; }
+
+.hf-form-meta-label {
+  display: block;
+  font-weight: 600; }
+
 .hf-tab {
   display: none;
   background: inherit;
