@@ -130,7 +130,7 @@ fill="#000000" stroke="none"><path d="M0 1280 l0 -1280 1280 0 1280 0 0 1280 0 12
     public function add_screen_options() {
         // only run on the submissions overview page (not detail)
         if( empty( $_GET['page'] ) || $_GET['page'] !== 'html-forms' || empty( $_GET['view'] ) || $_GET['view'] !== 'edit' || empty( $_GET['form_id'] ) || ! empty( $_GET['submission_id'] ) ) {
-            return; 
+            return;
         }
 
         // don't run if form does not have submissions enabled
@@ -144,15 +144,15 @@ fill="#000000" stroke="none"><path d="M0 1280 l0 -1280 1280 0 1280 0 0 1280 0 12
         $columns = $this->get_submission_columns( $submissions );
         add_filter( 'manage_toplevel_page_html-forms_columns', function( $unused ) use( $columns ) {
             return $columns;
-        });  
-        add_screen_option( 'layout_columns' );   
+        });
+        add_screen_option( 'layout_columns' );
     }
 
     public function page_overview() {
         if( ! empty( $_GET['view'] ) && $_GET['view'] === 'edit' ) {
             $this->page_edit_form();
             return;
-        }  
+        }
 
         $settings = hf_get_settings();
 
@@ -179,12 +179,12 @@ fill="#000000" stroke="none"><path d="M0 1280 l0 -1280 1280 0 1280 0 0 1280 0 12
         $active_tab = ! empty( $_GET['tab'] ) ? $_GET['tab'] : 'fields';
         $form_id = (int) $_GET['form_id'];
         $form = hf_get_form( $form_id );
-        $settings = hf_get_settings();        
+        $settings = hf_get_settings();
         require dirname( $this->plugin_file )  . '/views/page-edit-form.php';
     }
 
     public function tab_fields( Form $form ) {
-        $form_preview_url = add_query_arg( array( 
+        $form_preview_url = add_query_arg( array(
             'hf_preview_form' => $form->ID,
         ), site_url( '/', 'admin' ) );
         require dirname( $this->plugin_file )  . '/views/tab-fields.php';
@@ -227,8 +227,8 @@ fill="#000000" stroke="none"><path d="M0 1280 l0 -1280 1280 0 1280 0 0 1280 0 12
 
         $submissions = hf_get_form_submissions( $form->ID );
         $columns = $this->get_submission_columns( $submissions );
-        $hidden_columns = get_hidden_columns( get_current_screen() ); 
-        
+        $hidden_columns = get_hidden_columns( get_current_screen() );
+
         require dirname( $this->plugin_file )  . '/views/tab-submissions-list.php';
     }
 
@@ -248,12 +248,13 @@ fill="#000000" stroke="none"><path d="M0 1280 l0 -1280 1280 0 1280 0 0 1280 0 12
 
         $data = $_POST['form'];
         $form_title = sanitize_text_field( $data['title'] );
+        $form_slug  = sanitize_title( $form_title );
         $form_id = wp_insert_post(
             array(
                 'post_type' => 'html-form',
                 'post_status' => 'publish',
                 'post_title' => $form_title,
-                'post_content' => $this->get_default_form_content(),
+                'post_content' => $this->get_default_form_content( $form_slug ),
             )
         );
 
@@ -270,7 +271,7 @@ fill="#000000" stroke="none"><path d="M0 1280 l0 -1280 1280 0 1280 0 0 1280 0 12
         remove_all_filters( 'content_save_pre' );
 
         // strip <form> tag from markup
-        $data['markup'] = preg_replace( '/<\/?form(.|\s)*?>/i', '', $data['markup'] ); 
+        $data['markup'] = preg_replace( '/<\/?form(.|\s)*?>/i', '', $data['markup'] );
 
         $form_id = wp_insert_post( array(
             'ID' => $form_id,
@@ -336,12 +337,16 @@ fill="#000000" stroke="none"><path d="M0 1280 l0 -1280 1280 0 1280 0 0 1280 0 12
         $wpdb->query( sprintf( "DELETE FROM {$table} WHERE id IN( %s );", $ids ) );
     }
 
-    private function get_default_form_content() {
+    /**
+     * @param string $form_slug
+     * @return string
+     */
+    private function get_default_form_content( $form_slug ) {
         $html = '';
-        $html .= sprintf( "<p>\n\t<label>%1\$s</label>\n\t<input type=\"text\" name=\"NAME\" placeholder=\"%1\$s\" required />\n</p>", __( 'Your name', 'html-forms' ) ) . PHP_EOL;
-        $html .= sprintf( "<p>\n\t<label>%1\$s</label>\n\t<input type=\"email\" name=\"EMAIL\" placeholder=\"%1\$s\" required />\n</p>", __( 'Your email', 'html-forms' ) ) . PHP_EOL;
-        $html .= sprintf( "<p>\n\t<label>%1\$s</label>\n\t<input type=\"text\" name=\"SUBJECT\" placeholder=\"%1\$s\" required />\n</p>", __( 'Subject', 'html-forms' ) ) . PHP_EOL;
-        $html .= sprintf( "<p>\n\t<label>%1\$s</label>\n\t<textarea name=\"MESSAGE\" placeholder=\"%1\$s\" required></textarea>\n</p>", __( 'Message', 'html-forms' ) ). PHP_EOL;
+        $html .= sprintf( "<p>\n\t<label for=\"%2\$s-NAME\">%1\$s</label>\n\t<input type=\"text\" name=\"NAME\" id=\"%2\$s-NAME\" placeholder=\"%1\$s\" required />\n</p>", __( 'Your name', 'html-forms' ), $form_slug ) . PHP_EOL;
+        $html .= sprintf( "<p>\n\t<label for=\"%2\$s-EMAIL\">%1\$s</label>\n\t<input type=\"email\" name=\"EMAIL\" id=\"%2\$s-EMAIL\" placeholder=\"%1\$s\" required />\n</p>", __( 'Your email', 'html-forms' ), $form_slug ) . PHP_EOL;
+        $html .= sprintf( "<p>\n\t<label for=\"%2\$s-SUBJECT\">%1\$s</label>\n\t<input type=\"text\" name=\"SUBJECT\" id=\"%2\$s-SUBJECT\" placeholder=\"%1\$s\" required />\n</p>", __( 'Subject', 'html-forms' ), $form_slug ) . PHP_EOL;
+        $html .= sprintf( "<p>\n\t<label for=\"%2\$s-MESSAGE\">%1\$s</label>\n\t<textarea name=\"MESSAGE\" id=\"%2\$s-MESSAGE\" placeholder=\"%1\$s\" required></textarea>\n</p>", __( 'Message', 'html-forms' ), $form_slug ). PHP_EOL;
         $html .= sprintf( "<p>\n\t<input type=\"submit\" value=\"%s\" />\n</p>", __( 'Send', 'html-forms' ) );
         return $html;
     }
