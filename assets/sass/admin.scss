@@ -1,3 +1,26 @@
+.hf-form-meta-row {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.hf-form-meta-section {
+  margin-right: 2em;
+  max-width: 100%;
+
+  &:last-child {
+    flex: 1;
+  }
+
+  input {
+    max-width: 100%;
+  }
+}
+
+.hf-form-meta-label {
+  display: block;
+  font-weight: 600;
+}
+
 .hf-tab {
   display: none;
   background: inherit;
@@ -8,12 +31,12 @@
     display: block;
   }
 
-  h2{
+  h2 {
     margin-top: 20px;
   }
 }
 
-.hf-accordion{
+.hf-accordion {
   border: 1px solid #e5e5e5;
   margin-bottom: 6px;
 }
@@ -141,8 +164,8 @@
 }
 
 @media(max-width:1217px) {
-  #hf-form-preview{ 
-    border-left-width: 1px; 
+  #hf-form-preview{
+    border-left-width: 1px;
   }
 }
 
