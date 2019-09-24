@@ -216,7 +216,12 @@ class Forms
         $data = $this->get_request_data();
         $form_id = (int) $data['_hf_form_id'];
         $form = hf_get_form($form_id);
-        $error_code = $this->validate_form($form, $data);
+
+        try {
+            $error_code = $this->validate_form($form, $data);
+        } catch ( SubmissionException $e ) {
+            $error_code = $e;
+        }
 
         if (empty( $error_code ) ) {
 
@@ -303,7 +308,7 @@ class Forms
             /**
              * General purpose hook for when a form error occurred
              *
-             * @param string $error_code
+             * @param string|SubmissionException $error_code
              * @param Form $form
              * @param array $data
              */
