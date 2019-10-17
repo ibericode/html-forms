@@ -104,7 +104,7 @@ class Email extends Action {
     $to = apply_filters( 'hf_action_email_to', hf_replace_data_variables( $settings['to'], $submission->data, 'strip_tags' ), $submission );
     $subject = ! empty( $settings['subject'] ) ? hf_replace_data_variables( $settings['subject'], $submission->data, 'strip_tags' ) : '';
     $subject = apply_filters( 'hf_action_email_subject', $subject, $submission );
-    $message = apply_filters( 'hf_action_email_message', hf_replace_data_variables( $settings['message'], $submission->data, $html_email ? null : 'strip_tags' ), $submission );
+    $message = apply_filters( 'hf_action_email_message', hf_replace_data_variables( $settings['message'], $submission->data, $html_email ? null : 'strip_tags', $html_email ), $submission );
 
     // parse additional email headers from settings
     $headers = array();
