@@ -7,6 +7,7 @@ $baseDir = dirname($vendorDir);
 
 return array(
     'HTML_Forms\\Actions\\Action' => $baseDir . '/src/actions/class-action.php',
+    'HTML_Forms\\Actions\\Api' => $baseDir . '/src/actions/class-api.php',
     'HTML_Forms\\Actions\\Email' => $baseDir . '/src/actions/class-email.php',
     'HTML_Forms\\Actions\\MailChimp' => $baseDir . '/src/actions/class-mailchimp.php',
     'HTML_Forms\\Admin\\Admin' => $baseDir . '/src/admin/class-admin.php',
