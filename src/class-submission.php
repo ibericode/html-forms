@@ -10,6 +10,7 @@ class Submission {
 	public $user_agent  = '';
 	public $referer_url = '';
 	public $submitted_at;
+	public $actions     = array();
 
 	public function save() {
 		global $wpdb;
@@ -18,6 +19,7 @@ class Submission {
 		$data = array(
 			'data'    => json_encode( $this->data ),
 			'form_id' => $this->form_id,
+			'actions' => json_encode( $this->actions ),
 		);
 
 		foreach ( array( 'ip_address', 'user_agent', 'submitted_at', 'referer_url' ) as $prop ) {
@@ -42,6 +44,7 @@ class Submission {
 	 */
 	public static function from_object( $object ) {
 		$data = empty( $object->data ) ? array() : (array) json_decode( $object->data, true );
+		$actions = empty( $object->actions ) ? array() : (array) json_decode( $object->actions, true );
 
 		$submission               = new Submission();
 		$submission->id           = (int) $object->id;
@@ -51,6 +54,7 @@ class Submission {
 		$submission->user_agent   = (string) $object->user_agent;
 		$submission->referer_url  = (string) $object->referer_url;
 		$submission->submitted_at = $object->submitted_at;
+		$submission->actions      = $actions;
 		return $submission;
 	}
 

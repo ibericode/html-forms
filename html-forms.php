@@ -69,6 +69,7 @@ function _install() {
         `id` INT UNSIGNED NOT NULL PRIMARY KEY AUTO_INCREMENT,
         `form_id` INT UNSIGNED NOT NULL,
         `data` TEXT NOT NULL,
+        `actions` TEXT NOT NULL,
         `user_agent` TEXT NULL,
         `ip_address` VARCHAR(255) NULL,
         `referer_url` VARCHAR(255) NULL,

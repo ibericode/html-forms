@@ -112,6 +112,15 @@ class Api extends Action {
         curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
         $response = curl_exec($curl);
         $info = curl_getinfo($curl);
+        $submission->actions[] = array(
+                "type" => $this->type,
+                "result" => array(
+                    "url" => $settings['url'],
+                    "method" => $settings['method'],
+                    "response" => $info['http_code'],
+                    "body" => substr($response, $info['header_size']),
+                ),
+            );
         curl_close($curl);
         return $info['http_code']==200;
     }

@@ -121,6 +121,24 @@ class Email extends Action {
 			$headers[] = sprintf( 'From: %s', $from );
 		}
 
-		return wp_mail( $to, $subject, $message, $headers );
+		$result = wp_mail( $to, $subject, $message, $headers );
+		// https://gist.github.com/Bobz-zg/118ea5867ff33672c91493e79b356f88
+		if (!$result) {
+			global $ts_mail_errors;
+			global $phpmailer;
+			if (!isset($ts_mail_errors)) $ts_mail_errors = array();
+			if (isset($phpmailer)) {
+				$ts_mail_errors[] = $phpmailer->ErrorInfo;
+			}
+		}
+		$submission->actions[] = array(
+				"type" => $this->type,
+				"result" => array(
+					"succes" => $result,
+					"errors" => json_encode($ts_mail_errors),
+				),
+			);
+
+		return $result;
 	}
 }
