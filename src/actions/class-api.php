@@ -22,6 +22,7 @@ class Api extends Action {
             'method'       => 'GET',
             'url'          => '',
             'content_type' => 'text/html',
+            'cenvert'      => '',
         );
         return $defaults;
     }
@@ -61,6 +62,13 @@ class Api extends Action {
                </td>
            </tr>
            <tr>
+               <th><label><?php echo __( 'Convert arrays', 'html-forms' ); ?></label></th>
+               <td>
+                   <input name="form[settings][actions][<?php echo $index; ?>][convert]" value="on" <?php if ($settings['convert'] == 'on') echo('checked'); ?> type="checkbox" />
+                   <span> i.e. encode <code>value[0]=1&amp;value[1]=2</code> as <code>value=1,2</code></span>
+               </td>
+           </tr>
+           <tr>
                <th><label><?php echo __( 'Additional headers', 'html-forms' ); ?></label></th>
                <td>
                    <textarea name="form[settings][actions][<?php echo $index; ?>][headers]" rows="4" class="widefat" placeholder="<?php echo esc_attr( 'SomeToken: 1234' ); ?>"><?php echo esc_textarea( $settings['headers'] ); ?></textarea>
@@ -86,6 +94,13 @@ class Api extends Action {
 
         if ( empty( $settings['method'] ) || empty( $settings['url'] ) || empty( $settings['content_type'] ) ) {
             return false;
+        }
+        if ( !empty( $settings['convert'] ) ) {
+            foreach ($submission->data as $name=>$value) {
+                if ( is_array($value) ) {
+					$submission->data[$name] = implode(',',$value);
+				}
+            }
         }
         $curl = curl_init($settings['url']);
         if ( $settings['method'] == 'POST' ) {
