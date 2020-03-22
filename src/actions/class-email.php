@@ -57,12 +57,12 @@ class Email extends Action {
 				   <input name="form[settings][actions][<?php echo $index; ?>][subject]" value="<?php echo esc_attr( $settings['subject'] ); ?>" type="text" class="regular-text" placeholder="<?php echo esc_attr( __( 'Your email subject', 'html-forms' ) ); ?>" />
 			   </td>
 		   </tr>
-			
+
 		   <tr>
 			   <th><label><?php echo __( 'Message', 'html-forms' ); ?> <span class="hf-required">*</span></label></th>
 			   <td>
 				   <textarea name="form[settings][actions][<?php echo $index; ?>][message]" rows="8" class="widefat" placeholder="<?php echo esc_attr( __( 'Your email message', 'html-forms' ) ); ?>" required><?php echo esc_textarea( $settings['message'] ); ?></textarea>
-				   <p class="help"><?php _e( 'You can use the following variables (in all fields): ', 'html-forms' ); ?><br /><span class="hf-field-names"></span></p>                 
+				   <p class="help"><?php _e( 'You can use the following variables (in all fields): ', 'html-forms' ); ?><br /><span class="hf-field-names"></span></p>
 			   </td>
 		   </tr>
 
@@ -75,7 +75,7 @@ class Email extends Action {
 				   </select>
 			   </td>
 		   </tr>
-		
+
 		   <tr>
 			   <th><label><?php echo __( 'Additional headers', 'html-forms' ); ?></label></th>
 			   <td>
@@ -122,23 +122,11 @@ class Email extends Action {
 		}
 
 		$result = wp_mail( $to, $subject, $message, $headers );
-		// https://gist.github.com/Bobz-zg/118ea5867ff33672c91493e79b356f88
-		if (!$result) {
-			global $ts_mail_errors;
-			global $phpmailer;
-			if (!isset($ts_mail_errors)) $ts_mail_errors = array();
-			if (isset($phpmailer)) {
-				$ts_mail_errors[] = $phpmailer->ErrorInfo;
-			}
-		}
-		$submission->actions[] = array(
-				"type" => $this->type,
-				"result" => array(
-					"succes" => $result,
-					"errors" => json_encode($ts_mail_errors),
-				),
-			);
 
+		$submission->actions[] = array(
+			'type'   => $this->type,
+			'result' => $result,
+		);
 		return $result;
 	}
 }
