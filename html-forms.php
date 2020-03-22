@@ -40,9 +40,9 @@ function _bootstrap() {
     $email_action = new Actions\Email();
     $email_action->hook();
 
-	if( function_exists( 'curl_version' ) ) {
-		$api_action = new Actions\Api();
-		$api_action->hook();
+    if( function_exists( 'curl_version' ) ) {
+        $api_action = new Actions\Api();
+        $api_action->hook();
 	}
     if( class_exists( 'MC4WP_MailChimp' ) ) {
         $mailchimp_action = new Actions\MailChimp();
