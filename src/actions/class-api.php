@@ -112,7 +112,7 @@ class Api extends Action {
 		curl_setopt( $curl, CURLOPT_POSTFIELDS, $postdata );
 		$headers = array(
 			'Content-Type: ' . $settings['content_type'],
-			'Content-Length: ' . strlen( $data ),
+			'Content-Length: ' . strlen( $postdata ),
 		);
 		curl_setopt( $curl, CURLOPT_HTTPHEADER, $headers );
 		if ( ! empty( $settings['headers'] ) ) {
