@@ -114,7 +114,7 @@ class Api extends Action {
 			'Content-Type: ' . $settings['content_type'],
 			'Content-Length: ' . strlen( $data ),
 		);
-		curl_setopt( $ch, CURLOPT_HTTPHEADER, $headers );
+		curl_setopt( $curl, CURLOPT_HTTPHEADER, $headers );
 		if ( ! empty( $settings['headers'] ) ) {
 			$headers = explode( PHP_EOL, hf_replace_data_variables( $settings['headers'], $submission->data, 'strip_tags' ) );
 			curl_setopt( $curl, CURLOPT_HTTPHEADER, $headers );
