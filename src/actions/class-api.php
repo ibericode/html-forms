@@ -93,7 +93,7 @@ class Api extends Action {
 		if ( ! empty( $settings['convert'] ) ) {
 			foreach ( $submission->data as $name => $value ) {
 				if ( is_array( $value ) ) {
-					$submission->data[ $name ] = implode( ',', $value );
+					$submission->data[ $name ] = implode( ',', $array_filter( $value ) );
 				}
 			}
 		}
