@@ -124,8 +124,6 @@ class Api extends Action {
 		$response = curl_exec( $curl );
 		$info = curl_getinfo( $curl );
 		$result = array(
-			'url'      => $settings['url'],
-			'method'   => $settings['method'],
 			'response' => $info['http_code'],
 			'body'     => substr( $response, $info['header_size'] ),
 		);
