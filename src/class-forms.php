@@ -380,7 +380,7 @@ class Forms {
 				$response['redirect_url'] = hf_replace_data_variables( $form->settings['redirect_url'], $data, 'urlencode' );
 			}
 
-			return $response;
+			return apply_filters( 'hf_form_response', $response, $form, $data );
 		}
 
 		// get error message
