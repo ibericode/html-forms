@@ -242,7 +242,7 @@ class Forms {
 
 				// this detects the WPBruiser token field to ensure it isn't stored
 				// CAVEAT: this will detect any non-uppercase string with 2 dashes in the field name and no whitespace in the field value
-				if ( is_string( $key ) && is_string( $value ) && strtoupper( $key ) !== $key && substr_count( $key, '-' ) >= 2 && substr_count( trim( $value ), ' ' ) === 0 ) {
+				if ( class_exists('GoodByeCaptcha') && is_string( $key ) && is_string( $value ) && strtoupper( $key ) !== $key && substr_count( $key, '-' ) >= 2 && substr_count( trim( $value ), ' ' ) === 0 ) {
 					unset( $data[ $key ] );
 					continue;
 				}
@@ -381,7 +381,7 @@ class Forms {
 				$response['redirect_url'] = hf_replace_data_variables( $form->settings['redirect_url'], $data, 'urlencode' );
 			}
 
-			return $response;
+			return apply_filters( 'hf_form_response', $response, $form, $data );
 		}
 
 		// get error message

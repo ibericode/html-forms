@@ -1,6 +1,14 @@
 Changelog
 =========
 
+#### 1.3.16 - May 6, 2020
+
+- Add filter hook for successful form responses: `hf_form_response`
+- Only try to detect WPBruiser hidden input fields whenever that plugin is activated.
+- Stop explicitly enabling shortcodes in text widgets as this is now handled by WordPress core (as of version 4.9).
+- Explicitly set engine and charset on submissions database table.
+
+
 #### 1.3.14 - Nov 6, 2019
 
 **Improvements**

@@ -3,8 +3,8 @@ Contributors: Ibericode, DvanKooten, hchouhan, lapzor
 Donate link: https://htmlforms.io/#utm_source=wp-plugin-repo&utm_medium=html-forms&utm_campaign=donate-link
 Tags: form, forms, contact form, html form
 Requires at least: 4.6
-Tested up to: 5.3
-Stable tag: 1.3.15
+Tested up to: 5.4
+Stable tag: 1.3.16
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 Requires PHP: 5.3
@@ -111,6 +111,14 @@ The plugin comes with built-in spam protection that should stop all automated at
 
 
 == Changelog ==
+
+
+#### 1.3.16 - May 6, 2020
+
+- Add filter hook for successful form responses: `hf_form_response`
+- Only try to detect WPBruiser hidden input fields whenever that plugin is activated.
+- Stop explicitly enabling shortcodes in text widgets as this is now handled by WordPress core (as of version 4.9).
+- Explicitly set engine and charset on submissions database table.
 
 
 #### 1.3.14 - Nov 6, 2019
