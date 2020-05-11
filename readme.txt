@@ -51,17 +51,17 @@ HTML Forms is for everyone that wants a flexible & high performing form solution
 
 With HTML Forms you can create any type of form. Contact forms, registration forms, price quote forms, you name it. It's somewhat similar to Contact Form 7, but without yet another template language for you to learn.
 
-For more information, please refer to [htmlforms.io](https://htmlforms.io/).
+For more information, please visit [htmlforms.io](https://htmlforms.io/).
 
-#### Support
+### Support
+
+The [HTML Forms knowledge base](https://kb.htmlforms.io/) covers a wide range of frequently asked questions.
 
 Use the [WordPress.org plugin forums](https://wordpress.org/support/plugin/html-forms) for community support where we try to help all of our users. If you found a bug, please create an issue on Github where we can act upon them more efficiently.
 
-The [HTML Forms knowledge base](https://kb.htmlforms.io/) covers a wide range of frequently asked questions and is updated on a regular basis.
+### Contributing
 
-#### Contributing
-
-You can contribute to HTML Forms in many different ways. For example:
+You can contribute to HTML Forms in various ways. For example:
 
 - Write about the plugin on your blog or share it on social media.
 - [Translate the plugin into your language](https://translate.wordpress.org/projects/wp-plugins/html-forms/stable/) using your WordPress.org account.
