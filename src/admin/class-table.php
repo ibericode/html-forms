@@ -164,12 +164,7 @@ if ( class_exists( 'WP_List_Table' ) ) {
 			$title     = '<strong><a class="row-title" href="' . $edit_link . '">' . esc_html( $form->title ) . '</a></strong>';
 
 			$actions = array();
-			$tabs    = array(
-				'fields'   => __( 'Fields', 'html-forms' ),
-				'messages' => __( 'Messages', 'html-forms' ),
-				'settings' => __( 'Settings', 'html-forms' ),
-				'actions'  => __( 'Actions', 'html-forms' ),
-			);
+			$tabs = hf_get_admin_tabs($form);
 
 			if ( $form->settings['save_submissions'] ) {
 				$tabs['submissions'] = __( 'Submissions', 'html-forms' );
