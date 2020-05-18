@@ -242,7 +242,7 @@ class Forms {
 
 				// this detects the WPBruiser token field to ensure it isn't stored
 				// CAVEAT: this will detect any non-uppercase string with 2 dashes in the field name and no whitespace in the field value
-				if ( class_exists('GoodByeCaptcha') && is_string( $key ) && is_string( $value ) && strtoupper( $key ) !== $key && substr_count( $key, '-' ) >= 2 && substr_count( trim( $value ), ' ' ) === 0 ) {
+				if ( class_exists( 'GoodByeCaptcha' ) && is_string( $key ) && is_string( $value ) && strtoupper( $key ) !== $key && substr_count( $key, '-' ) >= 2 && substr_count( trim( $value ), ' ' ) === 0 ) {
 					unset( $data[ $key ] );
 					continue;
 				}
