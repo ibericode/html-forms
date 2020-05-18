@@ -1,5 +1,3 @@
-'use strict'
-
 // imports
 import { h, render } from 'preact'
 import { FieldBuilder } from './components/field-builder.js'

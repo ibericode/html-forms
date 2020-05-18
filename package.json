@@ -6,7 +6,7 @@
     "decko": "^1.2.0",
     "linkstate": "^1.1.1",
     "populate.js": "^1.2.1",
-    "preact": "^8.5.3",
+    "preact": "^10.4",
     "tlite": "^0.1.7"
   },
   "devDependencies": {

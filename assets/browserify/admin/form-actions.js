@@ -1,5 +1,3 @@
-'use strict'
-
 let availableActions, actionTemplates, actions
 
 function init () {
