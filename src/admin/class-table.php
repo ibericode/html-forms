@@ -166,10 +166,6 @@ if ( class_exists( 'WP_List_Table' ) ) {
 			$actions = array();
 			$tabs = hf_get_admin_tabs($form);
 
-			if ( $form->settings['save_submissions'] ) {
-				$tabs['submissions'] = __( 'Submissions', 'html-forms' );
-			}
-
 			foreach ( $tabs as $tab_slug => $tab_title ) {
 				$actions[ $tab_slug ] = '<a href="' . esc_attr( add_query_arg( array( 'tab' => $tab_slug ), $edit_link ) ) . '">' . $tab_title . '</a>';
 			}
