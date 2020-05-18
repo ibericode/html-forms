@@ -2,14 +2,12 @@
   "license": "GPL-2.0",
   "repository": "https://github.com/ibericode/html-forms",
   "dependencies": {
-    "acorn": "^6.4.1",
     "codemirror": "^5.53.2",
     "decko": "^1.2.0",
     "linkstate": "^1.1.1",
     "populate.js": "^1.2.1",
     "preact": "^8.5.3",
-    "tlite": "^0.1.7",
-    "wolfy87-eventemitter": "^5.2.9"
+    "tlite": "^0.1.7"
   },
   "devDependencies": {
     "@babel/core": "^7.9.6",

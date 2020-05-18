@@ -1,11 +1,10 @@
 import prefiller from './form-prefiller.js'
 import conditionality from './conditionality.js'
 import './polyfills/custom-event.js'
-
+import events from './events.js'
 const Loader = require('./form-loading-indicator.js')
+
 const vars = window.hf_js_vars || { ajax_url: window.location.href }
-const EventEmitter = require('wolfy87-eventemitter')
-const events = new EventEmitter()
 
 function cleanFormMessages (formEl) {
   const messageElements = formEl.querySelectorAll('.hf-message');
@@ -57,7 +56,7 @@ function emitEvent (eventName, element) {
   element.dispatchEvent(new CustomEvent('hf-' + eventName))
 
   // custom events API: html_forms.on('success', ..)
-  events.emit(eventName, [element])
+  events.trigger(eventName, [element])
 }
 
 function createRequestHandler (formEl) {
@@ -119,6 +118,7 @@ conditionality.init()
 prefiller.init()
 
 window.html_forms = {
-  on: events.on.bind(events),
+  on: events.on,
+  off: events.off,
   submit: submitForm
 }
