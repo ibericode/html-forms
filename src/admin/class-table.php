@@ -164,7 +164,7 @@ if ( class_exists( 'WP_List_Table' ) ) {
 			$title     = '<strong><a class="row-title" href="' . $edit_link . '">' . esc_html( $form->title ) . '</a></strong>';
 
 			$actions = array();
-			$tabs = hf_get_admin_tabs($form);
+			$tabs    = hf_get_admin_tabs( $form );
 
 			foreach ( $tabs as $tab_slug => $tab_title ) {
 				$actions[ $tab_slug ] = '<a href="' . esc_attr( add_query_arg( array( 'tab' => $tab_slug ), $edit_link ) ) . '">' . $tab_title . '</a>';

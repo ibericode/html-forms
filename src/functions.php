@@ -359,16 +359,16 @@ function hf_human_filesize( $size, $precision = 2 ) {
  * @param Form $form
  * @return array
  */
-function hf_get_admin_tabs(Form $form){
+function hf_get_admin_tabs( Form $form ) {
 	$tabs = array(
-		'fields'        => __( 'Fields', 'html-forms' ),
-		'messages'      => __( 'Messages', 'html-forms' ),
-		'settings'      => __( 'Settings', 'html-forms' ),
-		'actions'       => __( 'Actions', 'html-forms' ),
+		'fields'   => __( 'Fields', 'html-forms' ),
+		'messages' => __( 'Messages', 'html-forms' ),
+		'settings' => __( 'Settings', 'html-forms' ),
+		'actions'  => __( 'Actions', 'html-forms' ),
 	);
 
-	if( $form->settings['save_submissions'] ) {
+	if ( $form->settings['save_submissions'] ) {
 		$tabs['submissions'] = __( 'Submissions', 'html-forms' );
 	}
-	return apply_filters('hf_admin_tabs', $tabs, $form);
+	return apply_filters( 'hf_admin_tabs', $tabs, $form );
 }

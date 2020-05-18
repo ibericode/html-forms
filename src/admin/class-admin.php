@@ -141,9 +141,9 @@ class Admin {
 		add_submenu_page( 'html-forms', __( 'Add new form', 'html-forms' ), __( 'Add New', 'html-forms' ), $capability, 'html-forms-add-form', array( $this, 'page_new_form' ) );
 		add_submenu_page( 'html-forms', __( 'Settings', 'html-forms' ), __( 'Settings', 'html-forms' ), $capability, 'html-forms-settings', array( $this, 'page_settings' ) );
 
-		      if( ! defined( 'HF_PREMIUM_VERSION' ) ) {
-		          add_submenu_page( 'html-forms', 'Premium', '<span style="color: #ea6ea6;">Premium</span>', $capability, 'html-forms-premium', array( $this, 'page_premium' ) );
-		      }
+		if ( ! defined( 'HF_PREMIUM_VERSION' ) ) {
+			add_submenu_page( 'html-forms', 'Premium', '<span style="color: #ea6ea6;">Premium</span>', $capability, 'html-forms-premium', array( $this, 'page_premium' ) );
+		}
 	}
 
 	public function add_screen_options() {
