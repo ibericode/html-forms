@@ -782,13 +782,15 @@ function htmlgenerate(conf) {
   }
 
   var str = '';
-  var children = label !== '' ? [label, field] : [field];
 
   if (conf.wrap) {
+    var children = label !== '' ? ['\n\t', label, '\n\t', field, '\n'] : ['\n\t', field, '\n'];
     var tmpl = (0, _preact.h)('p', {}, children);
     str = renderToString(tmpl);
   } else {
-    str = renderToString(children);
+    var _children = label !== '' ? [label, '\n', field] : [field];
+
+    str = renderToString(_children);
   }
 
   return str;

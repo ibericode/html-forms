@@ -102,11 +102,12 @@ function htmlgenerate (conf) {
 
   let str = ''
 
-  const children = label !== '' ? [label, field] : [field]
   if (conf.wrap) {
+    const children = label !== '' ? ['\n\t', label, '\n\t', field, '\n'] : ['\n\t', field, '\n']
     const tmpl = h('p', {}, children)
     str = renderToString(tmpl)
   } else {
+    const children = label !== '' ? [label, '\n', field] : [field]
     str = renderToString(children)
   }
 
