@@ -7,6 +7,7 @@
     "linkstate": "^1.1.1",
     "populate.js": "^1.2.1",
     "preact": "^10.4",
+    "preact-render-to-string": "^5.1.8",
     "tlite": "^0.1.7"
   },
   "devDependencies": {
