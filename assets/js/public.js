@@ -362,7 +362,7 @@ function addFormMessage(formEl, message) {
   txtElement.className = 'hf-message hf-message-' + message.type;
   txtElement.innerHTML = message.text; // uses innerHTML because we allow some HTML strings in the message settings
 
-  txtElement.role = 'alert';
+  txtElement.setAttribute('role', 'alert');
   var wrapperElement = formEl.querySelector('.hf-messages') || formEl;
   wrapperElement.appendChild(txtElement);
 }
