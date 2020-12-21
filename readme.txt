@@ -3,8 +3,8 @@ Contributors: Ibericode, DvanKooten, hchouhan, lapzor
 Donate link: https://htmlforms.io/#utm_source=wp-plugin-repo&utm_medium=html-forms&utm_campaign=donate-link
 Tags: form, forms, contact form, html form
 Requires at least: 4.6
-Tested up to: 5.4
-Stable tag: 1.3.16
+Tested up to: 5.6
+Stable tag: 1.3.17
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 Requires PHP: 5.3
@@ -111,6 +111,15 @@ The plugin comes with built-in spam protection that should stop all automated at
 
 
 == Changelog ==
+
+
+#### 1.3.17 - Dec 21, 2020
+
+- Forms are now sortable by name on overview page.
+- Update internal dependencies to their latest versions.
+- Add `role="alert"` to form messages.
+- Optimize size of public JavaScript file (25% size reduction) by rewriting some dependencies.
+- Add filter for tabs in admin area.
 
 
 #### 1.3.16 - May 6, 2020
