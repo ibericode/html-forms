@@ -29,7 +29,7 @@ private static $installed = array (
     'aliases' => 
     array (
     ),
-    'reference' => '7dc747e03a08d77e2be7438ba1ce875da92672cc',
+    'reference' => 'e778b8636fa37849930b1bcfe440123511ef3888',
     'name' => 'ibericode/html-forms',
   ),
   'versions' => 
@@ -41,7 +41,7 @@ private static $installed = array (
       'aliases' => 
       array (
       ),
-      'reference' => '7dc747e03a08d77e2be7438ba1ce875da92672cc',
+      'reference' => 'e778b8636fa37849930b1bcfe440123511ef3888',
     ),
   ),
 );
