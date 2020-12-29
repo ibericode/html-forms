@@ -3,8 +3,8 @@ Contributors: Ibericode, DvanKooten, hchouhan, lapzor
 Donate link: https://htmlforms.io/#utm_source=wp-plugin-repo&utm_medium=html-forms&utm_campaign=donate-link
 Tags: form, forms, contact form, html form
 Requires at least: 4.6
-Tested up to: 5.4
-Stable tag: 1.3.16
+Tested up to: 5.6
+Stable tag: 1.3.17
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 Requires PHP: 5.3
@@ -51,17 +51,17 @@ HTML Forms is for everyone that wants a flexible & high performing form solution
 
 With HTML Forms you can create any type of form. Contact forms, registration forms, price quote forms, you name it. It's somewhat similar to Contact Form 7, but without yet another template language for you to learn.
 
-For more information, please refer to [htmlforms.io](https://htmlforms.io/).
+For more information, please visit [htmlforms.io](https://htmlforms.io/).
 
-#### Support
+### Support
+
+The [HTML Forms knowledge base](https://kb.htmlforms.io/) covers a wide range of frequently asked questions.
 
 Use the [WordPress.org plugin forums](https://wordpress.org/support/plugin/html-forms) for community support where we try to help all of our users. If you found a bug, please create an issue on Github where we can act upon them more efficiently.
 
-The [HTML Forms knowledge base](https://kb.htmlforms.io/) covers a wide range of frequently asked questions and is updated on a regular basis.
+### Contributing
 
-#### Contributing
-
-You can contribute to HTML Forms in many different ways. For example:
+You can contribute to HTML Forms in various ways. For example:
 
 - Write about the plugin on your blog or share it on social media.
 - [Translate the plugin into your language](https://translate.wordpress.org/projects/wp-plugins/html-forms/stable/) using your WordPress.org account.
@@ -111,6 +111,15 @@ The plugin comes with built-in spam protection that should stop all automated at
 
 
 == Changelog ==
+
+
+#### 1.3.17 - Dec 21, 2020
+
+- Forms are now sortable by name on overview page.
+- Update internal dependencies to their latest versions.
+- Add `role="alert"` to form messages.
+- Optimize size of public JavaScript file (25% size reduction) by rewriting some dependencies.
+- Add filter for tabs in admin area.
 
 
 #### 1.3.16 - May 6, 2020

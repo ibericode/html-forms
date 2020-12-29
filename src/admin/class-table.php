@@ -1,6 +1,7 @@
 <?php
 
 namespace HTML_Forms\Admin;
+
 use HTML_Forms\Form;
 use WP_List_Table, WP_Post;
 
@@ -15,8 +16,8 @@ if ( class_exists( 'WP_List_Table' ) ) {
 		public $is_trash = false;
 
 		/**
-		* @var array
-		*/
+		 * @var array
+		 */
 		private $settings = array();
 
 		/**
@@ -33,7 +34,10 @@ if ( class_exists( 'WP_List_Table' ) ) {
 
 			$this->settings = $settings;
 			$this->process_bulk_action();
+			$this->prepare_items();
+		}
 
+		public function prepare_items() {
 			$columns               = $this->get_columns();
 			$sortable              = $this->get_sortable_columns();
 			$hidden                = array();
@@ -52,10 +56,10 @@ if ( class_exists( 'WP_List_Table' ) ) {
 		 * Get an associative array ( id => link ) with the list
 		 * of views available on this table.
 		 *
+		 * @return array
 		 * @since 3.1.0
 		 * @access protected
 		 *
-		 * @return array
 		 */
 		public function get_views() {
 			$counts    = wp_count_posts( 'html-form' );
@@ -78,11 +82,13 @@ if ( class_exists( 'WP_List_Table' ) ) {
 			if ( $this->is_trash ) {
 				$actions['untrash'] = __( 'Restore', 'html-forms' );
 				$actions['delete']  = __( 'Delete Permanently', 'html-forms' );
+
 				return $actions;
 			}
 
 			$actions['trash']     = __( 'Move to Trash', 'html-forms' );
 			$actions['duplicate'] = __( 'Duplicate', 'html-forms' );
+
 			return $actions;
 		}
 
@@ -111,15 +117,23 @@ if ( class_exists( 'WP_List_Table' ) ) {
 		/**
 		 * @return array
 		 */
-		public function get_sortable_columns() {
+		public function get_hidden_columns() {
 			return array();
 		}
 
 		/**
 		 * @return array
 		 */
-		public function get_items() {
+		public function get_sortable_columns() {
+			return array(
+				'form_name' => array( 'post_title', true ),
+			);
+		}
 
+		/**
+		 * @return array
+		 */
+		public function get_items() {
 			$args = array();
 
 			if ( ! empty( $_GET['s'] ) ) {
@@ -130,12 +144,20 @@ if ( class_exists( 'WP_List_Table' ) ) {
 				$args['post_status'] = sanitize_text_field( $_GET['post_status'] );
 			}
 
-			$items = hf_get_forms( $args );
-			return $items;
+			if ( ! empty( $_GET['order'] ) ) {
+				$args['order'] = $_GET['order'];
+			}
+
+			if ( ! empty( $_GET['orderby'] ) ) {
+				$args['orderby'] = $_GET['orderby'];
+			}
+
+			return hf_get_forms( $args );
 		}
 
 		/**
 		 * @param Form $form
+		 *
 		 * @return string
 		 */
 		public function column_cb( $form ) {
@@ -153,6 +175,7 @@ if ( class_exists( 'WP_List_Table' ) ) {
 
 		/**
 		 * @param Form $form
+		 *
 		 * @return string
 		 */
 		public function column_form_name( Form $form ) {
@@ -164,16 +187,7 @@ if ( class_exists( 'WP_List_Table' ) ) {
 			$title     = '<strong><a class="row-title" href="' . $edit_link . '">' . esc_html( $form->title ) . '</a></strong>';
 
 			$actions = array();
-			$tabs    = array(
-				'fields'   => __( 'Fields', 'html-forms' ),
-				'messages' => __( 'Messages', 'html-forms' ),
-				'settings' => __( 'Settings', 'html-forms' ),
-				'actions'  => __( 'Actions', 'html-forms' ),
-			);
-
-			if ( $form->settings['save_submissions'] ) {
-				$tabs['submissions'] = __( 'Submissions', 'html-forms' );
-			}
+			$tabs    = hf_get_admin_tabs( $form );
 
 			foreach ( $tabs as $tab_slug => $tab_title ) {
 				$actions[ $tab_slug ] = '<a href="' . esc_attr( add_query_arg( array( 'tab' => $tab_slug ), $edit_link ) ) . '">' . $tab_title . '</a>';
@@ -184,6 +198,7 @@ if ( class_exists( 'WP_List_Table' ) ) {
 
 		/**
 		 * @param Form $form
+		 *
 		 * @return string
 		 */
 		public function column_shortcode( Form $form ) {
@@ -254,9 +269,10 @@ if ( class_exists( 'WP_List_Table' ) ) {
 		/**
 		 * Generates content for a single row of the table
 		 *
+		 * @param Form $form The current item
+		 *
 		 * @since 3.1.0
 		 *
-		 * @param Form $form The current item
 		 */
 		public function single_row( $form ) {
 			echo sprintf( '<tr id="hf-forms-item-%d">', $form->ID );

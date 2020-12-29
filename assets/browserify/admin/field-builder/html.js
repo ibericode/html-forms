@@ -1,6 +1,7 @@
 'use strict'
 
-import { h, render } from 'preact'
+import { h } from 'preact'
+import render from 'preact-render-to-string'
 
 function htmlgenerate (conf) {
   const fieldName = namify(conf.fieldLabel)
@@ -102,25 +103,19 @@ function htmlgenerate (conf) {
   let str = ''
 
   if (conf.wrap) {
-    let children = label !== '' ? ['\n\t', label] : []
-    children = children.concat(['\n\t', field, '\n'])
+    const children = label !== '' ? ['\n\t', label, '\n\t', field, '\n'] : ['\n\t', field, '\n']
     const tmpl = h('p', {}, children)
     str = renderToString(tmpl)
   } else {
-    str += renderToString(label)
-    str += '\n'
-    str += renderToString(field)
+    const children = label !== '' ? [label, '\n', field] : [field]
+    str = renderToString(children)
   }
-
-  str += '\n'
 
   return str
 }
 
 function renderToString (vdom) {
-  const el = document.createElement('div')
-  render(vdom, el)
-  return el.innerHTML
+  return render(vdom, { pretty: true })
 }
 
 function html (tag, attr, children) {

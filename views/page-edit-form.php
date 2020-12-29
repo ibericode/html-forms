@@ -1,15 +1,6 @@
 <?php defined( 'ABSPATH' ) or exit;
 
-$tabs = array(
-    'fields'        => __( 'Fields', 'html-forms' ),
-    'messages'      => __( 'Messages', 'html-forms' ),
-    'settings'      => __( 'Settings', 'html-forms' ),
-    'actions'       => __( 'Actions', 'html-forms' ),
-);
-
-if( $form->settings['save_submissions'] ) {
-    $tabs['submissions'] = __( 'Submissions', 'html-forms' );
-}
+$tabs = hf_get_admin_tabs($form);
 
 ?>
 <script>document.title = 'Edit form' + ' - ' + document.title;</script>

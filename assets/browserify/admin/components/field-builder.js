@@ -1,5 +1,3 @@
-'use strict'
-
 import { h, Component } from 'preact'
 import { FieldConfigurator } from './field-configurator.js'
 

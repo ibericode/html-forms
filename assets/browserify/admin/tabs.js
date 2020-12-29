@@ -1,5 +1,3 @@
-'use strict'
-
 let tabs, tabNavs
 
 function init () {
@@ -8,7 +6,7 @@ function init () {
   for (let i = 0; i < tabNavs.length; i++) {
     tabNavs[i].addEventListener('click', open)
   }
-};
+}
 
 function open (e) {
   const tabTarget = this.getAttribute('data-tab-target')
@@ -33,7 +31,7 @@ function open (e) {
   }
 
   e.preventDefault()
-};
+}
 
 export default {
   init,

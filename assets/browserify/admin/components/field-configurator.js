@@ -1,5 +1,3 @@
-'use strict'
-
 import { h, Component } from 'preact'
 import { htmlgenerate } from '../field-builder/html.js'
 import * as FS from './field-settings.js'

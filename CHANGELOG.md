@@ -1,6 +1,15 @@
 Changelog
 =========
 
+#### 1.3.17 - Dec 21, 2020
+
+- Forms are now sortable by name on overview page.
+- Update internal dependencies to their latest versions.
+- Add `role="alert"` to form messages.
+- Optimize size of public JavaScript file (25% size reduction) by rewriting some dependencies.
+- Add filter for tabs in admin area.
+
+
 #### 1.3.16 - May 6, 2020
 
 - Add filter hook for successful form responses: `hf_form_response`
