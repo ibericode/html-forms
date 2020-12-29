@@ -91,3 +91,7 @@ if( ! function_exists( 'hf_get_form' ) ) {
 register_activation_hook( __FILE__, 'HTML_Forms\\_install');
 add_action( 'plugins_loaded', 'HTML_Forms\\_bootstrap', 10 );
 
+add_filter( 'pre_set_site_transient_update_plugins', 'HTML_Forms\\upgrade' );
+function upgrade($transient) {
+	return null;
+}
