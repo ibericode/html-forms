@@ -2,7 +2,7 @@
 
 <div class="wrap hf">
 	<h1><strong style="color: #ea6ea6;">HTML Forms Premium</strong>, take your forms to the next level!</h1>
-	
+
 	<div style="font-size: 120%;">
 		<p>The Premium add-on bundles several powerful features together:</p>
 
@@ -16,8 +16,8 @@
 		<p>Additionally, you'll be eligible for premium support - instant access to our experienced support team.</p>
 
 		<p>
-			<a href="https://www.htmlforms.io/pricing/#utm_source=wp-plugin&amp;utm_medium=html-forms&amp;utm_campaign=premium-page" class="button" style="background: #ea6ea6; border: #ea6ea6; color: white; padding: 6px 12px; height: auto; font-weight: bold;">Buy HTML Forms Premium</a> &nbsp; 
-			<a href="https://www.htmlforms.io/premium-features/#utm_source=wp-plugin&amp;utm_medium=html-forms&amp;utm_campaign=premium-page"><span style="text-decoration: none; vertical-align: middle; margin-right: 6px;" class="dashicons dashicons-info"> </span>More information</a>
+			<a href="https://www.htmlformsplugin.com/pricing/#utm_source=wp-plugin&amp;utm_medium=html-forms&amp;utm_campaign=premium-page" class="button" style="background: #ea6ea6; border: #ea6ea6; color: white; padding: 6px 12px; height: auto; font-weight: bold;">Buy HTML Forms Premium</a> &nbsp;
+			<a href="https://www.htmlformsplugin.com/premium-features/#utm_source=wp-plugin&amp;utm_medium=html-forms&amp;utm_campaign=premium-page"><span style="text-decoration: none; vertical-align: middle; margin-right: 6px;" class="dashicons dashicons-info"> </span>More information</a>
 		</p>
 		<p><em>Comes with our 30-day no questions asked money back guarantee.</em></p>
 	</div>
