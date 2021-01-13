@@ -1,6 +1,12 @@
 Changelog
 =========
 
+#### 1.3.18 - Jan 13, 2021
+
+- Updated JS dependencies.
+- Change plugin domain to htmlformsplugin.com.
+
+
 #### 1.3.17 - Dec 21, 2020
 
 - Forms are now sortable by name on overview page.
