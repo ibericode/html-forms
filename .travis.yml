@@ -6,6 +6,8 @@ php:
 install:
 - composer self-update --no-interaction
 - composer update --no-interaction --prefer-dist
+env:
+- XDEBUG_MODE=coverage
 script:
 - composer test
 - composer cs

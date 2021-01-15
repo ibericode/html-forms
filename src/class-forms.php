@@ -259,6 +259,7 @@ class Forms {
 			$submission->user_agent   = ! empty( $_SERVER['HTTP_USER_AGENT'] ) ? sanitize_text_field( $_SERVER['HTTP_USER_AGENT'] ) : '';
 			$submission->referer_url  = ! empty( $_SERVER['HTTP_REFERER'] ) ? sanitize_text_field( $_SERVER['HTTP_REFERER'] ) : '';
 			$submission->submitted_at = gmdate( 'Y-m-d H:i:s' );
+			$submission->actions      = array();
 
 			// save submission object so that other form processor have an insert ID to work with (eg file upload)
 			if ( $form->settings['save_submissions'] ) {
@@ -269,11 +270,6 @@ class Forms {
 			* General purpose hook that runs before all form actions, so we can still modify the submission object that is passed to actions.
 			*/
 			do_action( 'hf_process_form', $form, $submission );
-
-			// re-save submission object for convenience in form processors hooked into hf_process_form
-			if ( $form->settings['save_submissions'] ) {
-				 $submission->save();
-			}
 
 			// process form actions
 			if ( isset( $form->settings['actions'] ) ) {
@@ -287,6 +283,11 @@ class Forms {
 					 */
 					do_action( 'hf_process_form_action_' . $action_settings['type'], $action_settings, $submission, $form );
 				}
+			}
+
+			// re-save submission object for convenience in form processors hooked into hf_process_form, also store action results
+			if ( $form->settings['save_submissions'] ) {
+				 $submission->save();
 			}
 
 			/**

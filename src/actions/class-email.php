@@ -57,12 +57,12 @@ class Email extends Action {
 				   <input name="form[settings][actions][<?php echo $index; ?>][subject]" value="<?php echo esc_attr( $settings['subject'] ); ?>" type="text" class="regular-text" placeholder="<?php echo esc_attr( __( 'Your email subject', 'html-forms' ) ); ?>" />
 			   </td>
 		   </tr>
-			
+
 		   <tr>
 			   <th><label><?php echo __( 'Message', 'html-forms' ); ?> <span class="hf-required">*</span></label></th>
 			   <td>
 				   <textarea name="form[settings][actions][<?php echo $index; ?>][message]" rows="8" class="widefat" placeholder="<?php echo esc_attr( __( 'Your email message', 'html-forms' ) ); ?>" required><?php echo esc_textarea( $settings['message'] ); ?></textarea>
-				   <p class="help"><?php _e( 'You can use the following variables (in all fields): ', 'html-forms' ); ?><br /><span class="hf-field-names"></span></p>                 
+				   <p class="help"><?php _e( 'You can use the following variables (in all fields): ', 'html-forms' ); ?><br /><span class="hf-field-names"></span></p>
 			   </td>
 		   </tr>
 
@@ -75,7 +75,7 @@ class Email extends Action {
 				   </select>
 			   </td>
 		   </tr>
-		
+
 		   <tr>
 			   <th><label><?php echo __( 'Additional headers', 'html-forms' ); ?></label></th>
 			   <td>
@@ -121,6 +121,12 @@ class Email extends Action {
 			$headers[] = sprintf( 'From: %s', $from );
 		}
 
-		return wp_mail( $to, $subject, $message, $headers );
+		$result = wp_mail( $to, $subject, $message, $headers );
+
+		$submission->actions[] = array(
+			'type'   => $this->type,
+			'result' => $result,
+		);
+		return $result;
 	}
 }

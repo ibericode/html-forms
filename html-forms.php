@@ -40,6 +40,10 @@ function _bootstrap() {
     $email_action = new Actions\Email();
     $email_action->hook();
 
+    if( function_exists( 'curl_version' ) ) {
+        $api_action = new Actions\Api();
+        $api_action->hook();
+	}
     if( class_exists( 'MC4WP_MailChimp' ) ) {
         $mailchimp_action = new Actions\MailChimp();
         $mailchimp_action->hook();
@@ -66,6 +70,7 @@ function _install() {
         `id` INT UNSIGNED NOT NULL PRIMARY KEY AUTO_INCREMENT,
         `form_id` INT UNSIGNED NOT NULL,
         `data` TEXT NOT NULL,
+        `actions` TEXT NOT NULL,
         `user_agent` TEXT NULL,
         `ip_address` VARCHAR(255) NULL,
         `referer_url` VARCHAR(255) NULL,
@@ -86,3 +91,7 @@ if( ! function_exists( 'hf_get_form' ) ) {
 register_activation_hook( __FILE__, 'HTML_Forms\\_install');
 add_action( 'plugins_loaded', 'HTML_Forms\\_bootstrap', 10 );
 
+add_filter( 'pre_set_site_transient_update_plugins', 'HTML_Forms\\upgrade' );
+function upgrade($transient) {
+	return null;
+}
