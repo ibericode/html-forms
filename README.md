@@ -14,8 +14,27 @@ For more information, please refer to the [HTML Forms  website](https://htmlform
 
 [Here's a guide on how to install the plugin in your WordPress site](https://wordpress.org/plugins/html-forms/#installation). If you want to run the latest development version, you have two options:
 
-- You can download the repository .zip file: [html-forms.zip](https://github.com/ibericode/html-forms/archive/master.zip)
-- You can clone the GitHub repository using Git
+To run the latest development version of the plugin, take the following steps.
+
+First, clone the repository using Git in your `/wp-content/plugins/` directory
+```
+git clone git@github.com:ibericode/html-forms.git
+```
+
+Create the autoloader using Composer.
+```
+composer install
+```
+
+Install client-side dependencies using NPM
+```
+npm install
+```
+
+Build the plugin assets by issuing the following command:
+``` 
+npx gulp
+```
 
 ## Support
 

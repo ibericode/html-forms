@@ -2,11 +2,11 @@
   "license": "GPL-2.0",
   "repository": "https://github.com/ibericode/html-forms",
   "dependencies": {
-    "codemirror": "^5.59.1",
+    "codemirror": "^5.59.2",
     "decko": "^1.2.0",
     "linkstate": "^1.1.1",
     "populate.js": "^1.2.2",
-    "preact": "^10.5.9",
+    "preact": "^10.5.11",
     "preact-render-to-string": "^5.1.12",
     "tlite": "^0.1.7"
   },

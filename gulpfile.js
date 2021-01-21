@@ -8,7 +8,7 @@ const sourcemaps = require('gulp-sourcemaps')
 const source = require('vinyl-source-stream')
 
 gulp.task('css', function () {
-  return gulp.src('./assets/sass/[^_]*.scss')
+  return gulp.src('./assets/src/sass/[^_]*.scss')
     .pipe(sass())
     .pipe(rename({ extname: '.css' }))
     .pipe(gulp.dest('./assets/css'))
@@ -24,7 +24,7 @@ gulp.task('minify-css', gulp.series('css', function () {
 }))
 
 gulp.task('js', gulp.parallel(['public.js', 'gutenberg-block.js', 'admin/admin.js'].map(f => () => {
-  return browserify({ entries: 'assets/browserify/' + f })
+  return browserify({ entries: 'assets/src/js/' + f })
     .transform('babelify', {
       presets: [
         ['@babel/preset-env', { targets: '> 0.25%, not dead', forceAllTransforms: true }]
@@ -48,7 +48,12 @@ gulp.task('minify-js', gulp.series('js', function () {
     .pipe(gulp.dest('./assets/js'))
 }))
 
-gulp.task('default', gulp.parallel('minify-css', 'minify-js'))
+gulp.task('img', () => {
+  return gulp.src('assets/src/img/*')
+    .pipe(gulp.dest('assets/img'))
+})
+
+gulp.task('default', gulp.parallel('minify-css', 'minify-js', 'img'))
 
 gulp.task('watch', function () {
   gulp.watch('./assets/sass/**/*.scss', gulp.series('css'))

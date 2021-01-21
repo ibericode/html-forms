@@ -1,6 +1,4 @@
-node_modules
-
-# Exclude everything in /vendor except our autoload stuff
-vendor/*
-!vendor/composer
-!vendor/autoload.php
+node_modules/
+vendor/
+assets/*
+!assets/src
