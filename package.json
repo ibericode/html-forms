@@ -24,18 +24,14 @@
     "eslint-plugin-promise": "^4.2.1",
     "eslint-plugin-standard": "^4.1.0",
     "gulp": "4.0.2",
-    "gulp-cssmin": "^0.2.0",
-    "gulp-insert": "^0.5.0",
+    "gulp-clean-css": "^4.3.0",
     "gulp-rename": "^1.4.0",
     "gulp-replace": "^1.0.0",
     "gulp-sass": "^4.1.0",
     "gulp-sourcemaps": "^2.6.4",
-    "gulp-streamify": "^1.0.2",
     "gulp-uglify": "^3.0.0",
-    "gulp-util": "^3.0.8",
     "gulp-wp-pot": "^2.5.0",
     "node-sass": "^4.14.1",
-    "vinyl-buffer": "^1.0.1",
     "vinyl-source-stream": "^2.0.0"
   }
 }
