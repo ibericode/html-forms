@@ -1,7 +1,7 @@
 HTML Forms
 ======================
-![PHP status](https://github.com/ibericode/html-forms/workflows/PHP/badge.svg)
-![ESLint status](https://github.com/ibericode/html-forms/workflows/ESLint/badge.svg)
+[![PHP status](https://github.com/ibericode/html-forms/workflows/PHP/badge.svg)](https://github.com/ibericode/html-forms/actions?query=workflow%3APHP)
+[![ESLint status](https://github.com/ibericode/html-forms/workflows/ESLint/badge.svg)](https://github.com/ibericode/html-forms/actions?query=workflow%3AESLint)
 ![Active installs](https://img.shields.io/wordpress/plugin/installs/html-forms.svg)
 ![Downloads](https://img.shields.io/wordpress/plugin/dt/html-forms.svg)
 [![Rating](https://img.shields.io/wordpress/plugin/r/html-forms.svg)](https://wordpress.org/support/plugin/html-forms/reviews/)
