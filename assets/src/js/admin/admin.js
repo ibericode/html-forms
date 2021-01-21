@@ -4,7 +4,6 @@ import Actions from './form-actions.js'
 import FieldBuilder from './field-builder.js'
 import Confirmations from './action-confirmations.js'
 import tlite from 'tlite'
-import { h } from 'preact'
 
 window.html_forms = {}
 

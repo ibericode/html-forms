@@ -111,27 +111,27 @@ class FieldConfigurator extends Component {
     for (let i = 0; i < props.rows.length; i++) {
       switch (props.rows[i]) {
         case 'label':
-          formFields.push(<FS.Label value={state.fieldLabel} onChange={linkState(this, 'fieldLabel')}/>)
+          formFields.push(<FS.Label value={state.fieldLabel} onChange={linkState(this, 'fieldLabel')} />)
           break
 
         case 'placeholder':
-          formFields.push(<FS.Placeholder value={state.placeholder} onChange={linkState(this, 'placeholder')}/>)
+          formFields.push(<FS.Placeholder value={state.placeholder} onChange={linkState(this, 'placeholder')} />)
           break
 
         case 'default-value':
-          formFields.push(<FS.DefaultValue value={state.value} onChange={linkState(this, 'value')}/>)
+          formFields.push(<FS.DefaultValue value={state.value} onChange={linkState(this, 'value')} />)
           break
 
         case 'multiple':
-          formFields.push(<FS.Multiple checked={state.multiple} onChange={linkState(this, 'multiple')}/>)
+          formFields.push(<FS.Multiple checked={state.multiple} onChange={linkState(this, 'multiple')} />)
           break
 
         case 'required':
-          formFields.push(<FS.Required checked={state.required} onChange={linkState(this, 'required')}/>)
+          formFields.push(<FS.Required checked={state.required} onChange={linkState(this, 'required')} />)
           break
 
         case 'wrap':
-          formFields.push(<FS.Wrap checked={state.wrap} onChange={linkState(this, 'wrap')}/>)
+          formFields.push(<FS.Wrap checked={state.wrap} onChange={linkState(this, 'wrap')} />)
           break
 
         case 'add-to-form':
@@ -143,17 +143,17 @@ class FieldConfigurator extends Component {
           break
 
         case 'button-text':
-          formFields.push(<FS.ButtonText value={state.value} onChange={linkState(this, 'value')}/>)
+          formFields.push(<FS.ButtonText value={state.value} onChange={linkState(this, 'value')} />)
           break
 
         case 'accept':
-          formFields.push(<FS.Accept value={state.accept} onChange={linkState(this, 'accept')}/>)
+          formFields.push(<FS.Accept value={state.accept} onChange={linkState(this, 'accept')} />)
           break
       }
     }
 
     return (
-      <div class="field-config" onKeyPress={FieldConfigurator.handleKeyPress}>
+      <div class='field-config' onKeyPress={FieldConfigurator.handleKeyPress}>
         {formFields}
       </div>
     )

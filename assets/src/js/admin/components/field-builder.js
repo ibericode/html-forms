@@ -32,7 +32,7 @@ class FieldBuilder extends Component {
   render (props, state) {
     const fieldButtons = props.fields.map((f, i) => {
       return (
-        <button type="button" value={i} className={'button ' + (state.activeField === f ? 'active' : '')} onClick={this.openFieldConfig}>{f.label}</button>
+        <button type='button' value={i} className={'button ' + (state.activeField === f ? 'active' : '')} onClick={this.openFieldConfig}>{f.label}</button>
       )
     }
     )
@@ -40,17 +40,17 @@ class FieldBuilder extends Component {
     const rows = state.activeField ? state.activeField.configRows : []
 
     return (
-      <div class="hf-field-builder">
+      <div class='hf-field-builder'>
         <h4>
-                    Add field
+          Add field
         </h4>
-        <div class="available-fields">
+        <div class='available-fields'>
           {fieldButtons}
         </div>
-        <div style="max-width: 480px;">
+        <div style='max-width: 480px;'>
           <FieldConfigurator fieldType={fieldType} rows={rows} onCancel={this.handleCancel} />
         </div>
-        {state.activeField === null ? <p class="help" style="margin-bottom: 0;">Use the buttons above to generate your field HTML, or manually modify your form below.</p> : ''}
+        {state.activeField === null ? <p class='help' style='margin-bottom: 0;'>Use the buttons above to generate your field HTML, or manually modify your form below.</p> : ''}
       </div>
     )
   }

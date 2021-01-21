@@ -27,7 +27,7 @@
     "dealerdirect/phpcodesniffer-composer-installer": "^0.7.1"
   },
   "scripts": {
-    "test": "vendor/bin/phpunit --coverage-text",
-    "cs": "vendor/bin/phpcs -n -s"
+    "test": "php vendor/bin/phpunit --coverage-text",
+    "codestyle": "php vendor/bin/phpcs -n -s"
   }
 }
