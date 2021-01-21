@@ -2,3 +2,4 @@ node_modules/
 vendor/
 assets/*
 !assets/src
+*.cache

@@ -7,7 +7,7 @@ class MigrationsTest extends TestCase {
 
 	private $dir = '/tmp/html-forms-tests/migrations';
 
-	public function setUp() {
+	public function setUp() : void {
 		if( ! file_exists( $this->dir ) ) {
 			mkdir( $this->dir, 0700, true );
 		}
@@ -28,7 +28,7 @@ class MigrationsTest extends TestCase {
 		self::assertEquals( $instance->find_migrations(), array( $migration_file ) );
 	}
 
-	public function tearDown() {
+	public function tearDown() : void  {
 		array_map( 'unlink', glob( $this->dir . '/*.php' ) );
 		if( file_exists( $this->dir ) ) {
 			rmdir( $this->dir );

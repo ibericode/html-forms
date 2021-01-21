@@ -9,12 +9,12 @@ use HTML_Forms\Forms;
 
 class EmailTest extends TestCase {
 
-	protected function setUp() {
+	protected function setUp() : void {
 		parent::setUp();
 		Monkey\setUp();
 	}
 
-	protected function tearDown() {
+	protected function tearDown() : void  {
 		Monkey\tearDown();
 		parent::tearDown();
 	}
@@ -23,7 +23,7 @@ class EmailTest extends TestCase {
 		$action = new HTML_Forms\Actions\Email();
 
 		$submission = new HTML_Forms\Submission();
-		$form = new Form(1);	
+		$form = new Form(1);
 
 		Functions\when('wp_mail')->justReturn(true);
 		Functions\when('get_option')->justReturn('');

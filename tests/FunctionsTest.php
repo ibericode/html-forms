@@ -7,12 +7,12 @@ use Brain\Monkey\Functions;
 
 class FunctionsTest extends TestCase {
 
-	protected function setUp() {
+	protected function setUp() : void {
 		parent::setUp();
 		Monkey\setUp();
 	}
 
-	protected function tearDown() {
+	protected function tearDown() : void {
 		Monkey\tearDown();
 		parent::tearDown();
 	}

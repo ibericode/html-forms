@@ -9,12 +9,12 @@ use HTML_Forms\Forms;
 
 class FormsTest extends TestCase {
 
-	protected function setUp() {
+	protected function setUp() : void {
 		parent::setUp();
 		Monkey\setUp();
 	}
 
-	protected function tearDown() {
+	protected function tearDown() : void {
 		Monkey\tearDown();
 		parent::tearDown();
 	}
@@ -29,7 +29,7 @@ class FormsTest extends TestCase {
 
 		// more fields than in form
 		$form->markup = '';
-		$data = array( '_hf_h1' => '', 'foo' => 'bar', 'bar' => 'foo', 'was-required' => array() ); 
+		$data = array( '_hf_h1' => '', 'foo' => 'bar', 'bar' => 'foo', 'was-required' => array() );
 		self::assertEquals('spam', $instance->validate_form($form, $data));
 
 		// required field missing
@@ -57,7 +57,7 @@ class FormsTest extends TestCase {
 
 	public function test_sanitize() {
 		$instance = new Forms( '', array() );
-		
+
 		self::assertEquals( '<script>foo</script>', $instance->sanitize( '<script>foo</script> ' ) );
 		self::assertEquals( array( 'alert(1);' => '<script>alert(1); </script>' ), $instance->sanitize( array( ' <script>alert(1);</script>' => '<script>alert(1); </script>' ) ) );
 		self::assertEquals( '<script>foo & bar</script>', $instance->sanitize( '<script>foo &amp; bar</script>' ) );

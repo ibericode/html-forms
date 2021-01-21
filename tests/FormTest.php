@@ -8,12 +8,12 @@ use HTML_Forms\Form;
 
 class FormTest extends TestCase {
 
-	protected function setUp() {
+	protected function setUp() : void {
 		parent::setUp();
 		Monkey\setUp();
 	}
 
-	protected function tearDown() {
+	protected function tearDown() : void {
 		Monkey\tearDown();
 		parent::tearDown();
 	}
@@ -43,17 +43,17 @@ class FormTest extends TestCase {
 	public function test_get_field_count() {
 		$form = new Form(1);
 		$form->markup = '<input type="hidden" name="foo" value="bar" />';
-		self::assertEquals(4, $form->get_field_count()); 
+		self::assertEquals(4, $form->get_field_count());
 
 		$form->markup = '<input type="email" name="EMAIL" />' . PHP_EOL;
 		$form->markup .= '<textarea></textarea>' . PHP_EOL;
 		$form->markup .= '<TEXTAREA NAME="MESSAGE"></textarea>';
-		self::assertEquals(5, $form->get_field_count()); 
+		self::assertEquals(5, $form->get_field_count());
 	}
 
 	public function test_get_message() {
 		$form = new Form(1);
-		$form->messages = $messages = array( 
+		$form->messages = $messages = array(
 			'error' => 'Error!'
 		);
 
@@ -65,7 +65,7 @@ class FormTest extends TestCase {
 		$form = new Form(1);
 		$form->title = 'Title';
 		$form->slug = 'slug';
-		$form->messages = $messages = array( 
+		$form->messages = $messages = array(
 			'error' => 'Error!'
 		);
 

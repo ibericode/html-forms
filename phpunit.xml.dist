@@ -5,14 +5,6 @@
 			<directory suffix="Test.php">./tests/</directory>
 		</testsuite>
 	</testsuites>
-	<filter>
-		<whitelist processUncoveredFilesFromWhitelist="true">
-			<directory suffix=".php">./src</directory>
-		</whitelist>
-		<blacklist>
-			<directory>./vendor/</directory>
-		</blacklist>
-	</filter>
 	 <php>
          <ini name="display_errors" value="true"/>
     </php>

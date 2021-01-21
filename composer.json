@@ -21,7 +21,7 @@
     "files": [ "src/functions.php" ]
   },
   "require-dev": {
-    "phpunit/phpunit": "^6.5",
+    "phpunit/phpunit": "^9.0",
     "brain/monkey": "^2.2",
     "wp-coding-standards/wpcs": "^2.1",
     "dealerdirect/phpcodesniffer-composer-installer": "^0.7.1"
