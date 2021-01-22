@@ -9,7 +9,7 @@ HTML Forms
 
 [HTML Forms](https://htmlformsplugin.com/#utm_source=github&utm_medium=html-forms&utm_campaign=readme) allows you to add multi-purpose forms to your WordPress site. Your form fields can be defined using regular HTML5 code while the plugin takes care of submitting the form & processing the request. 
 
-For more information, please refer to the [HTML Forms  website](https://htmlformsplugin.com/#utm_source=github&utm_medium=html-forms&utm_campaign=readme), the [HTML Forms plugin page on WordPress.org](https://wordpress.org/plugins/html-forms/) or the [HTML Forms knowledge base](https://kb.htmlformsplugin.com/#utm_source=github&utm_medium=html-forms&utm_campaign=readme).
+For more information, please refer to the [HTML Forms  website](https://htmlformsplugin.com/#utm_source=github&utm_medium=html-forms&utm_campaign=readme), the [HTML Forms plugin page on WordPress.org](https://wordpress.org/plugins/html-forms/) or the [HTML Forms knowledge base](https://www.htmlformsplugin.com/kb/#utm_source=github&utm_medium=html-forms&utm_campaign=readme).
 
 ## Installation
 
@@ -39,7 +39,7 @@ npx gulp
 
 ## Support
 
-If you need help with the plugin, please check out the [HTML Forms knowledge base](https://kb.htmlformsplugin.com/#utm_source=github&utm_medium=html-forms&utm_campaign=readme) first. 
+If you need help with the plugin, please check out the [HTML Forms knowledge base](https://www.htmlformsplugin.com/kb/#utm_source=github&utm_medium=html-forms&utm_campaign=readme) first. 
 
 - For questions, use the [WordPress.org plugin support forums](https://wordpress.org/support/plugin/html-forms). 
 - For bugs, [create a new GitHub issue](https://github.com/ibericode/html-forms/issues).
