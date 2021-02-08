@@ -1,7 +1,7 @@
 === HTML Forms ===
 Contributors: Ibericode, DvanKooten, hchouhan, lapzor
 Donate link: https://htmlformsplugin.com/#utm_source=wp-plugin-repo&utm_medium=html-forms&utm_campaign=donate-link
-Tags: form, forms, contact form, html form
+Tags: form, forms, contact form, html form, htmlforms
 Requires at least: 4.6
 Tested up to: 5.6
 Stable tag: 1.3.18
