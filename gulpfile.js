@@ -56,6 +56,6 @@ gulp.task('img', () => {
 gulp.task('default', gulp.parallel('minify-css', 'minify-js', 'img'))
 
 gulp.task('watch', function () {
-  gulp.watch('./assets/sass/**/*.scss', gulp.series('css'))
-  gulp.watch('./assets/browserify/**/*.js', gulp.series('js'))
+  gulp.watch('./assets/src/sass/**/*.scss', gulp.series('css'))
+  gulp.watch('./assets/src/js/**/*.js', gulp.series('js'))
 })

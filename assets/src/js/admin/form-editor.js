@@ -42,6 +42,7 @@ function init () {
   previewFrame.addEventListener('load', setPreviewDom)
   setPreviewDom()
   updateFieldVariables()
+  window.addEventListener('load', updateFieldVariables)
 }
 
 function setPreviewDom () {
@@ -80,7 +81,7 @@ function updateFieldVariables () {
       // add input el
       const el = document.createElement('input')
       el.type = 'text'
-      el.style.maxWidth = ((width * 1.1) + 14) + 'px'
+      el.style.maxWidth = Math.ceil((width * 1.1) + 14) + 'px'
       el.value = n
       el.readonly = true
       el.onfocus = () => el.select()
