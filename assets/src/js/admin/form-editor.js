@@ -42,6 +42,9 @@ function init () {
   previewFrame.addEventListener('load', setPreviewDom)
   setPreviewDom()
   updateFieldVariables()
+  document.getElementById('hf-tabs-nav').addEventListener('click', () => {
+    editor.refresh()
+  })
   window.addEventListener('load', updateFieldVariables)
 }
 
