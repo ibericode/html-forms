@@ -274,7 +274,7 @@ function hf_field_value( $value, $limit = 0, $escape_function = 'esc_html' ) {
 
 	if ( hf_is_file( $value ) ) {
 		$file_url = isset( $value['url'] ) ? $value['url'] : '';
-		if ( isset( $value['attachment_id'] ) ) {
+		if ( isset( $value['attachment_id'] ) && apply_filters( 'hf_file_upload_use_direct_links', false ) === false ) {
 			$file_url = admin_url( sprintf( 'post.php?action=edit&post=%d', $value['attachment_id'] ) );
 		}
 		$short_name = substr( $value['name'], 0, 20 );
