@@ -1,6 +1,12 @@
 Changelog
 =========
 
+#### 1.3.19 - Feb 16, 2012
+
+- Add filter for file-uploads to use direct links to file instead of WP media attachment.
+- Fix field variables not showing correctly in available tags for email action message body.
+
+
 #### 1.3.18 - Jan 13, 2021
 
 - Updated JS dependencies.
