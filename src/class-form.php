@@ -130,7 +130,11 @@ class Form {
 	* @return string
 	*/
 	public function get_markup() {
-		return apply_filters( 'hf_form_markup', $this->markup );
+		/**
+		 * @param string $markup
+		 * @param Form $form
+		 */
+		return apply_filters( 'hf_form_markup', $this->markup, $this );
 	}
 
 	/**
