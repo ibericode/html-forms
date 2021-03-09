@@ -7,9 +7,9 @@ HTML Forms
 [![Rating](https://img.shields.io/wordpress/plugin/r/html-forms.svg)](https://wordpress.org/support/plugin/html-forms/reviews/)
 [![License: GPLv3](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)
 
-[HTML Forms](https://htmlformsplugin.com/#utm_source=github&utm_medium=html-forms&utm_campaign=readme) allows you to add multi-purpose forms to your WordPress site. Your form fields can be defined using regular HTML5 code while the plugin takes care of submitting the form & processing the request. 
+[HTML Forms](https://www.htmlformsplugin.com/#utm_source=github&utm_medium=html-forms&utm_campaign=readme) allows you to add multi-purpose forms to your WordPress site. Your form fields can be defined using regular HTML5 code while the plugin takes care of submitting the form & processing the request. 
 
-For more information, please refer to the [HTML Forms  website](https://htmlformsplugin.com/#utm_source=github&utm_medium=html-forms&utm_campaign=readme), the [HTML Forms plugin page on WordPress.org](https://wordpress.org/plugins/html-forms/) or the [HTML Forms knowledge base](https://www.htmlformsplugin.com/kb/#utm_source=github&utm_medium=html-forms&utm_campaign=readme).
+For more information, please refer to the [HTML Forms  website](https://www.htmlformsplugin.com/#utm_source=github&utm_medium=html-forms&utm_campaign=readme), the [HTML Forms plugin page on WordPress.org](https://wordpress.org/plugins/html-forms/) or the [HTML Forms knowledge base](https://www.htmlformsplugin.com/kb/#utm_source=github&utm_medium=html-forms&utm_campaign=readme).
 
 ## Installation
 
