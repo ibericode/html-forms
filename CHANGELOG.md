@@ -1,7 +1,14 @@
 Changelog
 =========
 
-#### 1.3.19 - Feb 16, 2012
+#### 1.3.20 - May 7, 2021
+
+- Change type of referer_url column in database to `TEXT`.
+- Pass form object to `hf_form_markup` filter hook.
+- Refresh form editor after navigating via tabs.
+
+
+#### 1.3.19 - Feb 16, 2021
 
 - Add filter for file-uploads to use direct links to file instead of WP media attachment.
 - Fix field variables not showing correctly in available tags for email action message body.
