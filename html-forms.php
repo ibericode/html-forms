@@ -56,7 +56,36 @@ function _bootstrap() {
     }
 }
 
-function _install() {
+function _install_mu_wrapper() {
+    if ( ! is_multisite() ) // not a multisite install, skip multisite setup
+        return _install();
+
+    $added_caps = [];
+
+    foreach ( get_sites(['number' => PHP_INT_MAX]) as $site ) {
+        switch_to_blog((int) $site->blog_id);
+
+        // install table for current blog
+        _install_table();
+
+        // iterate through current blog admins
+        foreach ( get_users(['blog_id' => (int) $site->blog_id, 'role' => 'administrator', 'fields' => 'ID']) as $admin_id ) {
+            if ( ! (int) $admin_id || in_array($admin_id, $added_caps) )
+                continue;
+
+            // add "edit_forms" cap to site admin
+            $user = new \WP_User( (int) $admin_id );
+            $user->add_cap('edit_forms', true);
+
+            $added_caps []= $admin_id;
+        }
+
+        restore_current_blog();
+    }
+}
+
+// install table for main site on regular installs, or active site for multisite
+function _install_table() {
     /** @var wpdb */
     global $wpdb;
 
@@ -71,10 +100,34 @@ function _install() {
         `referer_url` TEXT NULL,
         `submitted_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
 ) ENGINE=INNODB CHARACTER SET={$wpdb->charset};");
+}
+
+// runs on regular wordpress installs post plugin activation
+function _install() {
+    // install table for regular wp install
+    _install_table();
 
     // add "edit_forms" cap to user that activated the plugin
     $user = wp_get_current_user();
     $user->add_cap('edit_forms', true);
+}
+
+function hf_add_user_to_blog($user_id, $role, $blog_id) {
+    if ( 'administrator' != $role )
+        return;
+
+    // add "edit_forms" cap to site admin
+    $user = new \WP_User( (int) $user_id );
+    $user->add_cap('edit_forms', true);
+}
+
+function hf_wp_insert_site( \WP_Site $site ) {
+    switch_to_blog((int) $site->blog_id);
+
+    // install table
+    _install_table();
+
+    restore_current_blog();
 }
 
 define('HTML_FORMS_VERSION', '1.3.20');
@@ -83,6 +136,11 @@ if( ! function_exists( 'hf_get_form' ) ) {
     require __DIR__ . '/vendor/autoload.php';
 }
 
-register_activation_hook( __FILE__, 'HTML_Forms\\_install');
+register_activation_hook( __FILE__, 'HTML_Forms\\_install_mu_wrapper');
 add_action( 'plugins_loaded', 'HTML_Forms\\_bootstrap', 10 );
 
+// add cap to site admin after being added to blog
+add_action('add_user_to_blog', 'HTML_Forms\\hf_add_user_to_blog', 10, 3);
+
+// install db table for newly added sites
+add_action('wp_insert_site', 'HTML_Forms\\hf_wp_insert_site');
