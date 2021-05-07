@@ -3,7 +3,7 @@
 Plugin Name: HTML Forms
 Plugin URI: https://www.htmlformsplugin.com/#utm_source=wp-plugin&utm_medium=html-forms&utm_campaign=plugins-page
 Description: Not just another forms plugin. Simple and flexible.
-Version: 1.3.19
+Version: 1.3.20
 Author: ibericode
 Author URI: https://ibericode.com/
 License: GPL v3
