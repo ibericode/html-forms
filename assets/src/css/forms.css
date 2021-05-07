@@ -1,0 +1,41 @@
+.hf-form label {
+	clear: both;
+	float: none;
+	display: block;
+	font-weight: bold;
+	margin-bottom: 1px;
+}
+
+.hf-form label + label {
+	font-weight: normal;
+}
+
+.hf-form input[type="text"],
+.hf-form input[type="email"],
+.hf-form input[type="url"],
+.hf-form input[type="date"],
+.hf-form input[type="number"],
+.hf-form select,
+.hf-form textarea {
+	clear: both;
+	float: none;
+	padding: 4px 8px;
+}
+
+.hf-message {
+	padding: .75rem 1.25rem;
+	margin-bottom: 1rem;
+	border: 1px solid transparent;
+}
+
+.hf-message-success {
+	background-color: #dff0d8;
+	border-color: #d0e9c6;
+	color: #3c763d;
+}
+
+.hf-message-warning {
+	background-color: #fcf8e3;
+	border-color: #faf2cc;
+	color: #8a6d3b;
+}

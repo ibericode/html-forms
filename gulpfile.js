@@ -1,5 +1,4 @@
 const gulp = require('gulp')
-const sass = require('gulp-sass')
 const uglify = require('gulp-uglify')
 const rename = require('gulp-rename')
 const cssmin = require('gulp-clean-css')
@@ -8,20 +7,13 @@ const sourcemaps = require('gulp-sourcemaps')
 const source = require('vinyl-source-stream')
 
 gulp.task('css', function () {
-  return gulp.src('./assets/src/sass/[^_]*.scss')
-    .pipe(sass())
-    .pipe(rename({ extname: '.css' }))
-    .pipe(gulp.dest('./assets/css'))
-})
-
-gulp.task('minify-css', gulp.series('css', function () {
-  return gulp.src(['./assets/css/*.css', '!./assets/css/*.min.css'])
+  return gulp.src(['./assets/src/css/*.css'])
     .pipe(sourcemaps.init({ loadMaps: true }))
     .pipe(cssmin())
     .pipe(rename({ extname: '.min.css' }))
     .pipe(sourcemaps.write('./'))
     .pipe(gulp.dest('./assets/css'))
-}))
+})
 
 gulp.task('js', gulp.parallel(['public.js', 'gutenberg-block.js', 'admin/admin.js'].map(f => () => {
   return browserify({ entries: 'assets/src/js/' + f })
@@ -53,9 +45,9 @@ gulp.task('img', () => {
     .pipe(gulp.dest('assets/img'))
 })
 
-gulp.task('default', gulp.parallel('minify-css', 'minify-js', 'img'))
+gulp.task('default', gulp.parallel('css', 'minify-js', 'img'))
 
 gulp.task('watch', function () {
-  gulp.watch('./assets/src/sass/**/*.scss', gulp.series('css'))
+  gulp.watch('./assets/src/css/*.css', gulp.series('css'))
   gulp.watch('./assets/src/js/**/*.js', gulp.series('js'))
 })

@@ -31,11 +31,9 @@
     "gulp-clean-css": "^4.3.0",
     "gulp-rename": "^1.4.0",
     "gulp-replace": "^1.0.0",
-    "gulp-sass": "^4.1.0",
     "gulp-sourcemaps": "^2.6.4",
     "gulp-uglify": "^3.0.0",
     "gulp-wp-pot": "^2.5.0",
-    "node-sass": "^4.14.1",
     "vinyl-source-stream": "^2.0.0"
   }
 }

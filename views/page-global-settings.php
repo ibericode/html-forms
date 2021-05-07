@@ -27,7 +27,7 @@
 							<label><input type="radio" name="hf_settings[load_stylesheet]" value="1" <?php checked( $settings['load_stylesheet'], 1 ); ?>> <?php _e( 'Yes' ); ?></label> &nbsp;
 							<label><input type="radio"  name="hf_settings[load_stylesheet]" value="0"  <?php checked( $settings['load_stylesheet'], 0 ); ?>> <?php _e( 'No' ); ?></label>
 
-							<p class="help"><?php _e( 'Select "yes" to apply some basic form styles to all HTML Forms.', 'html-forms' ); ?></p>
+							<p class="description"><?php _e( 'Select "yes" to apply some basic form styles to all HTML Forms.', 'html-forms' ); ?></p>
 						</td>
 					</tr>
 

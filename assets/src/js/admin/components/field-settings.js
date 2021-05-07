@@ -22,7 +22,7 @@ function Placeholder (props) {
     <div class='hf-small-margin'>
       <label for='hf-fg-placeholder'>Placeholder <span class='hf-italic hf-pull-right'>Optional</span></label>
       <input id='hf-fg-placeholder' type='text' value={props.value} onChange={props.onChange} />
-      <p class='help'>Text to show when field has no value.</p>
+      <p class='description'>Text to show when field has no value.</p>
     </div>
   )
 }
@@ -32,7 +32,7 @@ function ButtonText (props) {
     <div class='hf-small-margin'>
       <label for='hf-fg-default-value'>Button text <span class='hf-required'>*</span></label>
       <input id='hf-fg-default-value' type='text' value={props.value} onChange={props.onChange} />
-      <p class='help'>Text to show on the button.</p>
+      <p class='description'>Text to show on the button.</p>
     </div>
   )
 }
@@ -42,7 +42,7 @@ function DefaultValue (props) {
     <div class='hf-small-margin'>
       <label for='hf-fg-default-value'>Default value <span class='hf-italic hf-pull-right'>Optional</span></label>
       <input id='hf-fg-default-value' type='text' value={props.value} onChange={props.onChange} />
-      <p class='help'>Text to pre-fill this field with.</p>
+      <p class='description'>Text to pre-fill this field with.</p>
     </div>
   )
 }
@@ -103,7 +103,7 @@ function Accept (props) {
     <div class='hf-small-margin'>
       <label>Accepted file types</label>
       <input type='text' value={props.value} onChange={props.onChange} />
-      <p class='help'>Use a comma-separated list of accepted file extensions, eg <code>.pdf</code>. <br />Leave empty to accept any file type.</p>
+      <p class='description'>Use a comma-separated list of accepted file extensions, eg <code>.pdf</code>. <br />Leave empty to accept any file type.</p>
     </div>
   )
 }

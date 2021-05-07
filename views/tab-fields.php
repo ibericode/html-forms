@@ -6,7 +6,7 @@
 
 	<div class="hf-row">
 		<div class="hf-col" style="min-width: 600px;">
-		    <h4 style="margin-bottom: 0;"><label for="hf-form-editor"><?php _e( 'Form code', 'html-forms' ); ?></label></h4>
+		    <h4 style="margin-bottom: 0;"><label for="hf-form-editor"><?php _e( 'Form code', 'html-forms' ); ?> <span class="dashicons dashicons-editor-help" style="visibility: hidden;"></span></label></h4>
 		    <textarea id="hf-form-editor" class="widefat" name="form[markup]" cols="160" rows="20" autocomplete="false" autocorrect="false" autocapitalize="false" spellcheck="false"><?php echo htmlspecialchars( $form->markup, ENT_QUOTES, get_option( 'blog_charset' ) ); ?></textarea>
 		    <?php submit_button(); ?>
 		</div>
@@ -15,7 +15,7 @@
 			<iframe id="hf-form-preview" src="<?php echo esc_attr( $form_preview_url ); ?>"></iframe>
 		</div>
 	</div>
-    
+
 </div>
 
 <input type="hidden" id="hf-required-fields" name="form[settings][required_fields]" value="<?php echo esc_attr( $form->settings['required_fields'] ); ?>" />
