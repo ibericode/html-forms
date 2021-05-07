@@ -68,7 +68,7 @@ function _install() {
         `data` TEXT NOT NULL,
         `user_agent` TEXT NULL,
         `ip_address` VARCHAR(255) NULL,
-        `referer_url` VARCHAR(255) NULL,
+        `referer_url` TEXT NULL,
         `submitted_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
 ) ENGINE=INNODB CHARACTER SET={$wpdb->charset};");
 
@@ -77,7 +77,7 @@ function _install() {
     $user->add_cap('edit_forms', true);
 }
 
-define('HTML_FORMS_VERSION', '1.3.19');
+define('HTML_FORMS_VERSION', '1.3.20');
 
 if( ! function_exists( 'hf_get_form' ) ) {
     require __DIR__ . '/vendor/autoload.php';
