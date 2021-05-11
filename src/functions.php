@@ -373,7 +373,7 @@ function hf_get_admin_tabs( Form $form ) {
 }
 
 function _hf_on_plugin_activation() {
-	if (is_multisite()) {
+	if ( is_multisite() ) {
 		_hf_on_plugin_activation_multisite();
 		return;
 	}
@@ -383,26 +383,33 @@ function _hf_on_plugin_activation() {
 
 	// add "edit_forms" cap to user that activated the plugin
 	$user = wp_get_current_user();
-	$user->add_cap('edit_forms', true);
+	$user->add_cap( 'edit_forms', true );
 }
 
 function _hf_on_plugin_activation_multisite() {
 	$added_caps = array();
 
-	foreach ( get_sites(array( 'number' => PHP_INT_MAX )) as $site ) {
-		switch_to_blog((int) $site->blog_id);
+	foreach ( get_sites( array( 'number' => PHP_INT_MAX ) ) as $site ) {
+		switch_to_blog( (int) $site->blog_id );
 
 		// install table for current blog
 		_hf_create_submissions_table();
 
 		// iterate through current blog admins
-		foreach ( get_users(array( 'blog_id' => (int) $site->blog_id, 'role' => 'administrator', 'fields' => 'ID' )) as $admin_id ) {
-			if ( ! (int) $admin_id || in_array($admin_id, $added_caps) )
+		foreach ( get_users(
+			array(
+				'blog_id' => (int) $site->blog_id,
+				'role'    => 'administrator',
+				'fields'  => 'ID',
+			)
+		) as $admin_id ) {
+			if ( ! (int) $admin_id || in_array( $admin_id, $added_caps ) ) {
 				continue;
+			}
 
 			// add "edit_forms" cap to site admin
 			$user = new \WP_User( (int) $admin_id );
-			$user->add_cap('edit_forms', true);
+			$user->add_cap( 'edit_forms', true );
 
 			$added_caps[] = $admin_id;
 		}
@@ -418,7 +425,8 @@ function _hf_create_submissions_table() {
 
 	// create table for storing submissions
 	$table = $wpdb->prefix . 'hf_submissions';
-	$wpdb->query("CREATE TABLE IF NOT EXISTS {$table}(
+	$wpdb->query(
+		"CREATE TABLE IF NOT EXISTS {$table}(
         `id` INT UNSIGNED NOT NULL PRIMARY KEY AUTO_INCREMENT,
         `form_id` INT UNSIGNED NOT NULL,
         `data` TEXT NOT NULL,
@@ -426,21 +434,22 @@ function _hf_create_submissions_table() {
         `ip_address` VARCHAR(255) NULL,
         `referer_url` TEXT NULL,
         `submitted_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
-) ENGINE=INNODB CHARACTER SET={$wpdb->charset};");
+) ENGINE=INNODB CHARACTER SET={$wpdb->charset};"
+	);
 }
 
-function _hf_on_add_user_to_blog($user_id, $role, $blog_id) {
+function _hf_on_add_user_to_blog( $user_id, $role, $blog_id ) {
 	if ( 'administrator' !== $role ) {
 		return;
 	}
 
 	// add "edit_forms" cap to site admin
 	$user = new \WP_User( (int) $user_id );
-	$user->add_cap('edit_forms', true);
+	$user->add_cap( 'edit_forms', true );
 }
 
 function _hf_on_wp_insert_site( \WP_Site $site ) {
-	switch_to_blog((int) $site->blog_id);
+	switch_to_blog( (int) $site->blog_id );
 	_hf_create_submissions_table();
 	restore_current_blog();
 }
