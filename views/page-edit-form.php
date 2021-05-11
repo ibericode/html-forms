@@ -14,12 +14,13 @@ $tabs = hf_get_admin_tabs($form);
 
     <h1 class="page-title"><?php _e( 'Edit form', 'html-forms' ); ?></h1>
 
-    <?php if ( ! empty( $_GET['saved'] ) ) { 
+    <?php if ( ! empty( $_GET['saved'] ) ) {
         echo '<div class="notice notice-success"><p>' . __( 'Form updated.', 'html-forms' ) . '</p></div>';
     } ?>
 
     <form method="post">
         <input type="hidden" name="_hf_admin_action" value="save_form" />
+		<input type="hidden" name="_wpnonce" value="<?php echo esc_attr( wp_create_nonce('_hf_admin_action') ); ?>" />
         <input type="hidden" name="form_id" value="<?php echo esc_attr( $form->ID ); ?>" />
         <input type="submit" style="display: none; " />
 

@@ -16,6 +16,7 @@
 
     <form method="post" style="max-width: 600px;">
         <input type="hidden" name="_hf_admin_action" value="create_form" />
+		<input type="hidden" name="_wpnonce" value="<?php echo esc_attr( wp_create_nonce('_hf_admin_action') ); ?>" />
 
         <p>
             <label>Form title</label>

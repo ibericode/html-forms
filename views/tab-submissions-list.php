@@ -27,10 +27,11 @@ $bulk_actions = apply_filters( 'hf_admin_form_submissions_bulk_actions', array(
             <label for="bulk-action-selector-top" class="screen-reader-text"><?php _e( 'Select bulk action' ); ?></label>
             <select name="_hf_admin_action" id="bulk-action-selector-top">
                 <option value=""><?php _e( 'Bulk Actions' ); ?></option>
-                <?php foreach( $bulk_actions as $key => $label ) { 
+                <?php foreach( $bulk_actions as $key => $label ) {
                   echo sprintf( '<option value="%s">%s</option>', esc_attr( $key ), $label );
                 } ?>
             </select>
+			<input type="hidden" name="_wpnonce" value="<?php echo esc_attr( wp_create_nonce('_hf_admin_action') ); ?>" />
             <input type="submit" class="button action" value="<?php _e( 'Apply' ); ?>">
         </div>
 
@@ -80,7 +81,7 @@ $bulk_actions = apply_filters( 'hf_admin_form_submissions_bulk_actions', array(
                   if( ! empty( $s->data[$field] ) ) {
                     echo hf_field_value( $s->data[$field], 100 );
                   }
-                  
+
                   echo '</td>';
                 } ?>
             </tr>

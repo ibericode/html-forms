@@ -82,17 +82,24 @@ class Admin {
 	}
 
 	public function listen() {
-		$request = array_merge( $_GET, $_POST );
-		if ( empty( $request['_hf_admin_action'] ) ) {
+		if ( isset( $_GET['_hf_admin_action'] ) ) {
+			$action = (string) $_GET['_hf_admin_action'];
+		} elseif ( isset( $_POST['_hf_admin_action'] ) ) {
+			$action = (string) $_POST['_hf_admin_action'];
+		} else {
 			return;
+		}
+
+		// verify nonce
+		if ( ! isset( $_REQUEST['_wpnonce'] ) || ! wp_verify_nonce( $_REQUEST['_wpnonce'], '_hf_admin_action' ) ) {
+			wp_nonce_ays( $action );
+			exit;
 		}
 
 		// do nothing if logged in user is not of role administrator
 		if ( ! current_user_can( 'edit_forms' ) ) {
 			return;
 		}
-
-		$action = (string) $request['_hf_admin_action'];
 
 		/**
 		 * Allows you to hook into requests containing `_hf_admin_action` => action name.
