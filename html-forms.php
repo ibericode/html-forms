@@ -28,8 +28,6 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 namespace HTML_Forms;
 
-use wpdb;
-
 function _bootstrap() {
     $settings = hf_get_settings();
 
@@ -56,33 +54,17 @@ function _bootstrap() {
     }
 }
 
-function _install() {
-    /** @var wpdb */
-    global $wpdb;
-
-    // create table for storing submissions
-    $table = $wpdb->prefix . 'hf_submissions';
-    $wpdb->query("CREATE TABLE IF NOT EXISTS {$table}(
-        `id` INT UNSIGNED NOT NULL PRIMARY KEY AUTO_INCREMENT,
-        `form_id` INT UNSIGNED NOT NULL,
-        `data` TEXT NOT NULL,
-        `user_agent` TEXT NULL,
-        `ip_address` VARCHAR(255) NULL,
-        `referer_url` TEXT NULL,
-        `submitted_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
-) ENGINE=INNODB CHARACTER SET={$wpdb->charset};");
-
-    // add "edit_forms" cap to user that activated the plugin
-    $user = wp_get_current_user();
-    $user->add_cap('edit_forms', true);
-}
-
 define('HTML_FORMS_VERSION', '1.3.20');
 
 if( ! function_exists( 'hf_get_form' ) ) {
     require __DIR__ . '/vendor/autoload.php';
 }
-
-register_activation_hook( __FILE__, 'HTML_Forms\\_install');
 add_action( 'plugins_loaded', 'HTML_Forms\\_bootstrap', 10 );
 
+register_activation_hook( __FILE__, '_hf_on_plugin_activation');
+
+// add cap to site admin after being added to blog
+add_action('add_user_to_blog', '_hf_on_add_user_to_blog', 10, 3);
+
+// install db table for newly added sites
+add_action('wp_insert_site', '_hf_on_wp_insert_site');
