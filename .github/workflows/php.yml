@@ -4,13 +4,11 @@ on: [ push, pull_request ]
 
 jobs:
   build:
-
     runs-on: ${{ matrix.operating-system }}
-
     strategy:
       matrix:
-        operating-system: [ ubuntu-latest, windows-latest ]
-        php-versions: [ '7.3', '7.4', '8.0' ]
+        operating-system: [ ubuntu-latest ]
+        php-versions: [ '7.4', '8.0' ]
 
     steps:
       - uses: actions/checkout@v2
