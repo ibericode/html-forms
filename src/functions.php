@@ -246,9 +246,9 @@ function hf_replace_data_variables( $string, $data = array(), $escape_function =
 	return preg_replace_callback(
 		'/\[(.+?)\]/',
 		function( $matches ) use ( $data, $escape_function ) {
-			$key         = $matches[1];
+			$key = $matches[1];
 			// replace spaces in name with underscores to match PHP requirement for keys in $_POST superglobal
-			$key  = str_replace( ' ', '_', $key );
+			$key         = str_replace( ' ', '_', $key );
 			$replacement = hf_array_get( $data, $key, '' );
 			$replacement = hf_field_value( $replacement, 0, $escape_function );
 			return $replacement;

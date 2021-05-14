@@ -19,12 +19,12 @@ class Email extends Action {
 	*/
 	private function get_default_settings() {
 		return array(
-				'from'         => get_option( 'admin_email' ),
-				'to'           => get_option( 'admin_email' ),
-				'subject'      => '',
-				'message'      => '',
-				'headers'      => '',
-				'content_type' => 'text/html',
+			'from'         => get_option( 'admin_email' ),
+			'to'           => get_option( 'admin_email' ),
+			'subject'      => '',
+			'message'      => '',
+			'headers'      => '',
+			'content_type' => 'text/html',
 		);
 	}
 
