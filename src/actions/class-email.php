@@ -18,15 +18,14 @@ class Email extends Action {
 	* @return array
 	*/
 	private function get_default_settings() {
-		$defaults = array(
-			'from'         => get_option( 'admin_email' ),
-			'to'           => get_option( 'admin_email' ),
-			'subject'      => '',
-			'message'      => '',
-			'headers'      => '',
-			'content_type' => 'text/html',
+		return array(
+				'from'         => get_option( 'admin_email' ),
+				'to'           => get_option( 'admin_email' ),
+				'subject'      => '',
+				'message'      => '',
+				'headers'      => '',
+				'content_type' => 'text/html',
 		);
-		return $defaults;
 	}
 
 	/**
@@ -57,12 +56,12 @@ class Email extends Action {
 				   <input name="form[settings][actions][<?php echo $index; ?>][subject]" value="<?php echo esc_attr( $settings['subject'] ); ?>" type="text" class="regular-text" placeholder="<?php echo esc_attr( __( 'Your email subject', 'html-forms' ) ); ?>" />
 			   </td>
 		   </tr>
-			
+
 		   <tr>
 			   <th><label><?php echo __( 'Message', 'html-forms' ); ?> <span class="hf-required">*</span></label></th>
 			   <td>
 				   <textarea name="form[settings][actions][<?php echo $index; ?>][message]" rows="8" class="widefat" placeholder="<?php echo esc_attr( __( 'Your email message', 'html-forms' ) ); ?>" required><?php echo esc_textarea( $settings['message'] ); ?></textarea>
-				   <p class="help"><?php _e( 'You can use the following variables (in all fields): ', 'html-forms' ); ?><br /><span class="hf-field-names"></span></p>                 
+				   <p class="help"><?php _e( 'You can use the following variables (in all fields): ', 'html-forms' ); ?><br /><span class="hf-field-names"></span></p>
 			   </td>
 		   </tr>
 
@@ -75,7 +74,7 @@ class Email extends Action {
 				   </select>
 			   </td>
 		   </tr>
-		
+
 		   <tr>
 			   <th><label><?php echo __( 'Additional headers', 'html-forms' ); ?></label></th>
 			   <td>
