@@ -196,7 +196,6 @@ class Forms {
 		$data = $_POST;
 
 		if ( ! empty( $_FILES ) ) {
-
 			foreach ( $_FILES as $field_name => $file ) {
 				// only add non-empty files so that required field validation works as expected
 				// upload could still have errored at this point
@@ -224,7 +223,6 @@ class Forms {
 		$error_code = $this->validate_form( $form, $data );
 
 		if ( empty( $error_code ) ) {
-
 			/**
 			* Filters the field names that should be ignored on the Submission object.
 			* Fields starting with an underscore (_) are ignored by default.

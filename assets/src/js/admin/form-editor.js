@@ -119,15 +119,21 @@ function updateShadowDOM () {
   dom.innerHTML = editor.getValue()
 }
 
+// PHP Does not allow spaces in the field name, yet HTML & HTTP spec does
+// So here we are preparing the field name so we can use it without issues in PHP
+function normalizeFieldName (name) {
+  return name.replace(' ', '_')
+}
+
 function updateRequiredFields () {
   const fields = dom.querySelectorAll('[required]')
-  const fieldNames = [].map.call(fields, getFieldVariableName)
+  const fieldNames = [].map.call(fields, getFieldVariableName).map(normalizeFieldName)
   requiredFieldsInput.value = fieldNames.join(',')
 }
 
 function updateEmailFields () {
   const fields = dom.querySelectorAll('input[type="email"]')
-  const fieldNames = [].map.call(fields, getFieldVariableName)
+  const fieldNames = [].map.call(fields, getFieldVariableName).map(normalizeFieldName)
   emailFieldsInput.value = fieldNames.join(',')
 }
 
