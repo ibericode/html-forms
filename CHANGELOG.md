@@ -1,6 +1,14 @@
 Changelog
 =========
 
+#### 1.3.21 - May 14, 2021
+
+- Add multisite compatibility for storing form submissions. Thanks to [Ismail Hardoum](https://github.com/elhardoum).
+- Fix required fields logic for fields with spaces in their name.
+- Fix replacement variables logic for fields with spaces or special characters in their name.
+- Add nonce verification to all URL's using `_hf_admin_action`.
+
+
 #### 1.3.20 - May 7, 2021
 
 - Change type of referer_url column in database to `TEXT`.
