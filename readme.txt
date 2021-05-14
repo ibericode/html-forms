@@ -4,7 +4,7 @@ Donate link: https://www.htmlformsplugin.com/#utm_source=wp-plugin-repo&utm_medi
 Tags: form, forms, contact form, html form, htmlforms
 Requires at least: 4.6
 Tested up to: 5.7
-Stable tag: 1.3.20
+Stable tag: 1.3.21
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 Requires PHP: 5.3
@@ -111,6 +111,14 @@ The plugin comes with built-in spam protection that should stop all automated at
 
 
 == Changelog ==
+
+
+#### 1.3.21 - May 14, 2021
+
+- Add multisite compatibility for storing form submissions. Thanks to [Ismail Hardoum](https://github.com/elhardoum).
+- Fix required fields logic for fields with spaces in their name.
+- Fix replacement variables logic for fields with spaces or special characters in their name.
+- Add nonce verification to all URL's using `_hf_admin_action`.
 
 
 #### 1.3.20 - May 7, 2021
