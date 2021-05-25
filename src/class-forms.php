@@ -69,7 +69,7 @@ class Forms {
 			'html-forms',
 			'hf_js_vars',
 			array(
-				'ajax_url' => admin_url( 'admin-ajax.php' ),
+				'ajax_url' => admin_url( 'admin-ajax.php?action=hf_form_submit' ),
 			)
 		);
 
@@ -209,7 +209,6 @@ class Forms {
 	}
 
 	public function listen_for_submit() {
-
 		// only respond to AJAX requests with _hf_form_id set.
 		if ( empty( $_POST['_hf_form_id'] )
 			|| empty( $_SERVER['HTTP_X_REQUESTED_WITH'] )
