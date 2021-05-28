@@ -1,6 +1,5 @@
 const gulp = require('gulp')
 const uglify = require('gulp-uglify')
-const rename = require('gulp-rename')
 const cssmin = require('gulp-clean-css')
 const browserify = require('browserify')
 const source = require('vinyl-source-stream')
@@ -11,7 +10,6 @@ const minify = process.env.NODE_ENV !== 'development'
 gulp.task('css', function () {
   return gulp.src(['./assets/src/css/*.css'])
     .pipe(minify ? cssmin() : noop())
-    .pipe(rename({ extname: '.css' }))
     .pipe(gulp.dest('./assets/css'))
 })
 
