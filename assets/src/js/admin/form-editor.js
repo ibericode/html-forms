@@ -122,7 +122,7 @@ function updateShadowDOM () {
 // PHP Does not allow spaces in the field name, yet HTML & HTTP spec does
 // So here we are preparing the field name so we can use it without issues in PHP
 function normalizeFieldName (name) {
-  return name.replace(' ', '_')
+  return name.replace(/\s/g, '_')
 }
 
 function updateRequiredFields () {
