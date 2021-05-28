@@ -126,7 +126,7 @@ function normalizeFieldName (name) {
 }
 
 function updateRequiredFields () {
-  const fields = dom.querySelectorAll('[required]')
+  const fields = dom.querySelectorAll('input[required], select[required], textarea[required]')
   const fieldNames = [].map.call(fields, getFieldVariableName).map(normalizeFieldName)
   requiredFieldsInput.value = fieldNames.join(',')
 }
