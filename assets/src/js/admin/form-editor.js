@@ -30,14 +30,17 @@ function init () {
     matchBrackets: true
   })
 
-  editor.on('changes', debounce(updatePreview, 500))
-  editor.on('changes', debounce(updateShadowDOM, 100))
-  editor.on('changes', debounce(updateFieldVariables, 500))
-  editor.on('blur', updatePreview)
-  editor.on('blur', updateShadowDOM)
-  editor.on('blur', updateFieldVariables)
-  editor.on('blur', updateRequiredFields)
-  editor.on('blur', updateEmailFields)
+  editor.on('changes', debounce(() => {
+    updateShadowDOM()
+    updatePreview()
+  }, 600))
+  editor.on('blur', () => {
+    updateShadowDOM()
+    updatePreview()
+    updateFieldVariables()
+    updateRequiredFields()
+    updateEmailFields()
+  })
 
   previewFrame.addEventListener('load', setPreviewDom)
   setPreviewDom()
@@ -86,11 +89,12 @@ function updateFieldVariables () {
       el.type = 'text'
       el.style.maxWidth = Math.ceil((width * 1.1) + 14) + 'px'
       el.value = n
-      el.readonly = true
-      el.onfocus = () => el.select()
+      el.setAttribute('readonly', 'readonly')
+      el.addEventListener('focus', () => {
+        el.select()
+      })
       return el
     })
-
     variableElements.forEach((vel, i, arr) => {
       el.appendChild(vel)
     })
