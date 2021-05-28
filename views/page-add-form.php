@@ -23,7 +23,7 @@
             <input type="text" name="form[title]" value="" placeholder="<?php esc_attr_e( 'Your form title..', 'html-forms' ); ?>" class="widefat" required />
         </p>
 
-        <?php submit_button(); ?>
+        <?php submit_button( __( 'Create form', 'html-forms' ) ); ?>
     </form>
 
     <?php require __DIR__ . '/admin-footer.php'; ?>
