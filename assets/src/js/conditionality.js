@@ -108,13 +108,9 @@ function handleInputEvent (evt) {
   [].forEach.call(elements, (el) => toggleElement(el, evt))
 }
 
-export default {
-  init: function () {
-    document.addEventListener('click', handleInputEvent, true)
-    document.addEventListener('keyup', handleInputEvent, true)
-    document.addEventListener('change', handleInputEvent, true)
-    document.addEventListener('hf-refresh', evaluate, true)
-    window.addEventListener('load', evaluate)
-    evaluate()
-  }
-}
+document.addEventListener('click', handleInputEvent, true)
+document.addEventListener('keyup', handleInputEvent, true)
+document.addEventListener('change', handleInputEvent, true)
+document.addEventListener('hf-refresh', evaluate, true)
+window.addEventListener('load', evaluate)
+evaluate()

@@ -61,10 +61,9 @@ class Forms {
 	}
 
 	public function assets() {
-		$suffix     = defined( 'SCRIPT_DEBUG' ) && SCRIPT_DEBUG ? '' : '.min';
 		$assets_url = plugins_url( 'assets/', $this->plugin_file );
 
-		wp_register_script( 'html-forms', $assets_url . "js/public{$suffix}.js", array(), HTML_FORMS_VERSION, true );
+		wp_register_script( 'html-forms', $assets_url . "js/public.js", array(), HTML_FORMS_VERSION, true );
 		wp_localize_script(
 			'html-forms',
 			'hf_js_vars',
@@ -74,7 +73,7 @@ class Forms {
 		);
 
 		if ( $this->settings['load_stylesheet'] ) {
-			wp_enqueue_style( 'html-forms', $assets_url . "css/forms{$suffix}.css", array(), HTML_FORMS_VERSION );
+			wp_enqueue_style( 'html-forms', $assets_url . "css/forms.css", array(), HTML_FORMS_VERSION );
 		}
 	}
 

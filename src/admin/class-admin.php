@@ -124,10 +124,8 @@ class Admin {
 			return;
 		}
 
-		$suffix = defined( 'SCRIPT_DEBUG' ) && SCRIPT_DEBUG ? '' : '.min';
-
-		wp_enqueue_style( 'html-forms-admin', plugins_url( 'assets/css/admin' . $suffix . '.css', $this->plugin_file ), array(), HTML_FORMS_VERSION );
-		wp_enqueue_script( 'html-forms-admin', plugins_url( 'assets/js/admin' . $suffix . '.js', $this->plugin_file ), array(), HTML_FORMS_VERSION, true );
+		wp_enqueue_style( 'html-forms-admin', plugins_url( 'assets/css/admin.css', $this->plugin_file ), array(), HTML_FORMS_VERSION );
+		wp_enqueue_script( 'html-forms-admin', plugins_url( 'assets/js/admin.js', $this->plugin_file ), array(), HTML_FORMS_VERSION, true );
 		wp_localize_script(
 			'html-forms-admin',
 			'hf_options',

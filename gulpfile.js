@@ -3,15 +3,15 @@ const uglify = require('gulp-uglify')
 const rename = require('gulp-rename')
 const cssmin = require('gulp-clean-css')
 const browserify = require('browserify')
-const sourcemaps = require('gulp-sourcemaps')
 const source = require('vinyl-source-stream')
+const streamify = require('gulp-streamify')
+const noop = require('through2').obj
+const minify = process.env.NODE_ENV !== 'development'
 
 gulp.task('css', function () {
   return gulp.src(['./assets/src/css/*.css'])
-    .pipe(sourcemaps.init({ loadMaps: true }))
-    .pipe(cssmin())
-    .pipe(rename({ extname: '.min.css' }))
-    .pipe(sourcemaps.write('./'))
+    .pipe(minify ? cssmin() : noop())
+    .pipe(rename({ extname: '.css' }))
     .pipe(gulp.dest('./assets/css'))
 })
 
@@ -28,24 +28,16 @@ gulp.task('js', gulp.parallel(['public.js', 'gutenberg-block.js', 'admin/admin.j
     })
     .bundle()
     .pipe(source(f.split('/').pop()))
+    .pipe(minify ? streamify(uglify()) : noop())
     .pipe(gulp.dest('./assets/js'))
 })))
-
-gulp.task('minify-js', gulp.series('js', function () {
-  return gulp.src(['./assets/js/**/*.js', '!./assets/js/**/*.min.js'])
-    .pipe(sourcemaps.init({ loadMaps: true }))
-    .pipe(uglify())
-    .pipe(rename({ extname: '.min.js' }))
-    .pipe(sourcemaps.write('./'))
-    .pipe(gulp.dest('./assets/js'))
-}))
 
 gulp.task('img', () => {
   return gulp.src('assets/src/img/*')
     .pipe(gulp.dest('assets/img'))
 })
 
-gulp.task('default', gulp.parallel('css', 'minify-js', 'img'))
+gulp.task('default', gulp.parallel('css', 'js', 'img'))
 
 gulp.task('watch', function () {
   gulp.watch('./assets/src/css/*.css', gulp.series('css'))

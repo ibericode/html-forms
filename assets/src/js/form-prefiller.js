@@ -1,5 +1,3 @@
-'use strict'
-
 const populate = require('populate.js')
 
 // parse ?query=string with array support. no nesting.
@@ -18,22 +16,20 @@ function parseUrlParams (q) {
   return obj
 }
 
-function init () {
+(function () {
   if (!window.URLSearchParams) {
     return
   }
 
   // only act on form elements outputted by HTML Forms
-  const forms = [].filter.call(document.forms, (f) => f.className.indexOf('hf-form') > -1)
+  const forms = [].filter.call(document.forms, f => f.className.indexOf('hf-form') > -1)
   if (!forms) {
     return
   }
 
   // fill each form with data from URL params
   const data = parseUrlParams(window.location.search)
-  forms.forEach((f) => {
+  forms.forEach(f => {
     populate(f, data)
   })
-}
-
-export default { init }
+})()

@@ -1,5 +1,5 @@
-import prefiller from './form-prefiller.js'
-import conditionality from './conditionality.js'
+import './form-prefiller.js'
+import './conditionality.js'
 import './polyfills/custom-event.js'
 import events from './events.js'
 const Loader = require('./form-loading-indicator.js')
@@ -114,8 +114,6 @@ function createRequestHandler (formEl) {
 }
 
 document.addEventListener('submit', handleSubmitEvents, false) // useCapture=false to ensure we bubble upwards (and thus can cancel propagation)
-conditionality.init()
-prefiller.init()
 
 window.html_forms = {
   on: events.on,

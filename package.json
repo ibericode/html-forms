@@ -32,9 +32,10 @@
     "gulp-clean-css": "^4.3.0",
     "gulp-rename": "^1.4.0",
     "gulp-replace": "^1.0.0",
-    "gulp-sourcemaps": "^2.6.4",
+    "gulp-streamify": "^1.0.2",
     "gulp-uglify": "^3.0.0",
     "gulp-wp-pot": "^2.5.0",
+    "through2": "^2.0.5",
     "vinyl-source-stream": "^2.0.0"
   }
 }
