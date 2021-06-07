@@ -4,7 +4,7 @@ Donate link: https://www.htmlformsplugin.com/#utm_source=wp-plugin-repo&utm_medi
 Tags: form, forms, contact form, html form, htmlforms
 Requires at least: 4.6
 Tested up to: 5.7
-Stable tag: 1.3.21
+Stable tag: 1.3.22
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 Requires PHP: 5.3
@@ -111,6 +111,14 @@ The plugin comes with built-in spam protection that should stop all automated at
 
 
 == Changelog ==
+
+
+#### 1.3.22 - Jun 7, 2021
+
+- Always load minified asset files, regardless of SCRIPT_DEBUG constant.
+- Optimize JavaScript event callbacks in form editor.
+- Fix required fields logic for when field names have multiple spaces in them.
+- Add action parameter to AJAX endpoint for submitting forms.
 
 
 #### 1.3.21 - May 14, 2021
