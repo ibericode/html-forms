@@ -1,6 +1,14 @@
 Changelog
 =========
 
+#### 1.3.22 - Jun 7, 2021
+
+- Always load minified asset files, regardless of SCRIPT_DEBUG constant.
+- Optimize JavaScript event callbacks in form editor.
+- Fix required fields logic for when field names have multiple spaces in them.
+- Add action parameter to AJAX endpoint for submitting forms.
+
+
 #### 1.3.21 - May 14, 2021
 
 - Add multisite compatibility for storing form submissions. Thanks to [Ismail Hardoum](https://github.com/elhardoum).
