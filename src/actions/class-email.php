@@ -104,6 +104,7 @@ class Email extends Action {
 		$subject = ! empty( $settings['subject'] ) ? hf_replace_data_variables( $settings['subject'], $submission->data, 'strip_tags' ) : '';
 		$subject = apply_filters( 'hf_action_email_subject', $subject, $submission );
 		$message = apply_filters( 'hf_action_email_message', hf_replace_data_variables( $settings['message'], $submission->data, $html_email ? 'esc_html' : null ), $submission );
+		$message = apply_filters('hf_append_data_to_email_message', $message, $submission); // apply filter to allow any custom data to be added/altered to email message based on form submission
 
 		// parse additional email headers from settings
 		$headers = array();
