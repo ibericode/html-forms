@@ -1,0 +1,30 @@
+<!-- Step 1 -->
+<div data-show-if="_STEP:">
+  <p>
+      <label>Name</label>
+      <input type="text" name="NAME" placeholder="" value="Danny" required />
+  </p>
+  <p>
+    <button type="button" name="_STEP" value="2">Continue to step 2</button>
+  </p>
+</div>
+
+<!-- Step 2 -->
+<div data-show-if="_STEP:2">
+  <p>
+      <label>Email address</label>
+      <input type="email" name="EMAIL" placeholder="Your email address" value="danny@email.com" required />
+  </p>
+
+  <p>
+      <button type="button" name="_STEP" value="3">Continue to step 3</button>
+      <button type="button" name="_STEP" value="">Back</button>
+  </p>
+</div>
+
+<!-- Step 3 -->
+<div data-show-if="_STEP:3">
+  <p>
+      <input type="submit" value="Send" />
+  </p>
+</div>
