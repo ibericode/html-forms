@@ -100,10 +100,14 @@ class Email extends Action {
 		$settings   = array_merge( $this->get_default_settings(), $settings );
 		$html_email = $settings['content_type'] === 'text/html';
 
-		$to      = apply_filters( 'hf_action_email_to', hf_replace_data_variables( $settings['to'], $submission->data, 'strip_tags' ), $submission );
+		$to = hf_replace_data_variables( $settings['to'], $submission->data, 'strip_tags' );
+		$to = apply_filters( 'hf_action_email_to', $to, $submission );
+
 		$subject = ! empty( $settings['subject'] ) ? hf_replace_data_variables( $settings['subject'], $submission->data, 'strip_tags' ) : '';
 		$subject = apply_filters( 'hf_action_email_subject', $subject, $submission );
-		$message = apply_filters( 'hf_action_email_message', hf_replace_data_variables( $settings['message'], $submission->data, $html_email ? 'esc_html' : null ), $submission );
+
+		$message = hf_replace_data_variables( $settings['message'], $submission->data, $html_email ? 'esc_html' : null );
+		$message = apply_filters( 'hf_action_email_message', $message, $submission );
 
 		// parse additional email headers from settings
 		$headers = array();

@@ -43,7 +43,7 @@ If you need help with the plugin, please check out the [HTML Forms knowledge bas
 
 - For questions, use the [WordPress.org plugin support forums](https://wordpress.org/support/plugin/html-forms). 
 - For bugs, [create a new GitHub issue](https://github.com/ibericode/html-forms/issues).
-- For example code snippets, check out the [HTML Forms code snippets](https://github.com/ibericode/html-forms-code-snippets) repository.
+- For example code snippets, check out the [HTML Forms code snippets directory](https://github.com/ibericode/html-forms/tree/master/code-snippets) repository.
 
 ## Contributing
 
