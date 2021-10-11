@@ -35,7 +35,7 @@ class MyCustomAction extends Action {
 			<tr>
 				<th><label><?php echo __( 'Pushbullet API URL', 'html-forms' ); ?> <span class="hf-required">*</span></label></th>
 				<td>
-					<input name="form[settings][actions][<?php echo $index; ?>][url]" value="<?php echo esc_attr( $settings['url'] ); ?>" type="text" class="regular-text" placeholder="jane@email.com" required />
+					<input name="form[settings][actions][<?php echo $index; ?>][url]" value="<?php echo esc_attr( $settings['url'] ); ?>" type="text" class="regular-text" placeholder="http://...." required />
 				</td>
 			</tr>
 		</table>
@@ -54,5 +54,5 @@ class MyCustomAction extends Action {
 	}
 }
 
-$email_action = new MyCustomAction();
-$email_action->hook();
+$my_custom_action = new MyCustomAction();
+$my_custom_action->hook();
