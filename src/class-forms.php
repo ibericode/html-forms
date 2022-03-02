@@ -29,8 +29,9 @@ class Forms {
 	public function hook() {
 		add_action( 'init', array( $this, 'register' ) );
 		add_action( 'init', array( $this, 'listen_for_submit' ) );
+		add_action( 'init', array( $this, 'register_assets' ) );
+		add_action( 'wp_enqueue_scripts', array( $this, 'enqueue_assets' ) );
 		add_action( 'parse_request', array( $this, 'listen_for_preview' ) );
-		add_action( 'wp_enqueue_scripts', array( $this, 'assets' ) );
 		add_filter( 'hf_form_markup', 'hf_template' );
 	}
 
@@ -60,7 +61,7 @@ class Forms {
 		add_shortcode( 'hf_form', array( $this, 'shortcode' ) );
 	}
 
-	public function assets() {
+	public function register_assets() {
 		$assets_url = plugins_url( 'assets/', $this->plugin_file );
 
 		wp_register_script( 'html-forms', $assets_url . 'js/public.js', array(), HTML_FORMS_VERSION, true );
@@ -72,8 +73,12 @@ class Forms {
 			)
 		);
 
+		wp_register_style( 'html-forms', $assets_url . 'css/forms.css', array(), HTML_FORMS_VERSION );
+	}
+
+	public function enqueue_assets() {
 		if ( $this->settings['load_stylesheet'] ) {
-			wp_enqueue_style( 'html-forms', $assets_url . 'css/forms.css', array(), HTML_FORMS_VERSION );
+			wp_enqueue_style( 'html-forms' );
 		}
 	}
 
