@@ -3,8 +3,8 @@ Contributors: Ibericode, DvanKooten, hchouhan, lapzor
 Donate link: https://www.htmlformsplugin.com/#utm_source=wp-plugin-repo&utm_medium=html-forms&utm_campaign=donate-link
 Tags: form, forms, contact form, html form, htmlforms
 Requires at least: 4.6
-Tested up to: 5.8
-Stable tag: 1.3.22
+Tested up to: 5.9
+Stable tag: 1.3.23
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 Requires PHP: 5.3
@@ -111,6 +111,12 @@ The plugin comes with built-in spam protection that should stop all automated at
 
 
 == Changelog ==
+
+
+#### 1.3.23 - Mar 2, 2022
+
+- Add support for swup.js in [conditional fields](https://www.htmlformsplugin.com/kb/conditional-elements/) logic.
+- Safer support for Full-Site Editing by splitting up registering and enqueueing of JS and CSS assets.
 
 
 #### 1.3.22 - Jun 7, 2021
