@@ -4,6 +4,8 @@ Changelog
 #### 1.3.23 - Mar 2, 2022
 
 - Add support for swup.js in [conditional fields](https://www.htmlformsplugin.com/kb/conditional-elements/) logic.
+- Safer support for Full-Site Editing by splitting up registering and enqueueing of JS and CSS assets.
+
 
 #### 1.3.22 - Jun 7, 2021
 
