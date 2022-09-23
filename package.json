@@ -2,7 +2,9 @@
   "license": "GPL-2.0",
   "repository": "https://github.com/ibericode/html-forms",
   "scripts": {
-    "lint": "eslint assets/src/js"
+    "lint": "eslint assets/src/js",
+	"watch": "NODE_ENV=production gulp && NODE_ENV=development gulp watch",
+	"build": "NODE_ENV=production gulp"
   },
   "dependencies": {
     "codemirror": "^5.59.2",

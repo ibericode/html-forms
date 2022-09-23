@@ -1,6 +1,12 @@
 Changelog
 =========
 
+#### 1.3.24 - Sep 23, 2022
+
+- Compatibility with Swup.js, thanks to [Sam Brown](https://github.com/sam98brown)
+- Update JavaScript dependencies.
+
+
 #### 1.3.23 - Mar 2, 2022
 
 - Add support for swup.js in [conditional fields](https://www.htmlformsplugin.com/kb/conditional-elements/) logic.
