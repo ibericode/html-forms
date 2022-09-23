@@ -4,7 +4,7 @@ Donate link: https://www.htmlformsplugin.com/#utm_source=wp-plugin-repo&utm_medi
 Tags: form, forms, contact form, html form, htmlforms
 Requires at least: 4.6
 Tested up to: 6.0
-Stable tag: 1.3.23
+Stable tag: 1.3.24
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 Requires PHP: 5.3
@@ -111,6 +111,13 @@ The plugin comes with built-in spam protection that should stop all automated at
 
 
 == Changelog ==
+
+
+#### 1.3.24 - Sep 23, 2022
+
+- Compatibility with Swup.js, thanks to [Sam Brown](https://github.com/sam98brown)
+- Update CodeMirror library to v6.
+- Update other JavaScript dependencies.
 
 
 #### 1.3.23 - Mar 2, 2022
