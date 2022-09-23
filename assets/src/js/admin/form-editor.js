@@ -1,12 +1,12 @@
 // load CodeMirror & plugins
 const CodeMirror = require('codemirror')
-require('codemirror/mode/xml/xml')
-require('codemirror/mode/javascript/javascript')
-require('codemirror/mode/css/css')
-require('codemirror/mode/htmlmixed/htmlmixed')
-require('codemirror/addon/fold/xml-fold')
-require('codemirror/addon/edit/matchtags')
-require('codemirror/addon/edit/closetag.js')
+require('@codemirror/lang-xml')
+require('@codemirror/lang-javascript')
+require('@codemirror/lang-css')
+require('@codemirror/lang-html')
+require('@codemirror/fold')
+require('@codemirror/matchbrackets')
+require('@codemirror/closebrackets')
 
 let editor, element, dom, requiredFieldsInput, emailFieldsInput, previewFrame, previewDom
 const templateRegex = /\{\{ *(\w+)(?:\.([\w.]+))? *(?:\|\| *(\w+))? *\}\}/g
