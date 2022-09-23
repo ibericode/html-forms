@@ -2,9 +2,12 @@ import './form-prefiller.js'
 import './conditionality.js'
 import './polyfills/custom-event.js'
 import events from './events.js'
-const Loader = require('./form-loading-indicator.js')
 
-const vars = window.hf_js_vars || { ajax_url: window.location.href }
+if (window.listening === undefined) {
+  window.listening = false
+}
+
+const Loader = require('./form-loading-indicator.js')
 
 function cleanFormMessages (formEl) {
   const messageElements = formEl.querySelectorAll('.hf-message');
@@ -42,7 +45,7 @@ function submitForm (formEl) {
   [].forEach.call(formEl.querySelectorAll('[data-was-required=true]'), function (el) {
     formData.append('_was_required[]', el.getAttribute('name'))
   })
-
+  let vars = window.hf_js_vars || { ajax_url: window.location.href }
   let request = new XMLHttpRequest()
   request.onreadystatechange = createRequestHandler(formEl)
   request.open('POST', vars.ajax_url, true)
@@ -113,7 +116,10 @@ function createRequestHandler (formEl) {
   }
 }
 
-document.addEventListener('submit', handleSubmitEvents, false) // useCapture=false to ensure we bubble upwards (and thus can cancel propagation)
+if (!window.listening) {
+  document.addEventListener('submit', handleSubmitEvents, false) // useCapture=false to ensure we bubble upwards (and thus can cancel propagation)
+  window.listening = true
+}
 
 window.html_forms = {
   on: events.on,
