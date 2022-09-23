@@ -147,14 +147,14 @@ function replaceSelection (str) {
 }
 
 function debounce (func, wait, immediate) {
-  var timeout
+  let timeout
   return function () {
-    var context = this; var args = arguments
-    var later = function () {
+    const context = this; const args = arguments
+    const later = function () {
       timeout = null
       if (!immediate) func.apply(context, args)
     }
-    var callNow = immediate && !timeout
+    const callNow = immediate && !timeout
     clearTimeout(timeout)
     timeout = setTimeout(later, wait)
     if (callNow) func.apply(context, args)
@@ -162,9 +162,9 @@ function debounce (func, wait, immediate) {
 };
 
 function uniq (a) {
-  var seen = {}
+  const seen = {}
   return a.filter(function (item) {
-    return seen.hasOwnProperty(item) ? false : (seen[item] = true)
+    return Object.prototype.hasOwnProperty.call(seen, item) ? false : (seen[item] = true)
   })
 }
 

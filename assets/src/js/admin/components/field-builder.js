@@ -1,4 +1,4 @@
-import { h, Component } from 'preact'
+import { Component } from 'preact'
 import { FieldConfigurator } from './field-configurator.js'
 
 class FieldBuilder extends Component {
@@ -10,7 +10,7 @@ class FieldBuilder extends Component {
     }
 
     this.handleCancel = this.handleCancel.bind(this)
-    this.openFieldConfig = this.openFieldConfig.bind(this)
+    this.handleButtonClick = this.handleButtonClick.bind(this)
   }
 
   handleCancel () {
@@ -19,7 +19,7 @@ class FieldBuilder extends Component {
     })
   }
 
-  openFieldConfig (e) {
+  handleButtonClick (e) {
     const field = this.props.fields[e.target.value]
 
     if (this.state.activeField === field) {
@@ -32,7 +32,7 @@ class FieldBuilder extends Component {
   render (props, state) {
     const fieldButtons = props.fields.map((f, i) => {
       return (
-        <button type='button' value={i} className={'button ' + (state.activeField === f ? 'active' : '')} onClick={this.openFieldConfig}>{f.label}</button>
+        <button type='button' value={i} className={'button ' + (state.activeField === f ? 'active' : '')} onClick={this.handleButtonClick} key={i}>{f.label}</button>
       )
     }
     )

@@ -2,7 +2,7 @@
   "license": "GPL-2.0",
   "repository": "https://github.com/ibericode/html-forms",
   "scripts": {
-    "lint": "eslint assets/src/js"
+    "lint": "standard assets/src/js"
   },
   "dependencies": {
     "@codemirror/closebrackets": "^0.19.2",
@@ -27,19 +27,12 @@
     "@babel/preset-env": "^7.12.11",
     "babelify": "^10.0.0",
     "browserify": "^17.0.0",
-    "eslint": "^8.23.0",
-    "eslint-config-standard": "^17.0.0",
-    "eslint-config-standard-preact": "^1.1.6",
-    "eslint-plugin-import": "^2.22.1",
-    "eslint-plugin-node": "^11.1.0",
-    "eslint-plugin-promise": "^6.0.0",
-    "eslint-plugin-react": "^7.31.2",
-    "eslint-plugin-standard": "^4.1.0",
     "gulp": "4.0.2",
     "gulp-clean-css": "^4.3.0",
     "gulp-streamify": "^1.0.2",
     "gulp-uglify": "^3.0.0",
     "gulp-wp-pot": "^2.5.0",
+    "standard": "^17.0.0",
     "through2": "^2.0.5",
     "vinyl-source-stream": "^2.0.0"
   }

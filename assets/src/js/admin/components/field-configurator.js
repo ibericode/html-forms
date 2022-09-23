@@ -1,6 +1,6 @@
-import { h, Component } from 'preact'
+import { Component } from 'preact'
 import { htmlgenerate } from '../field-builder/html.js'
-import * as FS from './field-settings.js'
+import * as FieldSettings from './field-settings.js'
 import linkState from 'linkstate'
 
 class FieldConfigurator extends Component {
@@ -9,12 +9,12 @@ class FieldConfigurator extends Component {
 
     this.state = this.getInitialState()
     this.choiceHandlers = {
-      add: this.addChoice.bind(this),
-      delete: this.deleteChoice.bind(this),
-      changeLabel: this.changeChoiceLabel.bind(this),
-      toggleChecked: this.toggleChoiceChecked.bind(this)
+      handleAddChoice: this.addChoice.bind(this),
+      handleDeleteChoice: this.deleteChoice.bind(this),
+      handleChoiceLabelChange: this.changeChoiceLabel.bind(this),
+      handleChoicePrecheckChange: this.toggleChoiceChecked.bind(this)
     }
-    this.addToForm = this.addToForm.bind(this)
+    this.handleAddToForm = this.handleAddToForm.bind(this)
     this.handleCancel = this.handleCancel.bind(this)
   }
 
@@ -43,7 +43,7 @@ class FieldConfigurator extends Component {
     }
   }
 
-  componentWillReceiveProps (props) {
+  UNSAFE_componentWillReceiveProps (props) {
     const newState = { fieldType: props.fieldType }
 
     // when changing from field that accepts multiple values to single-value field, reset all pre-selections
@@ -56,7 +56,7 @@ class FieldConfigurator extends Component {
     this.setState(newState)
   }
 
-  addToForm () {
+  handleAddToForm () {
     const html = htmlgenerate(this.state)
     window.html_forms.Editor.replaceSelection(html)
   }
@@ -111,43 +111,43 @@ class FieldConfigurator extends Component {
     for (let i = 0; i < props.rows.length; i++) {
       switch (props.rows[i]) {
         case 'label':
-          formFields.push(<FS.Label value={state.fieldLabel} onChange={linkState(this, 'fieldLabel')} />)
+          formFields.push(<FieldSettings.Label value={state.fieldLabel} onChange={linkState(this, 'fieldLabel')} />)
           break
 
         case 'placeholder':
-          formFields.push(<FS.Placeholder value={state.placeholder} onChange={linkState(this, 'placeholder')} />)
+          formFields.push(<FieldSettings.Placeholder value={state.placeholder} onChange={linkState(this, 'placeholder')} />)
           break
 
         case 'default-value':
-          formFields.push(<FS.DefaultValue value={state.value} onChange={linkState(this, 'value')} />)
+          formFields.push(<FieldSettings.DefaultValue value={state.value} onChange={linkState(this, 'value')} />)
           break
 
         case 'multiple':
-          formFields.push(<FS.Multiple checked={state.multiple} onChange={linkState(this, 'multiple')} />)
+          formFields.push(<FieldSettings.Multiple checked={state.multiple} onChange={linkState(this, 'multiple')} />)
           break
 
         case 'required':
-          formFields.push(<FS.Required checked={state.required} onChange={linkState(this, 'required')} />)
+          formFields.push(<FieldSettings.Required checked={state.required} onChange={linkState(this, 'required')} />)
           break
 
         case 'wrap':
-          formFields.push(<FS.Wrap checked={state.wrap} onChange={linkState(this, 'wrap')} />)
+          formFields.push(<FieldSettings.Wrap checked={state.wrap} onChange={linkState(this, 'wrap')} />)
           break
 
         case 'add-to-form':
-          formFields.push(<FS.AddToForm onSubmit={this.addToForm} onCancel={this.handleCancel} />)
+          formFields.push(<FieldSettings.AddToForm onSubmit={this.handleAddToForm} onCancel={this.handleCancel} />)
           break
 
         case 'choices':
-          formFields.push(<FS.Choices multiple={state.fieldType === 'checkbox'} choices={state.choices} handlers={this.choiceHandlers} />)
+          formFields.push(<FieldSettings.Choices multiple={state.fieldType === 'checkbox'} choices={state.choices} handlers={this.choiceHandlers} />)
           break
 
         case 'button-text':
-          formFields.push(<FS.ButtonText value={state.value} onChange={linkState(this, 'value')} />)
+          formFields.push(<FieldSettings.ButtonText value={state.value} onChange={linkState(this, 'value')} />)
           break
 
         case 'accept':
-          formFields.push(<FS.Accept value={state.accept} onChange={linkState(this, 'accept')} />)
+          formFields.push(<FieldSettings.Accept value={state.accept} onChange={linkState(this, 'accept')} />)
           break
       }
     }

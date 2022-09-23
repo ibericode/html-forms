@@ -41,12 +41,12 @@ function submitForm (formEl) {
   cleanFormMessages(formEl)
   emitEvent('submit', formEl)
 
-  const formData = new FormData(formEl);
+  const formData = new window.FormData(formEl);
   [].forEach.call(formEl.querySelectorAll('[data-was-required=true]'), function (el) {
     formData.append('_was_required[]', el.getAttribute('name'))
   })
-  let vars = window.hf_js_vars || { ajax_url: window.location.href }
-  let request = new XMLHttpRequest()
+  const vars = window.hf_js_vars || { ajax_url: window.location.href }
+  let request = new window.XMLHttpRequest()
   request.onreadystatechange = createRequestHandler(formEl)
   request.open('POST', vars.ajax_url, true)
   request.setRequestHeader('X-Requested-With', 'XMLHttpRequest')
@@ -56,7 +56,7 @@ function submitForm (formEl) {
 
 function emitEvent (eventName, element) {
   // browser event API: formElement.on('hf-success', ..)
-  element.dispatchEvent(new CustomEvent('hf-' + eventName))
+  element.dispatchEvent(new window.CustomEvent('hf-' + eventName))
 
   // custom events API: html_forms.on('success', ..)
   events.trigger(eventName, [element])

@@ -6,24 +6,14 @@ import render from 'preact-render-to-string'
 function htmlgenerate (conf) {
   const fieldName = namify(conf.fieldLabel)
   const fieldId = conf.formSlug + '-' + fieldName
-  const label = conf.fieldLabel.length && conf.fieldType !== 'submit' ? h('label', {
-    for: fieldId
-  }, conf.fieldLabel) : ''
+  const label = conf.fieldLabel.length && conf.fieldType !== 'submit'
+    ? h('label', {
+      for: fieldId
+    }, conf.fieldLabel)
+    : ''
   let fieldAttr, field
 
   switch (conf.fieldType) {
-    case 'text':
-    default:
-      fieldAttr = {
-        type: conf.fieldType,
-        name: fieldName,
-        value: conf.value,
-        placeholder: conf.placeholder,
-        required: conf.required,
-        id: fieldId
-      }
-      field = html('input', fieldAttr)
-      break
     case 'textarea':
       fieldAttr = {
         name: fieldName,
@@ -95,6 +85,18 @@ function htmlgenerate (conf) {
       fieldAttr = {
         type: 'submit',
         value: conf.value
+      }
+      field = html('input', fieldAttr)
+      break
+    case 'text':
+    default:
+      fieldAttr = {
+        type: conf.fieldType,
+        name: fieldName,
+        value: conf.value,
+        placeholder: conf.placeholder,
+        required: conf.required,
+        id: fieldId
       }
       field = html('input', fieldAttr)
       break

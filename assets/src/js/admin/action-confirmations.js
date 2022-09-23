@@ -8,7 +8,7 @@ function handleClickEvent (e) {
   }
 
   if (e.target.hasAttribute('data-hf-confirm')) {
-    const sure = confirm(e.target.getAttribute('data-hf-confirm'))
+    const sure = window.confirm(e.target.getAttribute('data-hf-confirm'))
 
     if (!sure) {
       e.preventDefault()
