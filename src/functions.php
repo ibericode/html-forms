@@ -427,7 +427,6 @@ function _hf_on_plugin_activation_multisite() {
 
 // install table for main site on regular installs, or active site for multisite
 function _hf_create_submissions_table() {
-	
 	/** @var wpdb */
 	global $wpdb;
 	
