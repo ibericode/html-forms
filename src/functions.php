@@ -3,6 +3,12 @@
 use HTML_Forms\Form;
 use HTML_Forms\Submission;
 
+if ( ! defined( 'ABSPATH' ) ) {
+    exit;
+}
+
+require_once ABSPATH . 'wp-admin/includes/upgrade.php';
+
 /**
  * @param array $args
  * @return array
@@ -421,13 +427,15 @@ function _hf_on_plugin_activation_multisite() {
 
 // install table for main site on regular installs, or active site for multisite
 function _hf_create_submissions_table() {
+	
 	/** @var wpdb */
 	global $wpdb;
+	
+	$charset_collate = $wpdb->get_charset_collate();
 
 	// create table for storing submissions
 	$table = $wpdb->prefix . 'hf_submissions';
-	$wpdb->query(
-		"CREATE TABLE IF NOT EXISTS {$table}(
+	$sql = "CREATE TABLE {$table}(
         `id` INT UNSIGNED NOT NULL PRIMARY KEY AUTO_INCREMENT,
         `form_id` INT UNSIGNED NOT NULL,
         `data` TEXT NOT NULL,
@@ -435,8 +443,9 @@ function _hf_create_submissions_table() {
         `ip_address` VARCHAR(255) NULL,
         `referer_url` TEXT NULL,
         `submitted_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
-) ENGINE=INNODB CHARACTER SET={$wpdb->charset};"
-	);
+) {$charset_collate};";
+	
+	dbDelta( $sql );
 }
 
 function _hf_on_add_user_to_blog( $user_id, $role, $blog_id ) {
