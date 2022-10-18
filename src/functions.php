@@ -428,7 +428,8 @@ function _hf_create_submissions_table() {
 
 	// create table for storing submissions
 	$table = $wpdb->prefix . 'hf_submissions';
-	$sql = "CREATE TABLE {$table}(
+	$wpdb->query(
+		"CREATE TABLE IF NOT EXISTS {$table}(
         `id` INT UNSIGNED NOT NULL PRIMARY KEY AUTO_INCREMENT,
         `form_id` INT UNSIGNED NOT NULL,
         `data` TEXT NOT NULL,
@@ -436,10 +437,8 @@ function _hf_create_submissions_table() {
         `ip_address` VARCHAR(255) NULL,
         `referer_url` TEXT NULL,
         `submitted_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
-) {$charset_collate};";
-	
-	require_once ABSPATH . 'wp-admin/includes/upgrade.php';
-	dbDelta( $sql );
+) {$charset_collate};"
+	);
 }
 
 function _hf_on_add_user_to_blog( $user_id, $role, $blog_id ) {
