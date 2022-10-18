@@ -3,12 +3,6 @@
 use HTML_Forms\Form;
 use HTML_Forms\Submission;
 
-if ( ! defined( 'ABSPATH' ) ) {
-    exit;
-}
-
-require_once ABSPATH . 'wp-admin/includes/upgrade.php';
-
 /**
  * @param array $args
  * @return array
@@ -444,6 +438,7 @@ function _hf_create_submissions_table() {
         `submitted_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
 ) {$charset_collate};";
 	
+	require_once ABSPATH . 'wp-admin/includes/upgrade.php';
 	dbDelta( $sql );
 }
 
