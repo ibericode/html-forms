@@ -366,11 +366,11 @@ class Admin {
 			return;
 		}
 
-		$ids   = $_POST['id'];
+		$ids   = array_map( 'intval', $_POST['id'] );
 		$table = $wpdb->prefix . 'hf_submissions';
-		$ids   = join( ',', array_map( 'esc_sql', $ids ) );
-		$wpdb->query( sprintf( "DELETE FROM {$table} WHERE id IN( %s );", $ids ) );
-		$wpdb->query( sprintf( "DELETE FROM {$wpdb->postmeta} WHERE post_id IN ( %s ) AND meta_key LIKE '_hf_%%';", $ids ) );
+		$placeholders = rtrim( str_repeat( '%d,', count( $ids ) ), ',' );
+		$wpdb->query( $wpdb->prepare( "DELETE FROM {$table} WHERE id IN( {$placeholders} );", $ids ) );
+		$wpdb->query( $wpdb->prepare( "DELETE FROM {$wpdb->postmeta} WHERE post_id IN ( {$placeholders}  ) AND meta_key LIKE '_hf_%%';", $ids ) );
 	}
 
 	private function get_default_form_content() {
