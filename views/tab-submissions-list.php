@@ -9,7 +9,7 @@ add_action( 'hf_admin_form_submissions_table_output_column_header', function( $f
 }, 10, 2 );
 
 $bulk_actions = apply_filters( 'hf_admin_form_submissions_bulk_actions', array(
-  'bulk_delete_submissions' => __( 'Move to Trash' ),
+  'bulk_delete_submissions' => __( 'Delete Permanently' ),
 ));
 
 /**
