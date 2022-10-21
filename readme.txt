@@ -4,7 +4,7 @@ Donate link: https://www.htmlformsplugin.com/#utm_source=wp-plugin-repo&utm_medi
 Tags: form, forms, contact form, html form, htmlforms
 Requires at least: 4.6
 Tested up to: 6.0
-Stable tag: 1.3.24
+Stable tag: 1.3.25
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 Requires PHP: 5.3
@@ -111,6 +111,12 @@ The plugin comes with built-in spam protection that should stop all automated at
 
 
 == Changelog ==
+
+
+#### 1.3.25 - Oct 21, 2022
+
+This release fixes a SQL injection vulnerability where users with the administrator role could execute arbitrary SQL commands.
+Thanks to [WPScan](https://wpscan.com) for the responsible disclosure.
 
 
 #### 1.3.24 - Sep 23, 2022
