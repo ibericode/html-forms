@@ -86,7 +86,7 @@ if ( class_exists( 'WP_List_Table' ) ) {
 				return $actions;
 			}
 
-			$actions['trash']     = __( 'Move to Trash', 'html-forms' );
+			$actions['trash']     = __( 'Delete Permanently', 'html-forms' );
 			$actions['duplicate'] = __( 'Duplicate', 'html-forms' );
 
 			return $actions;
