@@ -45,7 +45,7 @@ function submitForm (formEl) {
   [].forEach.call(formEl.querySelectorAll('[data-was-required=true]'), function (el) {
     formData.append('_was_required[]', el.getAttribute('name'))
   })
-  let vars = window.hf_js_vars || { ajax_url: window.location.href }
+  const vars = window.hf_js_vars || { ajax_url: window.location.href }
   let request = new XMLHttpRequest()
   request.onreadystatechange = createRequestHandler(formEl)
   request.open('POST', vars.ajax_url, true)
