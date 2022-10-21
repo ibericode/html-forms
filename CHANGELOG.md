@@ -6,6 +6,10 @@ Changelog
 This release fixes a SQL injection vulnerability where users with the administrator role could execute arbitrary SQL commands.
 Thanks to [WPScan](https://wpscan.com) for the responsible disclosure.
 
+Other changes:
+
+- Use default WordPress collation when creating tables. Props [bengs](https://github.com/bengs).
+
 
 #### 1.3.24 - Sep 23, 2022
 
