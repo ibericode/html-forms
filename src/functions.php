@@ -423,6 +423,8 @@ function _hf_on_plugin_activation_multisite() {
 function _hf_create_submissions_table() {
 	/** @var wpdb */
 	global $wpdb;
+	
+	$charset_collate = $wpdb->get_charset_collate();
 
 	// create table for storing submissions
 	$table = $wpdb->prefix . 'hf_submissions';
@@ -435,7 +437,7 @@ function _hf_create_submissions_table() {
         `ip_address` VARCHAR(255) NULL,
         `referer_url` TEXT NULL,
         `submitted_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
-) ENGINE=INNODB CHARACTER SET={$wpdb->charset};"
+) {$charset_collate};"
 	);
 }
 
