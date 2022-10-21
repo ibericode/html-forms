@@ -29,5 +29,10 @@
   "scripts": {
     "test": "php vendor/bin/phpunit --coverage-text",
     "codestyle": "php vendor/bin/phpcs -n -s"
+  },
+  "config": {
+    "allow-plugins": {
+      "dealerdirect/phpcodesniffer-composer-installer": true
+    }
   }
 }
