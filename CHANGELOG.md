@@ -1,6 +1,12 @@
 Changelog
 =========
 
+#### 1.3.25 - Oct 21, 2022
+
+This release fixes a SQL injection vulnerability where users with the administrator role could execute arbitrary SQL commands.
+Thanks to [WPScan](https://wpscan.com) for the responsible disclosure.
+
+
 #### 1.3.24 - Sep 23, 2022
 
 - Compatibility with Swup.js, thanks to [Sam Brown](https://github.com/sam98brown)
