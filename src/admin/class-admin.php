@@ -42,7 +42,12 @@ class Admin {
 	}
 
 	public function enqueue_gutenberg_assets() {
-		wp_enqueue_script( 'html-forms-block', plugins_url( 'assets/js/gutenberg-block.js', $this->plugin_file ), array( 'wp-blocks', 'wp-i18n', 'wp-element', 'wp-components' ) );
+		wp_enqueue_script( 'html-forms-block', plugins_url( 'assets/js/gutenberg-block.js', $this->plugin_file ), array(
+			'wp-blocks',
+			'wp-i18n',
+			'wp-element',
+			'wp-components'
+		) );
 		$forms = hf_get_forms();
 		$data  = array();
 		foreach ( $forms as $form ) {
@@ -75,6 +80,7 @@ class Admin {
 
 	/**
 	 * @param array $dirty
+	 *
 	 * @return array
 	 */
 	public function sanitize_settings( $dirty ) {
@@ -141,13 +147,28 @@ class Admin {
 		$capability = 'edit_forms';
 		$svg_icon   = '<svg version="1.0" xmlns="http://www.w3.org/2000/svg" width="256.000000pt" height="256.000000pt" viewBox="0 0 256.000000 256.000000" preserveAspectRatio="xMidYMid meet"><g transform="translate(0.000000,256.000000) scale(0.100000,-0.100000)"
 			fill="#000000" stroke="none"><path d="M0 1280 l0 -1280 1280 0 1280 0 0 1280 0 1280 -1280 0 -1280 0 0 -1280z m2031 593 c8 -8 9 -34 4 -78 -6 -56 -9 -65 -23 -60 -43 16 -98 15 -132 -2 -50 -26 -72 -72 -78 -159 l-5 -74 92 0 91 0 0 -70 0 -70 -90 0 -90 0 0 -345 0 -345 -90 0 -90 0 0 345 0 345 -55 0 -55 0 0 70 0 70 55 0 55 0 0 38 c0 63 20 153 45 202 54 105 141 152 273 147 45 -2 87 -8 93 -14z m-1291 -288 l0 -235 230 0 230 0 0 235 0 235 90 0 90 0 0 -575 0 -575 -90 0 -90 0 0 260 0 260 -230 0 -230 0 0 -260 0 -260 -90 0 -90 0 0 575 0 575 90 0 90 0 0 -235z"/></g></svg>';
-		add_menu_page( 'HTML Forms', 'HTML Forms', $capability, 'html-forms', array( $this, 'page_overview' ), 'data:image/svg+xml;base64,' . base64_encode( $svg_icon ), '99.88491' );
-		add_submenu_page( 'html-forms', __( 'Forms', 'html-forms' ), __( 'All Forms', 'html-forms' ), $capability, 'html-forms', array( $this, 'page_overview' ) );
-		add_submenu_page( 'html-forms', __( 'Add new form', 'html-forms' ), __( 'Add New', 'html-forms' ), $capability, 'html-forms-add-form', array( $this, 'page_new_form' ) );
-		add_submenu_page( 'html-forms', __( 'Settings', 'html-forms' ), __( 'Settings', 'html-forms' ), $capability, 'html-forms-settings', array( $this, 'page_settings' ) );
+		add_menu_page( 'HTML Forms', 'HTML Forms', $capability, 'html-forms', array(
+			$this,
+			'page_overview'
+		), 'data:image/svg+xml;base64,' . base64_encode( $svg_icon ), '99.88491' );
+		add_submenu_page( 'html-forms', __( 'Forms', 'html-forms' ), __( 'All Forms', 'html-forms' ), $capability, 'html-forms', array(
+			$this,
+			'page_overview'
+		) );
+		add_submenu_page( 'html-forms', __( 'Add new form', 'html-forms' ), __( 'Add New', 'html-forms' ), $capability, 'html-forms-add-form', array(
+			$this,
+			'page_new_form'
+		) );
+		add_submenu_page( 'html-forms', __( 'Settings', 'html-forms' ), __( 'Settings', 'html-forms' ), $capability, 'html-forms-settings', array(
+			$this,
+			'page_settings'
+		) );
 
 		if ( ! defined( 'HF_PREMIUM_VERSION' ) ) {
-			add_submenu_page( 'html-forms', 'Premium', '<span style="color: #ea6ea6;">Premium</span>', $capability, 'html-forms-premium', array( $this, 'page_premium' ) );
+			add_submenu_page( 'html-forms', 'Premium', '<span style="color: #ea6ea6;">Premium</span>', $capability, 'html-forms-premium', array(
+				$this,
+				'page_premium'
+			) );
 		}
 	}
 
@@ -168,7 +189,7 @@ class Admin {
 		$columns     = $this->get_submission_columns( $submissions );
 		add_filter(
 			'manage_toplevel_page_html-forms_columns',
-			function( $unused ) use ( $columns ) {
+			function ( $unused ) use ( $columns ) {
 				return $columns;
 			}
 		);
@@ -178,6 +199,7 @@ class Admin {
 	public function page_overview() {
 		if ( ! empty( $_GET['view'] ) && $_GET['view'] === 'edit' ) {
 			$this->page_edit_form();
+
 			return;
 		}
 
@@ -247,6 +269,7 @@ class Admin {
 				}
 			}
 		}
+
 		return $columns;
 	}
 
@@ -256,14 +279,15 @@ class Admin {
 		}
 
 		$items_per_page = 500;
-		$total_items = hf_count_form_submissions( $form->ID );
-		$total_pages = max( 1, ceil( $total_items / $items_per_page ) );
-		$current_page = isset( $_GET['paged'] ) ? intval( $_GET['paged'] ) : 1;
-		$current_page = max( 1, $current_page );
-		$current_page = min( $total_pages, $current_page );
+		$total_items    = hf_count_form_submissions( $form->ID );
+		$total_pages    = max( 1, ceil( $total_items / $items_per_page ) );
+		$current_page   = isset( $_GET['paged'] ) ? intval( $_GET['paged'] ) : 1;
+		$current_page   = max( 1, $current_page );
+		$current_page   = min( $total_pages, $current_page );
 		$submissions    = hf_get_form_submissions( $form->ID, array(
-			'limit' => $items_per_page,
-			'offset' => ( $current_page - 1 ) * $items_per_page )
+				'limit'  => $items_per_page,
+				'offset' => ( $current_page - 1 ) * $items_per_page
+			)
 		);
 		$columns        = $this->get_submission_columns( $submissions );
 		$hidden_columns = get_hidden_columns( get_current_screen() );
@@ -343,10 +367,11 @@ class Admin {
 	/**
 	 * Get URL for a tab on the current page.
 	 *
+	 * @param $tab
+	 *
+	 * @return string
 	 * @since 3.0
 	 * @internal
-	 * @param $tab
-	 * @return string
 	 */
 	public function get_tab_url( $tab ) {
 		return add_query_arg( array( 'tab' => $tab ), remove_query_arg( 'tab' ) );
@@ -375,20 +400,21 @@ class Admin {
 			return;
 		}
 
-		$ids   = array_map( 'intval', $_POST['id'] );
-		$table = $wpdb->prefix . 'hf_submissions';
+		$ids          = array_map( 'intval', $_POST['id'] );
+		$table        = $wpdb->prefix . 'hf_submissions';
 		$placeholders = rtrim( str_repeat( '%d,', count( $ids ) ), ',' );
 		$wpdb->query( $wpdb->prepare( "DELETE FROM {$table} WHERE id IN( {$placeholders} );", $ids ) );
 		$wpdb->query( $wpdb->prepare( "DELETE FROM {$wpdb->postmeta} WHERE post_id IN ( {$placeholders}  ) AND meta_key LIKE '_hf_%%';", $ids ) );
 	}
 
 	private function get_default_form_content() {
-		$html  = '';
+		$html = '';
 		$html .= sprintf( "<p>\n\t<label>%1\$s</label>\n\t<input type=\"text\" name=\"NAME\" placeholder=\"%1\$s\" required />\n</p>", __( 'Your name', 'html-forms' ) ) . PHP_EOL;
 		$html .= sprintf( "<p>\n\t<label>%1\$s</label>\n\t<input type=\"email\" name=\"EMAIL\" placeholder=\"%1\$s\" required />\n</p>", __( 'Your email', 'html-forms' ) ) . PHP_EOL;
 		$html .= sprintf( "<p>\n\t<label>%1\$s</label>\n\t<input type=\"text\" name=\"SUBJECT\" placeholder=\"%1\$s\" required />\n</p>", __( 'Subject', 'html-forms' ) ) . PHP_EOL;
 		$html .= sprintf( "<p>\n\t<label>%1\$s</label>\n\t<textarea name=\"MESSAGE\" placeholder=\"%1\$s\" required></textarea>\n</p>", __( 'Message', 'html-forms' ) ) . PHP_EOL;
 		$html .= sprintf( "<p>\n\t<input type=\"submit\" value=\"%s\" />\n</p>", __( 'Send', 'html-forms' ) );
+
 		return $html;
 	}
 
