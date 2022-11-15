@@ -446,7 +446,7 @@ class Admin {
 		$table        = $wpdb->prefix . 'hf_submissions';
 		$placeholders = rtrim( str_repeat( '%d,', count( $ids ) ), ',' );
 		$wpdb->query( $wpdb->prepare( "DELETE FROM {$table} WHERE id IN( {$placeholders} );", $ids ) );
-		$wpdb->query( $wpdb->prepare( "DELETE FROM {$wpdb->postmeta} WHERE post_id IN ( {$placeholders}  ) AND meta_key LIKE '_hf_%%';", $ids ) );
+		$wpdb->query( $wpdb->prepare( "DELETE FROM {$wpdb->postmeta} WHERE post_id IN ( {$placeholders}  ) AND meta_key LIKE %s;", $ids, '_hf_%%' ) );
 	}
 
 	private function get_default_form_content() {
