@@ -255,7 +255,13 @@ class Admin {
 			return;
 		}
 
-		$submissions    = hf_get_form_submissions( $form->ID );
+		$items_per_page = 500;
+		$total_items = hf_count_form_submissions( $form->ID );
+		$total_pages = max( 1, ceil($total_items / $items_per_page) );
+		$current_page = isset( $_GET['paged'] ) ? intval( $_GET['paged'] ): 1;
+		$current_page = max( 1, $current_page );
+		$current_page = min( $total_pages, $current_page );
+		$submissions    = hf_get_form_submissions( $form->ID, array( 'limit' => $items_per_page, 'offset' => ($current_page - 1) * $items_per_page ) );
 		$columns        = $this->get_submission_columns( $submissions );
 		$hidden_columns = get_hidden_columns( get_current_screen() );
 

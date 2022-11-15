@@ -12,9 +12,32 @@ $bulk_actions = apply_filters( 'hf_admin_form_submissions_bulk_actions', array(
   'bulk_delete_submissions' => __( 'Delete Permanently' ),
 ));
 
+function tablenav_pages( $total_items, $current_page, $total_pages ) {
+	?>
+	<div class="tablenav-pages">
+		<span class="displaying-num"><?php echo sprintf( __( '%d items' ), $total_items ); ?></span>
+
+		<?php if ($total_pages > 1) { ?>
+		<span class="pagination-links">
+				<a class="first-page button <?php if ($current_page == 1) { echo 'disabled'; } ?>" href="<?php esc_attr_e( add_query_arg( array( 'paged' => 1 ) ) ); ?>"><span class="screen-reader-text"><?php esc_html_e( 'First page' ); ?></span><span aria-hidden="true">«</span></a>
+				<a class="previous-page button <?php if ($current_page == 1) { echo 'disabled'; } ?>" href="<?php esc_attr_e( add_query_arg( array( 'paged' => $current_page - 1 ) ) ); ?>"><span class="screen-reader-text"><?php esc_html_e( 'Previous page' ); ?></span><span aria-hidden="true">‹</span></a>
+				<span class="screen-reader-text"><?php esc_html_e( 'Current Page' ); ?></span>
+				<span id="table-paging" class="paging-input"><span class="tablenav-paging-text"><?php echo sprintf( esc_html__( '%d of %d' ), $current_page, $total_pages ); ?></span></span>
+				<a class="next-page button <?php if ($current_page == $total_pages) { echo 'disabled'; } ?>" href="<?php esc_attr_e( add_query_arg( array( 'paged' => $current_page + 1 ) ) ); ?>"><span class="screen-reader-text"><?php esc_html_e( 'Next page' ); ?></span><span aria-hidden="true">›</span></a>
+				<a class="last-page button <?php if ($current_page == $total_pages) { echo 'disabled'; } ?>" href="<?php esc_attr_e( add_query_arg( array( 'paged' => $total_pages ) ) ); ?>"><span class="screen-reader-text"><?php esc_html_e( 'Last page' ); ?></span><span aria-hidden="true">»</span></a>
+			</span>
+		<?php } ?>
+	</div>
+	<br class="clear">
+	<?php
+}
+
 /**
  * @var array $hidden_columns
  * @var array $submissions
+ * @var int $total_items
+ * @var int $current_page
+ * @var int $total_pages
  */
 ?>
 
@@ -35,9 +58,7 @@ $bulk_actions = apply_filters( 'hf_admin_form_submissions_bulk_actions', array(
             <input type="submit" class="button action" value="<?php _e( 'Apply' ); ?>">
         </div>
 
-        <div class="tablenav-pages one-page">
-            <span class="displaying-num"><?php echo sprintf( __( '%d items' ), count( $submissions ) ); ?></span>
-        </div>
+		<?php tablenav_pages( $total_items, $current_page, $total_pages ); ?>
 
         <br class="clear">
     </div>
@@ -91,6 +112,11 @@ $bulk_actions = apply_filters( 'hf_admin_form_submissions_bulk_actions', array(
         } ?>
         </tbody>
     </table>
+	<div class="tablenav">
+		<?php tablenav_pages( $total_items, $current_page, $total_pages ); ?>
+	</div>
+
+
 </form>
 
 

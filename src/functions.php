@@ -101,6 +101,17 @@ function hf_get_form( $form_id_or_slug ) {
 
 /**
  * @param $form_id
+ * @return int
+ */
+function hf_count_form_submissions( $form_id ) {
+	global $wpdb;
+	$table       = $wpdb->prefix . 'hf_submissions';
+	$result     = $wpdb->get_var( $wpdb->prepare( "SELECT COUNT(*) FROM {$table} s WHERE s.form_id = %d;", $form_id ) );
+	return (int) $result;
+}
+
+/**
+ * @param $form_id
  * @param array $args
  * @return Submission[]
  */
@@ -423,7 +434,7 @@ function _hf_on_plugin_activation_multisite() {
 function _hf_create_submissions_table() {
 	/** @var wpdb */
 	global $wpdb;
-	
+
 	$charset_collate = $wpdb->get_charset_collate();
 
 	// create table for storing submissions
