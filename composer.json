@@ -28,7 +28,8 @@
   },
   "scripts": {
     "test": "php vendor/bin/phpunit --coverage-text",
-    "codestyle": "php vendor/bin/phpcs -n -s"
+    "codestyle": "php vendor/bin/phpcs -n -s -d error_reporting=24575",
+	"fix-codestyle": "php vendor/bin/phpcbf -d error_reporting=24575"
   },
   "config": {
     "allow-plugins": {
