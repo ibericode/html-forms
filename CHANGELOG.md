@@ -4,7 +4,7 @@ Changelog
 #### 1.3.25 - Oct 21, 2022
 
 This release fixes a SQL injection vulnerability where users with the administrator role could execute arbitrary SQL commands.
-Thanks to [WPScan](https://wpscan.com) for the responsible disclosure.
+Thanks to **Nguyen Duy Quoc Khanh** via [WPScan](https://wpscan.com) for the responsible disclosure.
 
 Other changes:
 
