@@ -105,8 +105,8 @@ function hf_get_form( $form_id_or_slug ) {
  */
 function hf_count_form_submissions( $form_id ) {
 	global $wpdb;
-	$table       = $wpdb->prefix . 'hf_submissions';
-	$result     = $wpdb->get_var( $wpdb->prepare( "SELECT COUNT(*) FROM {$table} s WHERE s.form_id = %d;", $form_id ) );
+	$table  = $wpdb->prefix . 'hf_submissions';
+	$result = $wpdb->get_var( $wpdb->prepare( "SELECT COUNT(*) FROM {$table} s WHERE s.form_id = %d;", $form_id ) );
 	return (int) $result;
 }
 

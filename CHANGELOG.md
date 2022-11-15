@@ -1,6 +1,12 @@
 Changelog
 =========
 
+#### 1.3.26 - Nov 15, 2022
+
+- Add pagination to submissions overview page if there are more than 500 items to show.
+- "Move to trash" action for submissions now properly called "Delete permanently". Thanks to [Rakesh Sabale](https://github.com/ghubrakesh).
+
+
 #### 1.3.25 - Oct 21, 2022
 
 This release fixes a SQL injection vulnerability where users with the administrator role could execute arbitrary SQL commands.
