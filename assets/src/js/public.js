@@ -3,17 +3,13 @@ import './conditionality.js'
 import './polyfills/custom-event.js'
 import events from './events.js'
 
-if (window.listening === undefined) {
-  window.listening = false
-}
-
 const Loader = require('./form-loading-indicator.js')
 
 function cleanFormMessages (formEl) {
-  const messageElements = formEl.querySelectorAll('.hf-message');
-  [].forEach.call(messageElements, (el) => {
+  const messageElements = formEl.querySelectorAll('.hf-message')
+  for (const el of messageElements) {
     el.parentNode.removeChild(el)
-  })
+  }
 }
 
 function addFormMessage (formEl, message) {
@@ -26,14 +22,14 @@ function addFormMessage (formEl, message) {
   wrapperElement.appendChild(txtElement)
 }
 
-function handleSubmitEvents (e) {
-  const formEl = e.target
+function handleSubmitEvents (evt) {
+  const formEl = evt.target
   if (formEl.className.indexOf('hf-form') < 0) {
     return
   }
 
   // always prevent default (because regular submit doesn't work for HTML Forms)
-  e.preventDefault()
+  evt.preventDefault()
   submitForm(formEl)
 }
 
@@ -41,10 +37,11 @@ function submitForm (formEl) {
   cleanFormMessages(formEl)
   emitEvent('submit', formEl)
 
-  const formData = new FormData(formEl);
-  [].forEach.call(formEl.querySelectorAll('[data-was-required=true]'), function (el) {
+  const formData = new FormData(formEl)
+  const requiredFields = formEl.querySelectorAll('[data-was-required=true]')
+  for (const el of requiredFields) {
     formData.append('_was_required[]', el.getAttribute('name'))
-  })
+  }
   const vars = window.hf_js_vars || { ajax_url: window.location.href }
   let request = new XMLHttpRequest()
   request.onreadystatechange = createRequestHandler(formEl)
@@ -116,13 +113,13 @@ function createRequestHandler (formEl) {
   }
 }
 
-if (!window.listening) {
+// protect against loading script twice
+if (window.html_forms === undefined) {
   document.addEventListener('submit', handleSubmitEvents, false) // useCapture=false to ensure we bubble upwards (and thus can cancel propagation)
-  window.listening = true
-}
 
-window.html_forms = {
-  on: events.on,
-  off: events.off,
-  submit: submitForm
+  window.html_forms = {
+    on: events.on,
+    off: events.off,
+    submit: submitForm
+  }
 }

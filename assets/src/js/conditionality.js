@@ -1,11 +1,8 @@
-'use strict'
-
 function getFieldValues (form, fieldName, evt) {
   const values = []
   const inputs = form.querySelectorAll('input[name="' + fieldName + '"], select[name="' + fieldName + '"], textarea[name="' + fieldName + '"], button[name="' + fieldName + '"]')
 
-  for (let i = 0; i < inputs.length; i++) {
-    const input = inputs[i]
+  for (const input of inputs) {
     const type = input.type.toLowerCase()
 
     if ((type === 'radio' || type === 'checkbox') && (!input.checked)) {
@@ -77,18 +74,18 @@ function toggleElement (el, evt) {
   }
 
   // find all inputs inside this element and toggle [required] attr (to prevent HTML5 validation on hidden elements)
-  const inputs = el.querySelectorAll('input, select, textarea');
-  [].forEach.call(inputs, (el) => {
-    if ((conditionMet || show) && el.getAttribute('data-was-required')) {
-      el.required = true
-      el.removeAttribute('data-was-required')
+  const inputs = el.querySelectorAll('input, select, textarea')
+  for (const input of inputs) {
+    if ((conditionMet || show) && input.getAttribute('data-was-required')) {
+      input.required = true
+      input.removeAttribute('data-was-required')
     }
 
-    if ((!conditionMet || !show) && el.required) {
-      el.setAttribute('data-was-required', 'true')
-      el.required = false
+    if ((!conditionMet || !show) && input.required) {
+      input.setAttribute('data-was-required', 'true')
+      input.required = false
     }
-  })
+  }
 }
 
 // evaluate conditional elements globally
@@ -104,8 +101,10 @@ function handleInputEvent (evt) {
   }
 
   const form = evt.target.form
-  const elements = form.querySelectorAll('[data-show-if], [data-hide-if]');
-  [].forEach.call(elements, (el) => toggleElement(el, evt))
+  const elements = form.querySelectorAll('[data-show-if], [data-hide-if]')
+  for (const el of elements) {
+    toggleElement(el, evt)
+  }
 }
 
 document.addEventListener('click', handleInputEvent, true)
