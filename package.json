@@ -3,7 +3,7 @@
   "repository": "https://github.com/ibericode/html-forms",
   "scripts": {
     "lint": "eslint assets/src/js",
-	"watch": "NODE_ENV=production gulp && NODE_ENV=development gulp watch",
+	"watch": "NODE_ENV=development gulp && NODE_ENV=development gulp watch",
 	"build": "NODE_ENV=production gulp"
   },
   "dependencies": {
@@ -16,26 +16,26 @@
     "tlite": "^0.1.7"
   },
   "devDependencies": {
-    "@babel/core": "^7.12.10",
-    "@babel/plugin-proposal-decorators": "^7.12.12",
-    "@babel/plugin-transform-react-jsx": "^7.12.12",
-    "@babel/preset-env": "^7.12.11",
+    "@babel/core": "^7.20.5",
+    "@babel/plugin-proposal-decorators": "^7.20.5",
+    "@babel/plugin-transform-react-jsx": "^7.19.0",
+    "@babel/preset-env": "^7.20.2",
     "babelify": "^10.0.0",
-    "browserify": "^16.5.2",
-    "eslint": "^6.8.0",
-    "eslint-config-standard": "^14.1.1",
+    "browserify": "^17.0.0",
+    "eslint": "^8.28.0",
+    "eslint-config-standard": "^17.0.0",
     "eslint-config-standard-preact": "^1.1.6",
-    "eslint-plugin-import": "^2.22.1",
+    "eslint-plugin-import": "^2.26.0",
     "eslint-plugin-node": "^11.1.0",
-    "eslint-plugin-promise": "^4.3.1",
-    "eslint-plugin-react": "^7.23.2",
+    "eslint-plugin-promise": "^6.1.1",
+    "eslint-plugin-react": "^7.31.11",
     "eslint-plugin-standard": "^4.1.0",
     "gulp": "4.0.2",
     "gulp-clean-css": "^4.3.0",
     "gulp-streamify": "^1.0.2",
-    "gulp-uglify": "^3.0.0",
+    "gulp-uglify": "^3.0.2",
     "gulp-wp-pot": "^2.5.0",
-    "through2": "^2.0.5",
+    "through2": "^4.0.2",
     "vinyl-source-stream": "^2.0.0"
   }
 }
