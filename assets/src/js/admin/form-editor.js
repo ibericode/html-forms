@@ -8,8 +8,13 @@ require('codemirror/addon/fold/xml-fold');
 require('codemirror/addon/edit/matchtags');
 require('codemirror/addon/edit/closetag.js');
 
-let editor; let element; let dom; let requiredFieldsInput; let emailFieldsInput; let previewFrame; let
-  previewDom;
+let editor;
+let element;
+let dom;
+let requiredFieldsInput;
+let emailFieldsInput;
+let previewFrame;
+let previewDom;
 const templateRegex = /\{\{ *(\w+)(?:\.([\w.]+))? *(?:\|\| *(\w+))? *\}\}/g;
 
 function init() {
@@ -106,10 +111,11 @@ function updatePreview() {
   let markup = editor.getValue();
 
   // replace template tags
-  markup = markup.replace(templateRegex, function (s, m) {
+  markup = markup.replace(templateRegex, function () {
     // if a default value was provided, use that
     // eslint-disable-next-line prefer-rest-params
     if (arguments[3]) {
+      // eslint-disable-next-line prefer-rest-params
       return arguments[3];
     }
 
@@ -148,18 +154,11 @@ function replaceSelection(str) {
   editor.focus();
 }
 
-function debounce(func, wait, immediate) {
+function debounce(func, wait) {
   let timeout;
   return function () {
-    const context = this; const args = arguments;
-    const later = function () {
-      timeout = null;
-      if (!immediate) func.apply(context, args);
-    };
-    const callNow = immediate && !timeout;
-    clearTimeout(timeout);
-    timeout = setTimeout(later, wait);
-    if (callNow) func.apply(context, args);
+    if (timeout) window.clearTimeout(timeout);
+    timeout = window.setTimeout(func, wait);
   };
 }
 

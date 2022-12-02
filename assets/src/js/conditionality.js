@@ -89,7 +89,8 @@ function toggleElement(el, evt) {
     el.style.display = (conditionMet) ? 'none' : '';
   }
 
-  // find all inputs inside this element and toggle [required] attr (to prevent HTML5 validation on hidden elements)
+  // find all inputs inside this element and toggle [required] attr
+  // this prevents HTML5 validation on hidden elements
   const inputs = el.querySelectorAll('input, select, textarea');
   for (const input of inputs) {
     if ((conditionMet || show) && input.getAttribute('data-was-required')) {

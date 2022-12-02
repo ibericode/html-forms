@@ -24,7 +24,8 @@ function cleanFormMessages(formEl) {
 function addFormMessage(formEl, message) {
   const txtElement = document.createElement('p');
   txtElement.className = `hf-message hf-message-${message.type}`;
-  txtElement.innerHTML = message.text; // uses innerHTML because we allow some HTML strings in the message settings
+  // use innerHTML because we allow some HTML strings in the message settings
+  txtElement.innerHTML = message.text;
   txtElement.role = 'alert';
 
   const wrapperElement = formEl.querySelector('.hf-messages') || formEl;

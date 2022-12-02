@@ -1,24 +1,24 @@
-import { h, Component } from 'preact'
-import { htmlgenerate } from '../field-builder/html.js'
-import * as FS from './field-settings.js'
-import linkState from 'linkstate'
+import { h, Component } from 'preact';
+import linkState from 'linkstate';
+import { htmlgenerate } from '../field-builder/html.js';
+import * as FS from './field-settings.js';
 
 class FieldConfigurator extends Component {
-  constructor (props) {
-    super(props)
+  constructor(props) {
+    super(props);
 
-    this.state = this.getInitialState()
+    this.state = this.getInitialState();
     this.choiceHandlers = {
       add: this.addChoice.bind(this),
       delete: this.deleteChoice.bind(this),
       changeLabel: this.changeChoiceLabel.bind(this),
-      toggleChecked: this.toggleChoiceChecked.bind(this)
-    }
-    this.addToForm = this.addToForm.bind(this)
-    this.handleCancel = this.handleCancel.bind(this)
+      toggleChecked: this.toggleChoiceChecked.bind(this),
+    };
+    this.addToForm = this.addToForm.bind(this);
+    this.handleCancel = this.handleCancel.bind(this);
   }
 
-  getInitialState () {
+  getInitialState() {
     return {
       formId: document.querySelector('input[name="form_id"]').value,
       formSlug: document.querySelector('input[name="form[slug]"]').value,
@@ -32,132 +32,132 @@ class FieldConfigurator extends Component {
       choices: [
         {
           checked: false,
-          label: 'One'
+          label: 'One',
         },
         {
           checked: false,
-          label: 'Two'
-        }
+          label: 'Two',
+        },
       ],
-      accept: ''
-    }
+      accept: '',
+    };
   }
 
-  componentWillReceiveProps (props) {
-    const newState = { fieldType: props.fieldType }
+  componentWillReceiveProps(props) {
+    const newState = { fieldType: props.fieldType };
 
     // when changing from field that accepts multiple values to single-value field, reset all pre-selections
     if (this.state.fieldType === 'checkbox' && props.fieldType !== 'checkbox') {
       newState.choices = this.state.choices.map((c, i) => {
-        c.checked = false
-        return c
-      })
+        c.checked = false;
+        return c;
+      });
     }
-    this.setState(newState)
+    this.setState(newState);
   }
 
-  addToForm () {
-    const html = htmlgenerate(this.state)
-    window.html_forms.Editor.replaceSelection(html)
+  addToForm() {
+    const html = htmlgenerate(this.state);
+    window.html_forms.Editor.replaceSelection(html);
   }
 
-  addChoice () {
-    const arr = this.state.choices
-    arr.push({ checked: false, label: '...' })
-    this.setState({ choices: arr })
+  addChoice() {
+    const arr = this.state.choices;
+    arr.push({ checked: false, label: '...' });
+    this.setState({ choices: arr });
   }
 
-  deleteChoice (e) {
-    const arr = this.state.choices
-    const index = e.target.parentElement.getAttribute('data-key')
-    arr.splice(index, 1)
-    this.setState({ choices: arr })
+  deleteChoice(e) {
+    const arr = this.state.choices;
+    const index = e.target.parentElement.getAttribute('data-key');
+    arr.splice(index, 1);
+    this.setState({ choices: arr });
   }
 
-  changeChoiceLabel (evt) {
-    const arr = this.state.choices
-    const index = evt.target.parentElement.getAttribute('data-key')
-    arr[index].label = evt.target.value
-    this.setState({ choices: arr })
+  changeChoiceLabel(evt) {
+    const arr = this.state.choices;
+    const index = evt.target.parentElement.getAttribute('data-key');
+    arr[index].label = evt.target.value;
+    this.setState({ choices: arr });
   }
 
-  toggleChoiceChecked (evt) {
-    const arr = this.state.choices
-    const index = evt.target.parentElement.getAttribute('data-key')
-    arr[index].checked = !arr[index].checked
-    this.setState({ choices: arr })
+  toggleChoiceChecked(evt) {
+    const arr = this.state.choices;
+    const index = evt.target.parentElement.getAttribute('data-key');
+    arr[index].checked = !arr[index].checked;
+    this.setState({ choices: arr });
   }
 
-  static handleKeyPress (evt) {
+  static handleKeyPress(evt) {
     // stop RETURN from submitting the parent form.
     if (evt.keyCode === 13) {
-      evt.preventDefault()
+      evt.preventDefault();
     }
   }
 
-  handleCancel () {
+  handleCancel() {
     // revert back to initial state
-    this.setState(this.getInitialState())
-    this.props.onCancel()
+    this.setState(this.getInitialState());
+    this.props.onCancel();
   }
 
-  render (props, state) {
+  render(props, state) {
     if (props.rows.length === 0) {
-      return ''
+      return '';
     }
 
-    const formFields = []
+    const formFields = [];
 
     for (let i = 0; i < props.rows.length; i++) {
       switch (props.rows[i]) {
         case 'label':
-          formFields.push(<FS.Label value={state.fieldLabel} onChange={linkState(this, 'fieldLabel')} />)
-          break
+          formFields.push(<FS.Label value={state.fieldLabel} onChange={linkState(this, 'fieldLabel')} />);
+          break;
 
         case 'placeholder':
-          formFields.push(<FS.Placeholder value={state.placeholder} onChange={linkState(this, 'placeholder')} />)
-          break
+          formFields.push(<FS.Placeholder value={state.placeholder} onChange={linkState(this, 'placeholder')} />);
+          break;
 
         case 'default-value':
-          formFields.push(<FS.DefaultValue value={state.value} onChange={linkState(this, 'value')} />)
-          break
+          formFields.push(<FS.DefaultValue value={state.value} onChange={linkState(this, 'value')} />);
+          break;
 
         case 'multiple':
-          formFields.push(<FS.Multiple checked={state.multiple} onChange={linkState(this, 'multiple')} />)
-          break
+          formFields.push(<FS.Multiple checked={state.multiple} onChange={linkState(this, 'multiple')} />);
+          break;
 
         case 'required':
-          formFields.push(<FS.Required checked={state.required} onChange={linkState(this, 'required')} />)
-          break
+          formFields.push(<FS.Required checked={state.required} onChange={linkState(this, 'required')} />);
+          break;
 
         case 'wrap':
-          formFields.push(<FS.Wrap checked={state.wrap} onChange={linkState(this, 'wrap')} />)
-          break
+          formFields.push(<FS.Wrap checked={state.wrap} onChange={linkState(this, 'wrap')} />);
+          break;
 
         case 'add-to-form':
-          formFields.push(<FS.AddToForm onSubmit={this.addToForm} onCancel={this.handleCancel} />)
-          break
+          formFields.push(<FS.AddToForm onSubmit={this.addToForm} onCancel={this.handleCancel} />);
+          break;
 
         case 'choices':
-          formFields.push(<FS.Choices multiple={state.fieldType === 'checkbox'} choices={state.choices} handlers={this.choiceHandlers} />)
-          break
+          formFields.push(<FS.Choices multiple={state.fieldType === 'checkbox'} choices={state.choices} handlers={this.choiceHandlers} />);
+          break;
 
         case 'button-text':
-          formFields.push(<FS.ButtonText value={state.value} onChange={linkState(this, 'value')} />)
-          break
+          formFields.push(<FS.ButtonText value={state.value} onChange={linkState(this, 'value')} />);
+          break;
 
         case 'accept':
-          formFields.push(<FS.Accept value={state.accept} onChange={linkState(this, 'accept')} />)
-          break
+          formFields.push(<FS.Accept value={state.accept} onChange={linkState(this, 'accept')} />);
+          break;
       }
     }
 
     return (
-      <div class='field-config' onKeyPress={FieldConfigurator.handleKeyPress}>
+      <div className='field-config' onKeyPress={FieldConfigurator.handleKeyPress}>
         {formFields}
       </div>
-    )
+    );
   }
 }
 
-export { FieldConfigurator }
+export { FieldConfigurator };

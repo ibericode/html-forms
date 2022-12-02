@@ -2,9 +2,9 @@
   "license": "GPL-2.0",
   "repository": "https://github.com/ibericode/html-forms",
   "scripts": {
-    "lint": "eslint assets/src/js",
-	"watch": "NODE_ENV=development gulp && NODE_ENV=development gulp watch",
-	"build": "NODE_ENV=production gulp"
+    "lint": "eslint assets/src/js --ext .js",
+    "watch": "NODE_ENV=development gulp && NODE_ENV=development gulp watch",
+    "build": "NODE_ENV=production gulp"
   },
   "dependencies": {
     "codemirror": "^5.59.2",
@@ -23,13 +23,9 @@
     "babelify": "^10.0.0",
     "browserify": "^17.0.0",
     "eslint": "^8.28.0",
-    "eslint-config-standard": "^17.0.0",
-    "eslint-config-standard-preact": "^1.1.6",
+    "eslint-config-airbnb-base": "^15.0.0",
     "eslint-plugin-import": "^2.26.0",
-    "eslint-plugin-node": "^11.1.0",
-    "eslint-plugin-promise": "^6.1.1",
     "eslint-plugin-react": "^7.31.11",
-    "eslint-plugin-standard": "^4.1.0",
     "gulp": "4.0.2",
     "gulp-clean-css": "^4.3.0",
     "gulp-streamify": "^1.0.2",
