@@ -2,10 +2,13 @@
 import { h, render } from 'preact'
 import { FieldBuilder } from './components/field-builder.js'
 
-// vars
-let rootElement
-
-// functions
+/**
+ *
+ * @param {string} key
+ * @param {string} label
+ * @param {array} configRows
+ * @constructor
+ */
 function Field (key, label, configRows) {
   this.key = key
   this.label = label
@@ -13,7 +16,7 @@ function Field (key, label, configRows) {
 }
 
 function mount () {
-  rootElement = render(<FieldBuilder fields={fields} />, document.getElementById('hf-field-builder'), rootElement)
+  render(<FieldBuilder fields={fields} />, document.getElementById('hf-field-builder'))
 }
 
 // bootstrap
@@ -37,6 +40,5 @@ export default {
 
   registerField: function (key, label, configRows) {
     fields.push(new Field(key, label, configRows))
-    mount()
   }
 }

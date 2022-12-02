@@ -74,24 +74,24 @@ class FieldConfigurator extends Component {
     this.setState({ choices: arr })
   }
 
-  changeChoiceLabel (e) {
+  changeChoiceLabel (evt) {
     const arr = this.state.choices
-    const index = e.target.parentElement.getAttribute('data-key')
-    arr[index].label = e.target.value
+    const index = evt.target.parentElement.getAttribute('data-key')
+    arr[index].label = evt.target.value
     this.setState({ choices: arr })
   }
 
-  toggleChoiceChecked (e) {
+  toggleChoiceChecked (evt) {
     const arr = this.state.choices
-    const index = e.target.parentElement.getAttribute('data-key')
+    const index = evt.target.parentElement.getAttribute('data-key')
     arr[index].checked = !arr[index].checked
     this.setState({ choices: arr })
   }
 
-  static handleKeyPress (e) {
+  static handleKeyPress (evt) {
     // stop RETURN from submitting the parent form.
-    if (e.keyCode === 13) {
-      e.preventDefault()
+    if (evt.keyCode === 13) {
+      evt.preventDefault()
     }
   }
 

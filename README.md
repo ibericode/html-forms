@@ -32,9 +32,9 @@ Install client-side dependencies using NPM
 npm install
 ```
 
-Build the plugin assets by issuing the following command:
+Build the plugin assets (JS, CSS, ..) by issuing the following command:
 ``` 
-npx gulp
+npm run build
 ```
 
 ## Support

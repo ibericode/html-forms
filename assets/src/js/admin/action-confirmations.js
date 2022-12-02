@@ -1,21 +1,17 @@
-function init () {
-  document.body.addEventListener('click', handleClickEvent, true)
-}
-
-function handleClickEvent (e) {
-  if (e.target.tagName !== 'A') {
-    return
+/**
+ * @param {MouseEvent} evt
+ */
+function handleClickEvent(evt) {
+  if (evt.target.tagName !== 'A') {
+    return;
   }
 
-  if (e.target.hasAttribute('data-hf-confirm')) {
-    const sure = confirm(e.target.getAttribute('data-hf-confirm'))
+  if (evt.target.hasAttribute('data-hf-confirm')) {
+    const sure = confirm(evt.target.getAttribute('data-hf-confirm'));
 
     if (!sure) {
-      e.preventDefault()
+      evt.preventDefault();
     }
   }
 }
-
-export default {
-  init
-}
+document.body.addEventListener('click', handleClickEvent, true);

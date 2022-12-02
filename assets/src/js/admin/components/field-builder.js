@@ -19,8 +19,8 @@ class FieldBuilder extends Component {
     })
   }
 
-  openFieldConfig (e) {
-    const field = this.props.fields[e.target.value]
+  openFieldConfig (evt) {
+    const field = this.props.fields[evt.target.value]
 
     if (this.state.activeField === field) {
       this.setState({ activeField: null })
