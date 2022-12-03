@@ -8,7 +8,9 @@ const populate = require('populate.js');
 function parseUrlParams(q) {
   const params = new URLSearchParams(q);
   const obj = {};
-  for (const [name, value] of params.entries()) {
+  const entries = params.entries();
+  for (let i = 0; i < entries.length; i++) {
+    const [name, value] = entries[i];
     if (name.substring(name.length - 2) === '[]') {
       const arrName = name.substring(0, name.length - 2);
       obj[arrName] = obj[arrName] || [];

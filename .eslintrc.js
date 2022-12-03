@@ -32,8 +32,10 @@ module.exports = {
     'func-names': 0,
     'no-nested-ternary': 0,
     'prefer-spread': 0,
+    'default-case': 0,
 
     // react / preact
-    'react/react-in-jsx-scope': 'off',
+    'react/react-in-jsx-scope': 0,
+    'react/prop-types': 0,
   },
 };

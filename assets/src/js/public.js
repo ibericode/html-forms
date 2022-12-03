@@ -10,9 +10,9 @@ import Loader from './form-loading-indicator.js';
  */
 function cleanFormMessages(formEl) {
   const messageElements = formEl.querySelectorAll('.hf-message');
-  for (const el of messageElements) {
+  [].forEach.call(messageElements, (el) => {
     el.parentNode.removeChild(el);
-  }
+  });
 }
 
 /**
@@ -59,9 +59,9 @@ function submitForm(formEl) {
 
   const formData = new FormData(formEl);
   const requiredFields = formEl.querySelectorAll('[data-was-required=true]');
-  for (const el of requiredFields) {
+  [].forEach.call(requiredFields, (el) => {
     formData.append('_was_required[]', el.getAttribute('name'));
-  }
+  });
   const vars = window.hf_js_vars || { ajax_url: window.location.href };
   let request = new XMLHttpRequest();
   request.onreadystatechange = createRequestHandler(formEl);

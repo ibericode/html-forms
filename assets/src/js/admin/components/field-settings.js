@@ -3,7 +3,7 @@ import { h } from 'preact';
 function AddToForm(props) {
   return (
     <div className='hf-small-margin'>
-      <button className='button' type='button' onClick={props.onSubmit}>Add field to form</button> &nbsp; <a href='javascript:void(0);' className='hf-small' style='vertical-align: middle;' onClick={props.onCancel}>or close field helper</a>
+      <button className='button' type='button' onClick={props.onSubmit}>Add field to form</button> &nbsp; <a href='' className='hf-small' style='vertical-align: middle;' onClick={props.onCancel}>or close field helper</a>
     </div>
   );
 }
@@ -82,10 +82,10 @@ function Required(props) {
 
 function Choices(props) {
   const choiceFields = props.choices.map((choice, k) => (
-    <div data-key={k}>
+    <div data-key={k} key={k}>
       <input type={props.multiple ? 'checkbox' : 'radio'} name='selected' defaultChecked={choice.checked} onChange={props.handlers.toggleChecked} title='Pre-select this choice?' />
       <input type='text' value={choice.label} placeholder='Choice label' style='width: 80%;' onChange={props.handlers.changeLabel} />
-      <a href='javascript:void(0);' onClick={props.handlers.delete} style='text-decoration: none;' title='Delete choice'>✕</a>
+      <a href='' onClick={props.handlers.delete} style='text-decoration: none;' title='Delete choice'>✕</a>
     </div>
   ));
 
@@ -93,7 +93,7 @@ function Choices(props) {
     <div className='hf-small-margin'>
       <label>Choices</label>
       {choiceFields}
-      <input type={props.multiple ? 'checkbox' : 'radio'} style='visibility: hidden;' /><a href='javascript:void(0);' onClick={props.handlers.add}>Add choice</a>
+      <input type={props.multiple ? 'checkbox' : 'radio'} style='visibility: hidden;' /><a href='' onClick={props.handlers.add}>Add choice</a>
     </div>
   );
 }
@@ -109,5 +109,14 @@ function Accept(props) {
 }
 
 export {
-  AddToForm, Label, Placeholder, DefaultValue, Wrap, Required, Choices, ButtonText, Accept, Multiple,
+  AddToForm,
+  Label,
+  Placeholder,
+  DefaultValue,
+  Wrap,
+  Required,
+  Choices,
+  ButtonText,
+  Accept,
+  Multiple,
 };

@@ -1,6 +1,6 @@
 import { h, Component } from 'preact';
 import linkState from 'linkstate';
-import { htmlgenerate } from '../field-builder/html.js';
+import htmlgenerate from '../field-builder/html.js';
 import * as FS from './field-settings.js';
 
 class FieldConfigurator extends Component {
@@ -18,6 +18,7 @@ class FieldConfigurator extends Component {
     this.handleCancel = this.handleCancel.bind(this);
   }
 
+  // eslint-disable-next-line class-methods-use-this
   getInitialState() {
     return {
       formId: document.querySelector('input[name="form_id"]').value,
@@ -46,9 +47,9 @@ class FieldConfigurator extends Component {
   componentWillReceiveProps(props) {
     const newState = { fieldType: props.fieldType };
 
-    // when changing from field that accepts multiple values to single-value field, reset all pre-selections
+    // reset all pre-selections when changing from checkbox to other type
     if (this.state.fieldType === 'checkbox' && props.fieldType !== 'checkbox') {
-      newState.choices = this.state.choices.map((c, i) => {
+      newState.choices = this.state.choices.map((c) => {
         c.checked = false;
         return c;
       });
@@ -160,4 +161,4 @@ class FieldConfigurator extends Component {
   }
 }
 
-export { FieldConfigurator };
+export default FieldConfigurator;

@@ -122,20 +122,28 @@ function html(tag, attr, children) {
   return h(tag, attr, children);
 }
 
+/**
+ * Returns a string that is valid for name attributes
+ * @param {string} str
+ * @returns {string}
+ */
 function namify(str) {
   return str.replace(/ /g, '_').replace(/[^\w[\]_]*/g, '').toUpperCase();
 }
 
+/**
+ * Returns the given object with all empty values stripped
+ * @param {{}} obj
+ * @returns {{}}
+ */
 function filterEmptyObjectValues(obj) {
   const newObj = {};
-  for (const propName in obj) {
-    if (obj[propName] !== false && obj[propName] !== '') {
-      newObj[propName] = obj[propName];
+  Object.keys(obj).forEach((key) => {
+    if (obj[key] !== false && obj[key] !== '') {
+      newObj[key] = obj[key];
     }
-  }
+  });
   return newObj;
 }
 
-export {
-  htmlgenerate,
-};
+export default htmlgenerate;

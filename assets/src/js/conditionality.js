@@ -8,24 +8,23 @@ function getFieldValues(form, fieldName, evt) {
   const values = [];
   const inputs = form.querySelectorAll(`input[name="${fieldName}"], select[name="${fieldName}"], textarea[name="${fieldName}"], button[name="${fieldName}"]`);
 
-  for (const input of inputs) {
+  [].forEach.call(inputs, (input) => {
     const type = input.type.toLowerCase();
-
     if ((type === 'radio' || type === 'checkbox') && (!input.checked)) {
-      continue;
+      return;
     }
 
     // ignore buttons which are not clicked (in case there's more than one button with same name)
     if (type === 'button' || type === 'submit' || input.tagName === 'BUTTON') {
       if ((!evt || evt.target !== input) && form.dataset[fieldName] !== input.value) {
-        continue;
+        return;
       }
 
       form.dataset[fieldName] = input.value;
     }
 
     values.push(input.value);
-  }
+  });
 
   // default to an empty string
   // can be used to show or hide an element when a field is empty or has not been set
@@ -74,9 +73,9 @@ function toggleElement(el, evt) {
   for (let i = 0; i < values.length; i++) {
     const value = values[i];
 
-    // condition is met when value is in array of expected values OR expected values contains a wildcard and value is not empty
+    // condition is met when value is in array of expected values
+    // or if expected values contains a wildcard and value is not empty
     conditionMet = expectedValues.indexOf(value) > -1 || (expectedValues.indexOf('*') > -1 && value.length > 0);
-
     if (conditionMet) {
       break;
     }
@@ -92,7 +91,7 @@ function toggleElement(el, evt) {
   // find all inputs inside this element and toggle [required] attr
   // this prevents HTML5 validation on hidden elements
   const inputs = el.querySelectorAll('input, select, textarea');
-  for (const input of inputs) {
+  [].forEach.call(inputs, (input) => {
     if ((conditionMet || show) && input.getAttribute('data-was-required')) {
       input.required = true;
       input.removeAttribute('data-was-required');
@@ -102,7 +101,7 @@ function toggleElement(el, evt) {
       input.setAttribute('data-was-required', 'true');
       input.required = false;
     }
-  }
+  });
 }
 
 // evaluate conditional elements globally
@@ -122,9 +121,9 @@ function handleInputEvent(evt) {
 
   const { form } = evt.target;
   const elements = form.querySelectorAll('[data-show-if], [data-hide-if]');
-  for (const el of elements) {
+  [].forEach.call(elements, (el) => {
     toggleElement(el, evt);
-  }
+  });
 }
 
 document.addEventListener('click', handleInputEvent);

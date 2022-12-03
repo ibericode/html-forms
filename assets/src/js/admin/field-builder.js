@@ -1,6 +1,6 @@
 // imports
 import { h, render } from 'preact';
-import { FieldBuilder } from './components/field-builder.js';
+import FieldBuilder from './components/field-builder.js';
 
 /**
  *

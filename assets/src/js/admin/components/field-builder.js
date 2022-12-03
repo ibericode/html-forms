@@ -1,5 +1,5 @@
 import { h, Component } from 'preact';
-import { FieldConfigurator } from './field-configurator.js';
+import FieldConfigurator from './field-configurator.js';
 
 class FieldBuilder extends Component {
   constructor(props) {
@@ -53,4 +53,4 @@ class FieldBuilder extends Component {
   }
 }
 
-export { FieldBuilder };
+export default FieldBuilder;
