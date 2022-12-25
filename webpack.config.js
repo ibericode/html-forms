@@ -22,7 +22,7 @@ module.exports = {
           loader: 'babel-loader',
           options: {
             presets: [
-              ['@babel/preset-env'],
+              ['@babel/preset-env', { targets: '> 0.2%, last 2 versions, Firefox ESR, not dead' }],
             ],
             plugins: [
               [
