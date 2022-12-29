@@ -1,5 +1,5 @@
 {
-  "license": "GPL-2.0",
+  "license": "GPL-3.0+",
   "repository": "https://github.com/ibericode/html-forms",
   "scripts": {
     "lint": "eslint assets/src/js webpack.config.js --ext .js",
