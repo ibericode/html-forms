@@ -4,7 +4,7 @@
   "description": "Fast & flexible forms for your WordPress site.",
   "keywords": ["wordpress","form", "contact form"],
   "homepage": "https://github.com/ibericode/html-forms",
-  "license": "GPL-2.0",
+  "license": "GPL-3.0+",
   "authors": [
     {
       "name": "Danny van Kooten",

@@ -1,3 +1,4 @@
+/** @jsx window.wp.element.createElement */
 const { __ } = window.wp.i18n;
 const { registerBlockType } = window.wp.blocks;
 const { SelectControl } = window.wp.components;

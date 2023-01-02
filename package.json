@@ -1,14 +1,13 @@
 {
-  "license": "GPL-2.0",
+  "license": "GPL-3.0+",
   "repository": "https://github.com/ibericode/html-forms",
   "scripts": {
-    "lint": "eslint assets/src/js --ext .js",
-    "watch": "NODE_ENV=development gulp && NODE_ENV=development gulp watch",
-    "build": "NODE_ENV=production gulp"
+    "lint": "eslint assets/src/js webpack.config.js --ext .js",
+    "watch": "webpack watch --mode=development",
+    "build": "webpack --mode=production"
   },
   "dependencies": {
     "codemirror": "^5.59.2",
-    "decko": "^1.2.0",
     "linkstate": "^1.1.1",
     "populate.js": "^1.2.2",
     "preact": "^10.5.11",
@@ -16,22 +15,18 @@
     "tlite": "^0.1.7"
   },
   "devDependencies": {
-    "@babel/core": "^7.20.5",
-    "@babel/plugin-proposal-decorators": "^7.20.5",
+    "@babel/core": "^7.20.7",
     "@babel/plugin-transform-react-jsx": "^7.19.0",
     "@babel/preset-env": "^7.20.2",
-    "babelify": "^10.0.0",
-    "browserify": "^17.0.0",
+    "babel-loader": "^9.1.0",
+    "copy-webpack-plugin": "^11.0.0",
+    "cssnano": "^5.1.14",
     "eslint": "^8.28.0",
     "eslint-config-airbnb-base": "^15.0.0",
     "eslint-plugin-import": "^2.26.0",
     "eslint-plugin-react": "^7.31.11",
-    "gulp": "4.0.2",
-    "gulp-clean-css": "^4.3.0",
-    "gulp-streamify": "^1.0.2",
-    "gulp-uglify": "^3.0.2",
-    "gulp-wp-pot": "^2.5.0",
-    "through2": "^4.0.2",
-    "vinyl-source-stream": "^2.0.0"
+    "postcss": "^8.4.20",
+    "webpack": "^5.75.0",
+    "webpack-cli": "^5.0.1"
   }
 }

@@ -51,4 +51,4 @@ When contributing code to HTML Forms that is not simply fixing a bug, please fir
 
 ## License
 
-GPLv2
+GPLv3 or later
