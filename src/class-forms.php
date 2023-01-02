@@ -74,6 +74,7 @@ class Forms {
 		);
 
 		wp_register_style( 'html-forms', $assets_url . 'css/forms.css', array(), HTML_FORMS_VERSION );
+		add_filter( 'script_loader_tag', array( $this, 'add_defer_attribute' ), 10, 2 );
 	}
 
 	public function enqueue_assets() {
@@ -82,6 +83,16 @@ class Forms {
 		}
 	}
 
+	/**
+	 * Adds defer attribute to our <script> element
+	 */
+	public function add_defer_attribute( $tag, $handle ) {
+		if ( $handle !== 'html-forms' ) {
+			return $tag;
+		}
+
+		return str_replace( ' src=', ' defer src=', $tag );
+	}
 	/**
 	 * @param Form $form
 	 * @param array $data
@@ -150,11 +161,11 @@ class Forms {
 	}
 
 	/**
-	* Sanitize array with values before saving. Can be called recursively.
-	*
-	* @param mixed $value
-	* @return mixed
-	*/
+	 * Sanitize array with values before saving. Can be called recursively.
+	 *
+	 * @param mixed $value
+	 * @return mixed
+	 */
 	public function sanitize( $value ) {
 		if ( is_string( $value ) ) {
 			// do nothing if empty string
@@ -194,8 +205,8 @@ class Forms {
 	}
 
 	/**
-	* @return array
-	*/
+	 * @return array
+	 */
 	public function get_request_data() {
 		$data = $_POST;
 
@@ -227,11 +238,11 @@ class Forms {
 
 		if ( empty( $error_code ) ) {
 			/**
-			* Filters the field names that should be ignored on the Submission object.
-			* Fields starting with an underscore (_) are ignored by default.
-			*
-			* @param array $names
-			*/
+			 * Filters the field names that should be ignored on the Submission object.
+			 * Fields starting with an underscore (_) are ignored by default.
+			 *
+			 * @param array $names
+			 */
 			$ignored_field_names = apply_filters( 'hf_ignored_field_names', array() );
 
 			// filter out ignored field names
@@ -263,17 +274,17 @@ class Forms {
 
 			// save submission object so that other form processor have an insert ID to work with (eg file upload)
 			if ( $form->settings['save_submissions'] ) {
-				 $submission->save();
+				$submission->save();
 			}
 
 			/**
-			* General purpose hook that runs before all form actions, so we can still modify the submission object that is passed to actions.
-			*/
+			 * General purpose hook that runs before all form actions, so we can still modify the submission object that is passed to actions.
+			 */
 			do_action( 'hf_process_form', $form, $submission );
 
 			// re-save submission object for convenience in form processors hooked into hf_process_form
 			if ( $form->settings['save_submissions'] ) {
-				 $submission->save();
+				$submission->save();
 			}
 
 			// process form actions
