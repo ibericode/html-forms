@@ -442,11 +442,13 @@ class Admin {
 			return;
 		}
 
-		$ids          = array_map( 'intval', $_POST['id'] );
+		$args          = array_map( 'intval', $_POST['id'] );
 		$table        = $wpdb->prefix . 'hf_submissions';
-		$placeholders = rtrim( str_repeat( '%d,', count( $ids ) ), ',' );
-		$wpdb->query( $wpdb->prepare( "DELETE FROM {$table} WHERE id IN( {$placeholders} );", $ids ) );
-		$wpdb->query( $wpdb->prepare( "DELETE FROM {$wpdb->postmeta} WHERE post_id IN ( {$placeholders}  ) AND meta_key LIKE %s;", $ids, '_hf_%%' ) );
+		$placeholders = rtrim( str_repeat( '%d,', count( $args ) ), ',' );
+		$wpdb->query( $wpdb->prepare( "DELETE FROM {$table} WHERE id IN( {$placeholders} );", $args ) );
+
+		$args[] = '_hf_%%';
+		$wpdb->query( $wpdb->prepare( "DELETE FROM {$wpdb->postmeta} WHERE post_id IN ( {$placeholders}  ) AND meta_key LIKE %s;", $args ) );
 	}
 
 	private function get_default_form_content() {
