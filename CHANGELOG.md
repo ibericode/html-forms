@@ -1,6 +1,12 @@
 Changelog
 =========
 
+#### 1.3.27 - Jun 30, 2023
+
+- Fix PHP notice for calling `WPDB::prepare` with mixed argument types.
+- Update JS dependencies.
+
+
 #### 1.3.26 - Nov 15, 2022
 
 - Add pagination to submissions overview page if there are more than 500 items to show.
