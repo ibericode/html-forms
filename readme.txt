@@ -3,7 +3,7 @@ Contributors: Ibericode, DvanKooten, hchouhan, lapzor
 Donate link: https://www.htmlformsplugin.com/#utm_source=wp-plugin-repo&utm_medium=html-forms&utm_campaign=donate-link
 Tags: form, forms, contact form, html form, htmlforms
 Requires at least: 4.6
-Tested up to: 6.1
+Tested up to: 6.2
 Stable tag: 1.3.26
 License: GPLv3 or later
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
