@@ -8,12 +8,14 @@ import FieldBuilder from './field-builder.js';
 
 window.html_forms = {};
 
-// Initialize the various components if we're on the "edit form" page
-if (document.getElementById('hf-form-editor')) {
-  Editor.init();
-  Actions.init();
-  FieldBuilder.init();
-}
+document.addEventListener('DOMContentLoaded', () => {
+  // Initialize the various components if we're on the "edit form" page
+  if (document.getElementById('hf-form-editor')) {
+    Editor.init();
+    Actions.init();
+    FieldBuilder.init();
+  }
+});
 
 tlite((el) => el.className.indexOf('hf-tooltip') > -1);
 
