@@ -113,6 +113,12 @@ The plugin comes with built-in spam protection that should stop all automated at
 == Changelog ==
 
 
+#### 1.3.28 - Sep 19, 2023
+
+- Update browserslist to support the same set of browsers as WordPress core.
+- Delay initializing the field builder component until the DOM has fully loaded. Fixes an issue with the file upload button (from HTML Forms Premium) not appearing.
+
+
 #### 1.3.27 - Jun 30, 2023
 
 - Fix PHP notice for calling `WPDB::prepare` with mixed argument types.
