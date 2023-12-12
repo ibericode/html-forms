@@ -50,6 +50,7 @@ class Admin {
 				'wp-i18n',
 				'wp-element',
 				'wp-components',
+				'wp-block-editor',
 			)
 		);
 		$forms = hf_get_forms();
