@@ -62,6 +62,7 @@ function findForm(element) {
  */
 function toggleElement(el, evt) {
   const show = !!el.getAttribute('data-show-if');
+  const hidden = !!el.getAttribute('data-hide-if');
   const conditions = show ? el.getAttribute('data-show-if').split(':') : el.getAttribute('data-hide-if').split(':');
   const fieldName = conditions[0];
   const expectedValues = ((conditions.length > 1 ? conditions[1] : '*').split('|'));
@@ -92,14 +93,27 @@ function toggleElement(el, evt) {
   // this prevents HTML5 validation on hidden elements
   const inputs = el.querySelectorAll('input, select, textarea');
   [].forEach.call(inputs, (input) => {
-    if ((conditionMet || show) && input.getAttribute('data-was-required')) {
-      input.required = true;
-      input.removeAttribute('data-was-required');
+    // Toggle [required] attr for elements using data-show-if 
+    if (show) {
+      if (conditionMet && input.getAttribute('data-was-required')) {
+        input.required = true;
+        input.removeAttribute('data-was-required');
+      }
+      if (!conditionMet && input.required) {
+        input.setAttribute('data-was-required', 'true');
+        input.required = false;
+      }
     }
-
-    if ((!conditionMet || !show) && input.required) {
-      input.setAttribute('data-was-required', 'true');
-      input.required = false;
+    // Toggle [required] attr for elements using data-hide-if 
+    if (hidden) {
+      if (!conditionMet && input.getAttribute('data-was-required')) {
+        input.required = true;
+        input.removeAttribute('data-was-required');
+      }
+      if (conditionMet && input.required) {
+        input.setAttribute('data-was-required', 'true');
+        input.required = false;
+      }
     }
   });
 }
