@@ -1,6 +1,15 @@
 Changelog
 =========
 
+#### 1.3.29 - Feb 6, 2024 
+
+- Fix `get_field_count()` used for anti-spam protection not correctly counting fields when attribute key came directly after a line-break. Thanks [yann1cks](https://github.com/yann1cks)!
+- Fix `data-hide-if` attribute not updating required fields correctly. Thanks [yann1cks](https://github.com/yann1cks)!
+- Remove unused class input from Gutenberg block. Thanks [yann1cks](https://github.com/yann1cks)!
+- Remove use of `tlite` JS dependency.
+- Update JS dependencies.
+
+
 #### 1.3.28 - Sep 19, 2023
 
 - Update browserslist to support the same set of browsers as WordPress core.
