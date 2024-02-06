@@ -3,7 +3,7 @@
 Plugin Name: HTML Forms
 Plugin URI: https://www.htmlformsplugin.com/#utm_source=wp-plugin&utm_medium=html-forms&utm_campaign=plugins-page
 Description: Not just another forms plugin. Simple and flexible.
-Version: 1.3.28
+Version: 1.3.29
 Author: ibericode
 Author URI: https://ibericode.com/
 License: GPL v3
@@ -38,13 +38,13 @@ function _bootstrap() {
     $email_action = new Actions\Email();
     $email_action->hook();
 
-    if( class_exists( 'MC4WP_MailChimp' ) ) {
+    if( \class_exists( 'MC4WP_MailChimp' ) ) {
         $mailchimp_action = new Actions\MailChimp();
         $mailchimp_action->hook();
     }
 
     if( is_admin() ) {
-        if( ! defined( 'DOING_AJAX' ) || ! DOING_AJAX ) {
+        if( ! \defined( 'DOING_AJAX' ) || ! DOING_AJAX ) {
             $admin = new Admin\Admin( __FILE__ );
             $admin->hook();
         }
@@ -54,7 +54,7 @@ function _bootstrap() {
     }
 }
 
-define('HTML_FORMS_VERSION', '1.3.28');
+define('HTML_FORMS_VERSION', '1.3.29');
 
 if( ! function_exists( 'hf_get_form' ) ) {
     require __DIR__ . '/vendor/autoload.php';
