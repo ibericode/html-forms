@@ -183,7 +183,9 @@ class Form {
 	* Note: this includes all default fields and an additional field for the "was-required" element we include in every request.
 	*/
 	public function get_field_count() {
-		$count = substr_count( strtolower( $this->get_html() ), ' name=' );
+		$pattern = '/\bname\s*=\s*["\']/i';
+		preg_match_all($pattern, $this->get_html(), $matches);
+		$count = !empty($matches) ? count($matches[0]) : 0;
 		$count++; // Add one for 'was-required'
 		return $count;
 	}
