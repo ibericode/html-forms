@@ -1,7 +1,6 @@
 import './tabs.js';
 import './action-confirmations.js';
 
-import tlite from 'tlite';
 import Editor from './form-editor.js';
 import Actions from './form-actions.js';
 import FieldBuilder from './field-builder.js';
@@ -16,8 +15,6 @@ document.addEventListener('DOMContentLoaded', () => {
     FieldBuilder.init();
   }
 });
-
-tlite((el) => el.className.indexOf('hf-tooltip') > -1);
 
 window.html_forms.FieldBuilder = FieldBuilder;
 window.html_forms.Editor = Editor;

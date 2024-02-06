@@ -11,8 +11,7 @@
     "linkstate": "^1.1.1",
     "populate.js": "^1.2.2",
     "preact": "^10.5.11",
-    "preact-render-to-string": "^5.1.12",
-    "tlite": "^0.1.7"
+    "preact-render-to-string": "^5.1.12"
   },
   "devDependencies": {
     "@babel/core": "^7.20.7",

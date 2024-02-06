@@ -2,16 +2,17 @@
  * @param {MouseEvent} evt
  */
 function handleClickEvent(evt) {
-  if (evt.target.tagName !== 'A') {
+  const t = evt.target;
+  if (t.tagName !== 'A') {
     return;
   }
 
-  if (evt.target.hasAttribute('data-hf-confirm')) {
-    const sure = window.confirm(evt.target.getAttribute('data-hf-confirm'));
-
-    if (!sure) {
-      evt.preventDefault();
+  if (t.hasAttribute('data-hf-confirm')) {
+    if (window.confirm(t.getAttribute('data-hf-confirm'))) {
+      return;
     }
+
+    evt. preventDefault();
   }
 }
 document.body.addEventListener('click', handleClickEvent, true);
