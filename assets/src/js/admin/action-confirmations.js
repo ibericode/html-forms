@@ -12,7 +12,7 @@ function handleClickEvent(evt) {
       return;
     }
 
-    evt. preventDefault();
+    evt.preventDefault();
   }
 }
 document.body.addEventListener('click', handleClickEvent, true);
