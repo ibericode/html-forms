@@ -181,7 +181,9 @@ class Form {
 	* @return int The number of named fields in the form
 	*/
 	public function get_field_count() {
-		$count = substr_count( strtolower( $this->get_html() ), ' name=' );
+		$pattern = '/\bname\s*=\s*["\']/i';
+		preg_match_all($pattern, strtolower( $this->get_html() ), $matches);
+		$count = count($matches[0]);
 		$count++; // Add one for 'was-required'
 		return $count;
 	}
