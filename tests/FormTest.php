@@ -51,6 +51,14 @@ class FormTest extends TestCase {
 		self::assertEquals(5, $form->get_field_count());
 	}
 
+	public function test_get_field_count_with_linebreaks() {
+		$form = new Form(1);
+		$form->markup = '<form>'.
+		$form->markup .= '<input type="text"' . PHP_EOL . 'name="my-field" class="some css classes" required value="super-long-value-here" />';
+    $form->markup .= '</form>';
+		self::assertEquals(4, $form->get_field_count());
+	}
+
 	public function test_get_message() {
 		$form = new Form(1);
 		$form->messages = $messages = array(

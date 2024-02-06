@@ -179,6 +179,8 @@ class Form {
 
 	/**
 	* @return int The number of named fields in the form
+	*
+	* Note: this includes all default fields and an additional field for the "was-required" element we include in every request.
 	*/
 	public function get_field_count() {
 		$count = substr_count( strtolower( $this->get_html() ), ' name=' );
