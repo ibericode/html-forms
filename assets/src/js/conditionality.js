@@ -93,7 +93,7 @@ function toggleElement(el, evt) {
   // this prevents HTML5 validation on hidden elements
   const inputs = el.querySelectorAll('input, select, textarea');
   [].forEach.call(inputs, (input) => {
-    // Toggle [required] attr for elements using data-show-if 
+    // Toggle [required] attr for elements using data-show-if
     if (show) {
       if (conditionMet && input.getAttribute('data-was-required')) {
         input.required = true;
@@ -104,7 +104,7 @@ function toggleElement(el, evt) {
         input.required = false;
       }
     }
-    // Toggle [required] attr for elements using data-hide-if 
+    // Toggle [required] attr for elements using data-hide-if
     if (hidden) {
       if (!conditionMet && input.getAttribute('data-was-required')) {
         input.required = true;
