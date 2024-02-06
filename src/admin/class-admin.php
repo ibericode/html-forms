@@ -443,7 +443,7 @@ class Admin {
 			return;
 		}
 
-		$args          = array_map( 'intval', $_POST['id'] );
+		$args         = array_map( 'intval', $_POST['id'] );
 		$table        = $wpdb->prefix . 'hf_submissions';
 		$placeholders = rtrim( str_repeat( '%d,', count( $args ) ), ',' );
 		$wpdb->query( $wpdb->prepare( "DELETE FROM {$table} WHERE id IN( {$placeholders} );", $args ) );
