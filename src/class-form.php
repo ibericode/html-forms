@@ -185,7 +185,7 @@ class Form {
 	public function get_field_count() {
 		$pattern = '/\bname\s*=\s*["\']/i';
 		preg_match_all($pattern, $this->get_html(), $matches);
-		$count = count($matches[0]);
+		$count = !empty($matches) ? count($matches[0]) : 0;
 		$count++; // Add one for 'was-required'
 		return $count;
 	}
