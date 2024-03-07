@@ -375,6 +375,11 @@ class Admin {
 		// Fix for MultiSite stripping KSES for roles other than administrator
 		remove_all_filters( 'content_save_pre' );
 
+		// run our own kses filter
+		if (!current_user_can('unfiltered_html')) {
+			$data['markup'] = $this->kses($data['markup']);
+		}
+
 		// strip <form> tag from markup
 		$data['markup'] = preg_replace( '/<\/?form(.|\s)*?>/i', '', $data['markup'] );
 
@@ -463,4 +468,116 @@ class Admin {
 		return $html;
 	}
 
+
+	/**
+	 * Filters string and strips out all HTML tags and attributes, except what's in our whitelist.
+	 *
+	 * @param string $string The string to apply KSES whitelist on
+	 * @return string
+	 */
+	private function kses( $string ) {
+		$always_allowed_attr = array_fill_keys(
+			array(
+				'aria-describedby',
+				'aria-details',
+				'aria-label',
+				'aria-labelledby',
+				'aria-hidden',
+				'aria-*',
+				'class',
+				'id',
+				'style',
+				'title',
+				'role',
+				'data-*',
+				'data-confirm',
+				'tabindex',
+			),
+			true
+		);
+		$input_allowed_attr  = array_merge(
+			$always_allowed_attr,
+			array_fill_keys(
+				array(
+					'type',
+					'required',
+					'placeholder',
+					'value',
+					'name',
+					'step',
+					'min',
+					'max',
+					'checked',
+					'width',
+					'autocomplete',
+					'autofocus',
+					'minlength',
+					'maxlength',
+					'size',
+					'pattern',
+					'disabled',
+					'readonly',
+				),
+				true
+			)
+		);
+
+		$allowed = array(
+			'p'        => $always_allowed_attr,
+			'label'    => array_merge( $always_allowed_attr, array( 'for' => true ) ),
+			'input'    => $input_allowed_attr,
+			'button'   => $input_allowed_attr,
+			'fieldset' => $always_allowed_attr,
+			'legend'   => $always_allowed_attr,
+			'ul'       => $always_allowed_attr,
+			'ol'       => $always_allowed_attr,
+			'li'       => $always_allowed_attr,
+			'select'   => array_merge( $input_allowed_attr, array( 'multiple' => true ) ),
+			'option'   => array_merge( $input_allowed_attr, array( 'selected' => true ) ),
+			'optgroup' => array(
+				'disabled' => true,
+				'label' => true,
+			),
+			'textarea' => array_merge(
+				$input_allowed_attr,
+				array(
+					'rows' => true,
+					'cols' => true,
+				)
+			),
+			'div'      => $always_allowed_attr,
+			'strong'   => $always_allowed_attr,
+			'b'         => $always_allowed_attr,
+			'i'         => $always_allowed_attr,
+			'br'        => array(),
+			'em'       => $always_allowed_attr,
+			'span'     => $always_allowed_attr,
+			'a'        => array_merge( $always_allowed_attr, array( 'href' => true ) ),
+			'img'      => array_merge(
+				$always_allowed_attr,
+				array(
+					'src' => true,
+					'alt' => true,
+					'width' => true,
+					'height' => true,
+					'srcset' => true,
+					'sizes' => true,
+					'referrerpolicy' => true,
+					'loading' => true,
+					'decoding' => true,
+				)
+			),
+			'u' => $always_allowed_attr,
+			'table' => $always_allowed_attr,
+			'tr' => $always_allowed_attr,
+			'td' => $always_allowed_attr,
+			'th' => $always_allowed_attr,
+			'thead' => $always_allowed_attr,
+			'tbody' => $always_allowed_attr,
+			'picture' => $always_allowed_attr,
+			'video' => $always_allowed_attr,
+		);
+
+		return wp_kses( $string, $allowed );
+	}
 }

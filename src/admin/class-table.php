@@ -255,15 +255,15 @@ if ( class_exists( 'WP_List_Table' ) ) {
 		}
 
 		public function process_bulk_action_trash( $forms ) {
-			return array_map( 'wp_trash_post', $forms );
+			array_map( 'wp_trash_post', $forms );
 		}
 
 		public function process_bulk_action_delete( $forms ) {
-			return array_map( 'wp_delete_post', $forms );
+			array_map( 'wp_delete_post', $forms );
 		}
 
 		public function process_bulk_action_untrash( $forms ) {
-			return array_map( 'wp_untrash_post', $forms );
+			array_map( 'wp_untrash_post', $forms );
 		}
 
 		/**
