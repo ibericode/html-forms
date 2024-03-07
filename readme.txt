@@ -4,7 +4,7 @@ Donate link: https://www.htmlformsplugin.com/#utm_source=wp-plugin-repo&utm_medi
 Tags: form, forms, contact form, html form, htmlforms
 Requires at least: 4.6
 Tested up to: 6.4
-Stable tag: 1.3.29
+Stable tag: 1.3.30
 License: GPLv3 or later
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
 Requires PHP: 5.3
@@ -112,6 +112,10 @@ The plugin comes with built-in spam protection that should stop all automated at
 
 == Changelog ==
 
+
+#### 1.3.30 - Mar 7, 2024 
+
+- Run form mark-up through KSES filter if user lacks `unfiltered_html` capability.
 
 #### 1.3.29 - Feb 6, 2024 
 
