@@ -376,8 +376,8 @@ class Admin {
 		remove_all_filters( 'content_save_pre' );
 
 		// run our own kses filter
-		if (!current_user_can('unfiltered_html')) {
-			$data['markup'] = $this->kses($data['markup']);
+		if ( ! current_user_can( 'unfiltered_html' ) ) {
+			$data['markup'] = $this->kses( $data['markup'] );
 		}
 
 		// strip <form> tag from markup
@@ -536,7 +536,7 @@ class Admin {
 			'option'   => array_merge( $input_allowed_attr, array( 'selected' => true ) ),
 			'optgroup' => array(
 				'disabled' => true,
-				'label' => true,
+				'label'    => true,
 			),
 			'textarea' => array_merge(
 				$input_allowed_attr,
@@ -547,35 +547,35 @@ class Admin {
 			),
 			'div'      => $always_allowed_attr,
 			'strong'   => $always_allowed_attr,
-			'b'         => $always_allowed_attr,
-			'i'         => $always_allowed_attr,
-			'br'        => array(),
+			'b'        => $always_allowed_attr,
+			'i'        => $always_allowed_attr,
+			'br'       => array(),
 			'em'       => $always_allowed_attr,
 			'span'     => $always_allowed_attr,
 			'a'        => array_merge( $always_allowed_attr, array( 'href' => true ) ),
 			'img'      => array_merge(
 				$always_allowed_attr,
 				array(
-					'src' => true,
-					'alt' => true,
-					'width' => true,
-					'height' => true,
-					'srcset' => true,
-					'sizes' => true,
+					'src'            => true,
+					'alt'            => true,
+					'width'          => true,
+					'height'         => true,
+					'srcset'         => true,
+					'sizes'          => true,
 					'referrerpolicy' => true,
-					'loading' => true,
-					'decoding' => true,
+					'loading'        => true,
+					'decoding'       => true,
 				)
 			),
-			'u' => $always_allowed_attr,
-			'table' => $always_allowed_attr,
-			'tr' => $always_allowed_attr,
-			'td' => $always_allowed_attr,
-			'th' => $always_allowed_attr,
-			'thead' => $always_allowed_attr,
-			'tbody' => $always_allowed_attr,
-			'picture' => $always_allowed_attr,
-			'video' => $always_allowed_attr,
+			'u'        => $always_allowed_attr,
+			'table'    => $always_allowed_attr,
+			'tr'       => $always_allowed_attr,
+			'td'       => $always_allowed_attr,
+			'th'       => $always_allowed_attr,
+			'thead'    => $always_allowed_attr,
+			'tbody'    => $always_allowed_attr,
+			'picture'  => $always_allowed_attr,
+			'video'    => $always_allowed_attr,
 		);
 
 		return wp_kses( $string, $allowed );
