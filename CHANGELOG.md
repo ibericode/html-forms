@@ -1,6 +1,10 @@
 Changelog
 =========
 
+#### 1.3.30 - Mar 7, 2024 
+
+- Run form mark-up through KSES filter if user lacks `unfiltered_html` capability.
+
 #### 1.3.29 - Feb 6, 2024 
 
 - Fix `get_field_count()` used for anti-spam protection not correctly counting fields when attribute key came directly after a line-break. Thanks [yann1cks](https://github.com/yann1cks)!
